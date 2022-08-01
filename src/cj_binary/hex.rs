@@ -19,28 +19,31 @@ pub mod hex {
         "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "FA", "FB", "FC", "FD", "FE",
         "FF",
     ];
+
     /// ```
     /// // converts u8 to hex &str
     ///
-    /// use cj_common::binary::hex::hex::u8_to_hex_str;
+    /// use cj_common::cj_binary::hex::hex::u8_to_hex_str;
     /// assert_eq!(u8_to_hex_str(&0xD1), "D1");
     /// ```
     pub fn u8_to_hex_str(value: &u8) -> &str {
         HEX_TABLE[*value as usize]
     }
+
     /// ```
     /// // converts u8 to hex String
     ///
-    /// use cj_common::binary::hex::hex::u8_to_hex;
+    /// use cj_common::cj_binary::hex::hex::u8_to_hex;
     /// assert_eq!(u8_to_hex(&0xD1), "D1".to_string());
     /// ```
     pub fn u8_to_hex(value: &u8) -> String {
         HEX_TABLE[*value as usize].to_string()
     }
+
     /// ```
     /// // converts a u8 slice to hex String
     ///
-    /// use cj_common::binary::hex::hex::u8_array_to_hex;
+    /// use cj_common::cj_binary::hex::hex::u8_array_to_hex;
     /// let array = [0xA0,0xA1,0xA2];
     /// assert_eq!(u8_array_to_hex(&array),"A0A1A2");
     /// ```
@@ -52,10 +55,11 @@ pub mod hex {
             .collect();
         rslt
     }
+
     /// ```
     /// // converts a hex char to u8
     ///
-    /// use cj_common::binary::hex::hex::hex_char_to_u8;
+    /// use cj_common::cj_binary::hex::hex::hex_char_to_u8;
     /// assert_eq!(hex_char_to_u8(&'A'),Some(0x0A));
     /// assert_eq!(hex_char_to_u8(&'G'),None);
     /// ```
@@ -84,10 +88,11 @@ pub mod hex {
             _ => Some(r),
         }
     }
+
     /// ```
     /// // converts a hex str to u8
     ///
-    /// use cj_common::binary::hex::hex::hex_str_to_u8;
+    /// use cj_common::cj_binary::hex::hex::hex_str_to_u8;
     /// assert_eq!(hex_str_to_u8("AB"),Some(0xAB));
     ///  assert_eq!(hex_str_to_u8("G"),None);
     /// ```
@@ -111,10 +116,11 @@ pub mod hex {
     }
 
     pub type HexArray = [char; 2];
+
     /// ```
     /// // converts a two char hex array to u8
     ///
-    /// use cj_common::binary::hex::hex::hex_chars_to_u8;
+    /// use cj_common::cj_binary::hex::hex::hex_chars_to_u8;
     /// assert_eq!(hex_chars_to_u8(&['A','B']),Some(0xAB));
     /// assert_eq!(hex_chars_to_u8(&['N','O']),None);
     /// ```
@@ -136,10 +142,11 @@ pub mod hex {
             None
         }
     }
+
     /// ```
     /// // converts a str of hex to vec of u8
     ///
-    /// use cj_common::binary::hex::hex::hex_str_to_u8_array;
+    /// use cj_common::cj_binary::hex::hex::hex_str_to_u8_array;
     /// assert_eq!(hex_str_to_u8_array("AABBCC"),Some(vec![0xAAu8,0xBB,0xCC]));
     /// assert_eq!(hex_str_to_u8_array("NOPE"),None);
     /// ```
@@ -180,34 +187,41 @@ pub mod hex {
     #[cfg(test)]
     mod tests {
         use super::*;
+
         #[test]
         fn test_u8_to_hex_str() {
             assert_eq!(u8_to_hex_str(&0xD1), "D1");
         }
+
         #[test]
         fn test_u8_to_hex() {
             assert_eq!(u8_to_hex(&0xD1), "D1".to_string());
         }
+
         #[test]
         fn test_u8_array_to_hex() {
             let array = [0xA0, 0xA1, 0xA2];
             assert_eq!(u8_array_to_hex(&array), "A0A1A2");
         }
+
         #[test]
         fn test_hex_char_to_u8() {
             assert_eq!(hex_char_to_u8(&'A'), Some(0x0A));
             assert_eq!(hex_char_to_u8(&'G'), None);
         }
+
         #[test]
         fn test_hex_str_to_u8() {
             assert_eq!(hex_str_to_u8("AB"), Some(0xAB));
             assert_eq!(hex_str_to_u8("G"), None);
         }
+
         #[test]
         fn test_hex_chars_to_u8() {
             assert_eq!(hex_chars_to_u8(&['A', 'B']), Some(0xAB));
             assert_eq!(hex_chars_to_u8(&['N', 'O']), None);
         }
+
         #[test]
         fn test_hex_str_to_u8_array() {
             assert_eq!(
@@ -218,4 +232,3 @@ pub mod hex {
         }
     }
 }
-
