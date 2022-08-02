@@ -1,5 +1,5 @@
 pub mod hex {
-    static HEX_TABLE: [&str; 256] = [
+    static HEX_TABLE: [&'static str; 256] = [
         "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E",
         "0F", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D",
         "1E", "1F", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "2A", "2B", "2C",
@@ -26,7 +26,8 @@ pub mod hex {
     /// use cj_common::cj_binary::hex::hex::u8_to_hex_str;
     /// assert_eq!(u8_to_hex_str(&0xD1), "D1");
     /// ```
-    pub fn u8_to_hex_str(value: &u8) -> &str {
+    #[inline]
+    pub fn u8_to_hex_str(value: &u8) -> &'static str {
         HEX_TABLE[*value as usize]
     }
 
@@ -36,6 +37,7 @@ pub mod hex {
     /// use cj_common::cj_binary::hex::hex::u8_to_hex;
     /// assert_eq!(u8_to_hex(&0xD1), "D1".to_string());
     /// ```
+    #[inline]
     pub fn u8_to_hex(value: &u8) -> String {
         HEX_TABLE[*value as usize].to_string()
     }
@@ -47,6 +49,7 @@ pub mod hex {
     /// let array = [0xA0,0xA1,0xA2];
     /// assert_eq!(u8_array_to_hex(&array),"A0A1A2");
     /// ```
+    #[inline]
     pub fn u8_array_to_hex(value: &[u8]) -> String {
         let mut rslt = String::with_capacity(value.len());
         let _: () = value
@@ -63,6 +66,7 @@ pub mod hex {
     /// assert_eq!(hex_char_to_u8(&'A'),Some(0x0A));
     /// assert_eq!(hex_char_to_u8(&'G'),None);
     /// ```
+    #[inline]
     pub fn hex_char_to_u8(hex1: &char) -> Option<u8> {
         let r = match hex1 {
             '0' => 0u8,
@@ -96,6 +100,7 @@ pub mod hex {
     /// assert_eq!(hex_str_to_u8("AB"),Some(0xAB));
     ///  assert_eq!(hex_str_to_u8("G"),None);
     /// ```
+    #[inline]
     pub fn hex_str_to_u8(hex2: &str) -> Option<u8> {
         if hex2.chars().count() == 2 {
             let mut r: u8;
@@ -124,6 +129,7 @@ pub mod hex {
     /// assert_eq!(hex_chars_to_u8(&['A','B']),Some(0xAB));
     /// assert_eq!(hex_chars_to_u8(&['N','O']),None);
     /// ```
+    #[inline]
     pub fn hex_chars_to_u8(hex2: &HexArray) -> Option<u8> {
         if hex2.len() == 2 {
             let mut r: u8;
@@ -150,6 +156,7 @@ pub mod hex {
     /// assert_eq!(hex_str_to_u8_array("AABBCC"),Some(vec![0xAAu8,0xBB,0xCC]));
     /// assert_eq!(hex_str_to_u8_array("NOPE"),None);
     /// ```
+    #[inline]
     pub fn hex_str_to_u8_array(hexstr: &str) -> Option<Vec<u8>> {
         let mut ca: HexArray = ['0', '0'];
         let mut ct = 0;
@@ -182,6 +189,246 @@ pub mod hex {
         }
 
         Some(v)
+    }
+
+    #[inline]
+    pub fn i16be_to_hex(i: i16) -> String {
+        let r = i
+            .to_be_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn i16le_to_hex(i: i16) -> String {
+        let r = i
+            .to_le_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn i16ne_to_hex(i: i16) -> String {
+        let r = i
+            .to_ne_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn u16be_to_hex(i: u16) -> String {
+        let r = i
+            .to_be_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn u16le_to_hex(i: u16) -> String {
+        let r = i
+            .to_le_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn u16ne_to_hex(i: u16) -> String {
+        let r = i
+            .to_ne_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn i32be_to_hex(i: i32) -> String {
+        let r = i
+            .to_be_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn i32le_to_hex(i: i32) -> String {
+        let r = i
+            .to_le_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn i32ne_to_hex(i: i32) -> String {
+        let r = i
+            .to_ne_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn u32be_to_hex(i: u32) -> String {
+        let r = i
+            .to_be_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn u32le_to_hex(i: u32) -> String {
+        let r = i
+            .to_le_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn u32ne_to_hex(i: u32) -> String {
+        let r = i
+            .to_ne_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn i64be_to_hex(i: i64) -> String {
+        let r = i
+            .to_be_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn i64le_to_hex(i: i64) -> String {
+        let r = i
+            .to_le_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn i64ne_to_hex(i: i64) -> String {
+        let r = i
+            .to_ne_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn u64be_to_hex(i: u64) -> String {
+        let r = i
+            .to_be_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn u64le_to_hex(i: u64) -> String {
+        let r = i
+            .to_le_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn u64ne_to_hex(i: u64) -> String {
+        let r = i
+            .to_ne_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn i128be_to_hex(i: i128) -> String {
+        let r = i
+            .to_be_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn i128le_to_hex(i: i128) -> String {
+        let r = i
+            .to_le_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn i128ne_to_hex(i: i128) -> String {
+        let r = i
+            .to_ne_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn u128be_to_hex(i: u128) -> String {
+        let r = i
+            .to_be_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn u128le_to_hex(i: u128) -> String {
+        let r = i
+            .to_le_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
+    }
+
+    #[inline]
+    pub fn u128ne_to_hex(i: u128) -> String {
+        let r = i
+            .to_ne_bytes()
+            .iter()
+            .map(|f| HEX_TABLE[*f as usize])
+            .collect::<String>();
+        r
     }
 
     #[cfg(test)]
@@ -229,6 +476,87 @@ pub mod hex {
                 Some(vec![0xAAu8, 0xBB, 0xCC])
             );
             assert_eq!(hex_str_to_u8_array("NOPE"), None);
+        }
+
+        #[test]
+        fn test_i16be_to_hex() {
+            assert_eq!(i16be_to_hex(0x4FFFi16), "4FFF");
+        }
+
+        #[test]
+        fn test_i16le_to_hex() {
+            assert_eq!(i16le_to_hex(0x4FFFi16), "FF4F");
+        }
+
+        #[test]
+        fn test_u16be_to_hex() {
+            assert_eq!(u16be_to_hex(0x4FFFu16), "4FFF");
+        }
+
+        #[test]
+        fn test_u16le_to_hex() {
+            assert_eq!(u16le_to_hex(0x4FFFu16), "FF4F");
+        }
+
+        #[test]
+        fn test_i32be_to_hex() {
+            assert_eq!(i32be_to_hex(0x4FFFFFFFi32), "4FFFFFFF");
+        }
+
+        #[test]
+        fn test_i32le_to_hex() {
+            assert_eq!(i32le_to_hex(0x4FFFFFFFi32), "FFFFFF4F");
+        }
+
+        #[test]
+        fn test_u32be_to_hex() {
+            assert_eq!(u32be_to_hex(0x4FFFFFFFu32), "4FFFFFFF");
+        }
+
+        #[test]
+        fn test_u32le_to_hex() {
+            assert_eq!(u32le_to_hex(0x4FFFFFFFu32), "FFFFFF4F");
+        }
+
+        #[test]
+        fn test_i64be_to_hex() {
+            assert_eq!(i64be_to_hex(0x4FFFFFFFFFFFFFFFi64), "4FFFFFFFFFFFFFFF");
+        }
+
+        #[test]
+        fn test_i64le_to_hex() {
+            assert_eq!(i64le_to_hex(0x4FFFFFFFFFFFFFFFi64), "FFFFFFFFFFFFFF4F");
+        }
+
+        #[test]
+        fn test_u64be_to_hex() {
+            assert_eq!(u64be_to_hex(0x4FFFFFFFFFFFFFFFu64), "4FFFFFFFFFFFFFFF");
+        }
+
+        #[test]
+        fn test_u64le_to_hex() {
+            assert_eq!(u64le_to_hex(0x4FFFFFFFFFFFFFFFu64), "FFFFFFFFFFFFFF4F");
+        }
+
+
+        #[test]
+        fn test_i128be_to_hex() {
+            assert_eq!(i128be_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFi128), "4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+        }
+
+        #[test]
+        fn test_i128le_to_hex() {
+            assert_eq!(i128le_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFi128), "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4F");
+        }
+
+        #[test]
+        fn test_u128be_to_hex() {
+            assert_eq!(u128be_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128), "4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+        }
+
+        #[test]
+        fn test_u128le_to_hex() {
+            assert_eq!(u128le_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128), "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4F");
         }
     }
 }
