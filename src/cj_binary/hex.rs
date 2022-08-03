@@ -23,7 +23,8 @@ pub mod hex {
     /// ```
     /// // converts u8 to hex &str
     ///
-    /// use cj_common::cj_binary::hex::hex::u8_to_hex_str;
+    /// use cj_common::prelude::*;
+    ///
     /// assert_eq!(u8_to_hex_str(&0xD1), "D1");
     /// ```
     #[inline]
@@ -34,7 +35,8 @@ pub mod hex {
     /// ```
     /// // converts u8 to hex String
     ///
-    /// use cj_common::cj_binary::hex::hex::u8_to_hex;
+    /// use cj_common::prelude::*;
+    ///
     /// assert_eq!(u8_to_hex(&0xD1), "D1".to_string());
     /// ```
     #[inline]
@@ -45,13 +47,14 @@ pub mod hex {
     /// ```
     /// // converts a u8 slice to hex String
     ///
-    /// use cj_common::cj_binary::hex::hex::u8_array_to_hex;
+    /// use cj_common::prelude::*;
+    ///
     /// let array = [0xA0,0xA1,0xA2];
     /// assert_eq!(u8_array_to_hex(&array),"A0A1A2");
     /// ```
     #[inline]
     pub fn u8_array_to_hex(value: &[u8]) -> String {
-        let mut rslt = String::with_capacity(value.len());
+        let mut rslt = String::with_capacity(value.len() * 2);
         let _: () = value
             .iter()
             .map(|f| rslt.push_str(u8_to_hex_str(f)))
@@ -62,7 +65,8 @@ pub mod hex {
     /// ```
     /// // converts a hex char to u8
     ///
-    /// use cj_common::cj_binary::hex::hex::hex_char_to_u8;
+    /// use cj_common::prelude::*;
+    ///
     /// assert_eq!(hex_char_to_u8(&'A'),Some(0x0A));
     /// assert_eq!(hex_char_to_u8(&'G'),None);
     /// ```
@@ -96,13 +100,14 @@ pub mod hex {
     /// ```
     /// // converts a hex str to u8
     ///
-    /// use cj_common::cj_binary::hex::hex::hex_str_to_u8;
+    /// use cj_common::prelude::*;
+    ///
     /// assert_eq!(hex_str_to_u8("AB"),Some(0xAB));
     ///  assert_eq!(hex_str_to_u8("G"),None);
     /// ```
     #[inline]
     pub fn hex_str_to_u8(hex2: &str) -> Option<u8> {
-        if hex2.chars().count() == 2 {
+        if hex2.chars().count() > 0 {
             let mut r: u8;
             if let Some(x) = hex_char_to_u8(&hex2.chars().nth(0).unwrap()) {
                 r = x << 4;
@@ -110,7 +115,7 @@ pub mod hex {
                     r += y;
                     Some(r)
                 } else {
-                    None
+                    Some(x)
                 }
             } else {
                 None
@@ -125,22 +130,19 @@ pub mod hex {
     /// ```
     /// // converts a two char hex array to u8
     ///
-    /// use cj_common::cj_binary::hex::hex::hex_chars_to_u8;
+    /// use cj_common::prelude::*;
+    ///
     /// assert_eq!(hex_chars_to_u8(&['A','B']),Some(0xAB));
     /// assert_eq!(hex_chars_to_u8(&['N','O']),None);
     /// ```
     #[inline]
     pub fn hex_chars_to_u8(hex2: &HexArray) -> Option<u8> {
-        if hex2.len() == 2 {
-            let mut r: u8;
-            if let Some(x) = hex_char_to_u8(&hex2[0]) {
-                r = x << 4;
-                if let Some(y) = hex_char_to_u8(&hex2[1]) {
-                    r += y;
-                    Some(r)
-                } else {
-                    None
-                }
+        let mut r: u8;
+        if let Some(x) = hex_char_to_u8(&hex2[0]) {
+            r = x << 4;
+            if let Some(y) = hex_char_to_u8(&hex2[1]) {
+                r += y;
+                Some(r)
             } else {
                 None
             }
@@ -152,12 +154,13 @@ pub mod hex {
     /// ```
     /// // converts a str of hex to vec of u8
     ///
-    /// use cj_common::cj_binary::hex::hex::hex_str_to_u8_array;
-    /// assert_eq!(hex_str_to_u8_array("AABBCC"),Some(vec![0xAAu8,0xBB,0xCC]));
-    /// assert_eq!(hex_str_to_u8_array("NOPE"),None);
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(hex_str_to_u8_vec("AABBCC"),Some(vec![0xAAu8,0xBB,0xCC]));
+    /// assert_eq!(hex_str_to_u8_vec("NOPE"),None);
     /// ```
     #[inline]
-    pub fn hex_str_to_u8_array(hexstr: &str) -> Option<Vec<u8>> {
+    pub fn hex_str_to_u8_vec(hexstr: &str) -> Option<Vec<u8>> {
         let mut ca: HexArray = ['0', '0'];
         let mut ct = 0;
 
@@ -191,6 +194,13 @@ pub mod hex {
         Some(v)
     }
 
+    /// ```
+    /// // i16 to big endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i16be_to_hex(0x4FFFi16), "4FFF");
+    /// ```
     #[inline]
     pub fn i16be_to_hex(i: i16) -> String {
         let r = i
@@ -201,6 +211,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // i16 to little endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i16le_to_hex(0x4FFFi16), "FF4F");
+    /// ```
     #[inline]
     pub fn i16le_to_hex(i: i16) -> String {
         let r = i
@@ -211,6 +228,9 @@ pub mod hex {
         r
     }
 
+    ///
+    /// i16 to native endian hex
+    ///
     #[inline]
     pub fn i16ne_to_hex(i: i16) -> String {
         let r = i
@@ -221,6 +241,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // u16 to big endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u16be_to_hex(0x4FFFu16), "4FFF");
+    /// ```
     #[inline]
     pub fn u16be_to_hex(i: u16) -> String {
         let r = i
@@ -231,6 +258,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // u16 to little endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u16le_to_hex(0x4FFFu16), "FF4F");
+    /// ```
     #[inline]
     pub fn u16le_to_hex(i: u16) -> String {
         let r = i
@@ -241,6 +275,9 @@ pub mod hex {
         r
     }
 
+    ///
+    /// u16 to native endian hex
+    ///
     #[inline]
     pub fn u16ne_to_hex(i: u16) -> String {
         let r = i
@@ -251,6 +288,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // i32 to big endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i32be_to_hex(0x4FFFFFFFi32), "4FFFFFFF");
+    /// ```
     #[inline]
     pub fn i32be_to_hex(i: i32) -> String {
         let r = i
@@ -261,6 +305,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // i32 to little endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i32le_to_hex(0x4FFFFFFFi32), "FFFFFF4F");
+    /// ```
     #[inline]
     pub fn i32le_to_hex(i: i32) -> String {
         let r = i
@@ -271,6 +322,9 @@ pub mod hex {
         r
     }
 
+    ///
+    /// i32 to native endian hex
+    ///
     #[inline]
     pub fn i32ne_to_hex(i: i32) -> String {
         let r = i
@@ -281,6 +335,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // u32 to big endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u32be_to_hex(0x4FFFFFFFu32), "4FFFFFFF");
+    /// ```
     #[inline]
     pub fn u32be_to_hex(i: u32) -> String {
         let r = i
@@ -291,6 +352,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // u32 to little endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u32le_to_hex(0x4FFFFFFFu32), "FFFFFF4F");
+    /// ```
     #[inline]
     pub fn u32le_to_hex(i: u32) -> String {
         let r = i
@@ -301,6 +369,9 @@ pub mod hex {
         r
     }
 
+    ///
+    /// u32 to native endian hex
+    ///
     #[inline]
     pub fn u32ne_to_hex(i: u32) -> String {
         let r = i
@@ -311,6 +382,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // i64 to big endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i64be_to_hex(0x4FFFFFFFFFFFFFFFi64), "4FFFFFFFFFFFFFFF");
+    /// ```
     #[inline]
     pub fn i64be_to_hex(i: i64) -> String {
         let r = i
@@ -321,6 +399,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // i64 to little endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i64le_to_hex(0x4FFFFFFFFFFFFFFFi64), "FFFFFFFFFFFFFF4F");
+    /// ```
     #[inline]
     pub fn i64le_to_hex(i: i64) -> String {
         let r = i
@@ -331,6 +416,9 @@ pub mod hex {
         r
     }
 
+    ///
+    /// i64 to native endian hex
+    ///
     #[inline]
     pub fn i64ne_to_hex(i: i64) -> String {
         let r = i
@@ -341,6 +429,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // u64 to big endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u64be_to_hex(0x4FFFFFFFFFFFFFFFu64), "4FFFFFFFFFFFFFFF");
+    /// ```
     #[inline]
     pub fn u64be_to_hex(i: u64) -> String {
         let r = i
@@ -351,6 +446,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // u64 to little endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u64le_to_hex(0x4FFFFFFFFFFFFFFFu64), "FFFFFFFFFFFFFF4F");
+    /// ```
     #[inline]
     pub fn u64le_to_hex(i: u64) -> String {
         let r = i
@@ -361,6 +463,9 @@ pub mod hex {
         r
     }
 
+    ///
+    /// u64 to native endian hex
+    ///
     #[inline]
     pub fn u64ne_to_hex(i: u64) -> String {
         let r = i
@@ -371,6 +476,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // i128 to big endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i128be_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFi128), "4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+    /// ```
     #[inline]
     pub fn i128be_to_hex(i: i128) -> String {
         let r = i
@@ -381,6 +493,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // i128 to little endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i128le_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFi128), "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4F");
+    /// ```
     #[inline]
     pub fn i128le_to_hex(i: i128) -> String {
         let r = i
@@ -391,6 +510,9 @@ pub mod hex {
         r
     }
 
+    ///
+    /// u64 to native endian hex
+    ///
     #[inline]
     pub fn i128ne_to_hex(i: i128) -> String {
         let r = i
@@ -401,6 +523,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // u128 to big endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u128be_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128), "4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+    /// ```
     #[inline]
     pub fn u128be_to_hex(i: u128) -> String {
         let r = i
@@ -411,6 +540,13 @@ pub mod hex {
         r
     }
 
+    /// ```
+    /// // u128 to little endian hex
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u128le_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128), "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4F");
+    /// ```
     #[inline]
     pub fn u128le_to_hex(i: u128) -> String {
         let r = i
@@ -421,6 +557,9 @@ pub mod hex {
         r
     }
 
+    ///
+    /// u64 to native endian hex
+    ///
     #[inline]
     pub fn u128ne_to_hex(i: u128) -> String {
         let r = i
@@ -470,12 +609,9 @@ pub mod hex {
         }
 
         #[test]
-        fn test_hex_str_to_u8_array() {
-            assert_eq!(
-                hex_str_to_u8_array("AABBCC"),
-                Some(vec![0xAAu8, 0xBB, 0xCC])
-            );
-            assert_eq!(hex_str_to_u8_array("NOPE"), None);
+        fn test_hex_str_to_u8_vec() {
+            assert_eq!(hex_str_to_u8_vec("AABBCC"), Some(vec![0xAAu8, 0xBB, 0xCC]));
+            assert_eq!(hex_str_to_u8_vec("NOPE"), None);
         }
 
         #[test]
@@ -538,25 +674,36 @@ pub mod hex {
             assert_eq!(u64le_to_hex(0x4FFFFFFFFFFFFFFFu64), "FFFFFFFFFFFFFF4F");
         }
 
-
         #[test]
         fn test_i128be_to_hex() {
-            assert_eq!(i128be_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFi128), "4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+            assert_eq!(
+                i128be_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFi128),
+                "4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+            );
         }
 
         #[test]
         fn test_i128le_to_hex() {
-            assert_eq!(i128le_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFi128), "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4F");
+            assert_eq!(
+                i128le_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFi128),
+                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4F"
+            );
         }
 
         #[test]
         fn test_u128be_to_hex() {
-            assert_eq!(u128be_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128), "4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+            assert_eq!(
+                u128be_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128),
+                "4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+            );
         }
 
         #[test]
         fn test_u128le_to_hex() {
-            assert_eq!(u128le_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128), "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4F");
+            assert_eq!(
+                u128le_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128),
+                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4F"
+            );
         }
     }
 }

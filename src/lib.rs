@@ -1,7 +1,5 @@
 pub mod cj_binary;
 
-pub fn prelude() {
-    pub use cj_binary::hex::hex::*;
+pub mod prelude {
+    pub use crate::cj_binary::hex::hex::*;
 }
-
-
