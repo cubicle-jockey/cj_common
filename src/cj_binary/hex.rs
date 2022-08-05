@@ -1114,6 +1114,158 @@ pub mod hex {
         r
     }
 
+    pub trait Hex {
+        fn to_hex_be(self) -> String;
+        fn from_hex_be(value: &str) -> Option<Self> where Self: Sized;
+        fn to_hex_le(self) -> String;
+        fn from_hex_le(value: &str) -> Option<Self> where Self: Sized;
+    }
+
+    impl Hex for i16 {
+        fn to_hex_be(self) -> String {
+            i16be_to_hex(self)
+        }
+
+        fn from_hex_be(value: &str) -> Option<Self> {
+            i16_from_hex_be(value)
+        }
+
+        fn to_hex_le(self) -> String {
+            i16le_to_hex(self)
+        }
+
+        fn from_hex_le(value: &str) -> Option<Self> {
+            i16_from_hex_le(value)
+        }
+    }
+
+    impl Hex for u16 {
+        fn to_hex_be(self) -> String {
+            u16be_to_hex(self)
+        }
+
+        fn from_hex_be(value: &str) -> Option<Self> {
+            u16_from_hex_be(value)
+        }
+
+        fn to_hex_le(self) -> String {
+            u16le_to_hex(self)
+        }
+
+        fn from_hex_le(value: &str) -> Option<Self> {
+            u16_from_hex_le(value)
+        }
+    }
+
+    impl Hex for i32 {
+        fn to_hex_be(self) -> String {
+            i32be_to_hex(self)
+        }
+
+        fn from_hex_be(value: &str) -> Option<Self> {
+            i32_from_hex_be(value)
+        }
+
+        fn to_hex_le(self) -> String {
+            i32le_to_hex(self)
+        }
+
+        fn from_hex_le(value: &str) -> Option<Self> {
+            i32_from_hex_le(value)
+        }
+    }
+
+    impl Hex for u32 {
+        fn to_hex_be(self) -> String {
+            u32be_to_hex(self)
+        }
+
+        fn from_hex_be(value: &str) -> Option<Self> {
+            u32_from_hex_be(value)
+        }
+
+        fn to_hex_le(self) -> String {
+            u32le_to_hex(self)
+        }
+
+        fn from_hex_le(value: &str) -> Option<Self> {
+            u32_from_hex_le(value)
+        }
+    }
+
+    impl Hex for i64 {
+        fn to_hex_be(self) -> String {
+            i64be_to_hex(self)
+        }
+
+        fn from_hex_be(value: &str) -> Option<Self> {
+            i64_from_hex_be(value)
+        }
+
+        fn to_hex_le(self) -> String {
+            i64le_to_hex(self)
+        }
+
+        fn from_hex_le(value: &str) -> Option<Self> {
+            i64_from_hex_le(value)
+        }
+    }
+
+    impl Hex for u64 {
+        fn to_hex_be(self) -> String {
+            u64be_to_hex(self)
+        }
+
+        fn from_hex_be(value: &str) -> Option<Self> {
+            u64_from_hex_be(value)
+        }
+
+        fn to_hex_le(self) -> String {
+            u64le_to_hex(self)
+        }
+
+        fn from_hex_le(value: &str) -> Option<Self> {
+            u64_from_hex_le(value)
+        }
+    }
+
+    impl Hex for i128 {
+        fn to_hex_be(self) -> String {
+            i128be_to_hex(self)
+        }
+
+        fn from_hex_be(value: &str) -> Option<Self> {
+            i128_from_hex_be(value)
+        }
+
+        fn to_hex_le(self) -> String {
+            i128le_to_hex(self)
+        }
+
+        fn from_hex_le(value: &str) -> Option<Self> {
+            i128_from_hex_le(value)
+        }
+    }
+
+    impl Hex for u128 {
+        fn to_hex_be(self) -> String {
+            u128be_to_hex(self)
+        }
+
+        fn from_hex_be(value: &str) -> Option<Self> {
+            u128_from_hex_be(value)
+        }
+
+        fn to_hex_le(self) -> String {
+            u128le_to_hex(self)
+        }
+
+        fn from_hex_le(value: &str) -> Option<Self> {
+            u128_from_hex_le(value)
+        }
+    }
+
+
     #[cfg(test)]
     mod tests {
         use super::*;
@@ -1253,6 +1405,126 @@ pub mod hex {
                 u128le_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128),
                 "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4F"
             );
+        }
+
+        #[test]
+        fn test_i16() {
+            let x = 0x1F2i16;
+            let s = x.to_hex_be();
+            let y: Option<i16> = i16::from_hex_be(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+
+            let x = 0x1F2i16;
+            let s = x.to_hex_le();
+            let y: Option<i16> = i16::from_hex_le(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+        }
+
+        #[test]
+        fn test_u16() {
+            let x = 0x1F2u16;
+            let s = x.to_hex_be();
+            let y: Option<u16> = u16::from_hex_be(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+
+            let x = 0x1F2u16;
+            let s = x.to_hex_le();
+            let y: Option<u16> = u16::from_hex_le(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+        }
+
+        #[test]
+        fn test_i32() {
+            let x = 0x1F2i32;
+            let s = x.to_hex_be();
+            let y: Option<i32> = i32::from_hex_be(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+
+            let x = 0x1F2i32;
+            let s = x.to_hex_le();
+            let y: Option<i32> = i32::from_hex_le(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+        }
+
+        #[test]
+        fn test_u32() {
+            let x = 0x1F2u32;
+            let s = x.to_hex_be();
+            let y: Option<u32> = u32::from_hex_be(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+
+            let x = 0x1F2u32;
+            let s = x.to_hex_le();
+            let y: Option<u32> = u32::from_hex_le(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+        }
+
+        #[test]
+        fn test_i64() {
+            let x = 0x1F2i64;
+            let s = x.to_hex_be();
+            let y: Option<i64> = i64::from_hex_be(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+
+            let x = 0x1F2i64;
+            let s = x.to_hex_le();
+            let y: Option<i64> = i64::from_hex_le(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+        }
+
+        #[test]
+        fn test_u64() {
+            let x = 0x1F2u64;
+            let s = x.to_hex_be();
+            let y: Option<u64> = u64::from_hex_be(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+
+            let x = 0x1F2u64;
+            let s = x.to_hex_le();
+            let y: Option<u64> = u64::from_hex_le(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+        }
+
+        #[test]
+        fn test_i128() {
+            let x = 0x1F2i128;
+            let s = x.to_hex_be();
+            let y: Option<i128> = i128::from_hex_be(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+
+            let x = 0x1F2i128;
+            let s = x.to_hex_le();
+            let y: Option<i128> = i128::from_hex_le(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+        }
+
+        #[test]
+        fn test_u128() {
+            let x = 0x1F2u128;
+            let s = x.to_hex_be();
+            let y: Option<u128> = u128::from_hex_be(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+
+            let x = 0x1F2u128;
+            let s = x.to_hex_le();
+            let y: Option<u128> = u128::from_hex_le(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
         }
     }
 }
