@@ -111,7 +111,7 @@ pub mod hex {
             let mut r: u8;
             if let Some(x) = hex_char_to_u8(&hex2.chars().nth(0).unwrap()) {
                 r = x << 4;
-                if let Some(y) = hex_char_to_u8(&hex2.chars().nth(1).unwrap()) {
+                if let Some(y) = hex_char_to_u8(&hex2.chars().nth(1).unwrap_or('X')) {
                     r += y;
                     Some(r)
                 } else {
@@ -212,6 +212,40 @@ pub mod hex {
     }
 
     /// ```
+    /// // converts up to first 4 chars of big endian hex to i16
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i16_from_hex_be("4FFF"), Some(0x4FFF));
+    /// assert_eq!(i16_from_hex_be("4FF"), Some(0x4FF));
+    /// ```
+    #[inline]
+    pub fn i16_from_hex_be(value: &str) -> Option<i16> {
+        let mut r: i16 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(4) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as i16,
+                    1..=3 => {
+                        r = r << 4;
+                        r += i as i16;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(r)
+        } else {
+            None
+        }
+    }
+
+    /// ```
     /// // i16 to little endian hex
     ///
     /// use cj_common::prelude::*;
@@ -226,6 +260,40 @@ pub mod hex {
             .map(|f| HEX_TABLE[*f as usize])
             .collect::<String>();
         r
+    }
+
+    /// ```
+    /// // converts up to first 4 chars of little endian hex to i16
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i16_from_hex_le("FF4F"), Some(0x4FFF));
+    /// assert_eq!(i16_from_hex_le("F4F"), Some(0x4F0F));
+    /// ```
+    #[inline]
+    pub fn i16_from_hex_le(value: &str) -> Option<i16> {
+        let mut r: i16 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(4) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as i16,
+                    1..=3 => {
+                        r = r << 4;
+                        r += i as i16;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(i16::from_le_bytes(r.to_be_bytes()))
+        } else {
+            None
+        }
     }
 
     ///
@@ -259,6 +327,40 @@ pub mod hex {
     }
 
     /// ```
+    /// // converts up to first 4 chars of big endian hex to u16
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u16_from_hex_be("4FFF"), Some(0x4FFF));
+    /// assert_eq!(u16_from_hex_be("4FF"), Some(0x4FF));
+    /// ```
+    #[inline]
+    pub fn u16_from_hex_be(value: &str) -> Option<u16> {
+        let mut r: u16 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(4) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as u16,
+                    1..=3 => {
+                        r = r << 4;
+                        r += i as u16;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(r)
+        } else {
+            None
+        }
+    }
+
+    /// ```
     /// // u16 to little endian hex
     ///
     /// use cj_common::prelude::*;
@@ -273,6 +375,40 @@ pub mod hex {
             .map(|f| HEX_TABLE[*f as usize])
             .collect::<String>();
         r
+    }
+
+    /// ```
+    /// // converts up to first 4 chars of little endian hex to u16
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u16_from_hex_le("FF4F"), Some(0x4FFF));
+    /// assert_eq!(u16_from_hex_le("F4F"), Some(0x4F0F));
+    /// ```
+    #[inline]
+    pub fn u16_from_hex_le(value: &str) -> Option<u16> {
+        let mut r: u16 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(4) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as u16,
+                    1..=3 => {
+                        r = r << 4;
+                        r += i as u16;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(u16::from_le_bytes(r.to_be_bytes()))
+        } else {
+            None
+        }
     }
 
     ///
@@ -306,6 +442,40 @@ pub mod hex {
     }
 
     /// ```
+    /// // converts up to first 8 chars of big endian hex to i32
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i32_from_hex_be("4FFFFFFF"), Some(0x4FFFFFFF));
+    /// assert_eq!(i32_from_hex_be("4FF"), Some(0x4FF));
+    /// ```
+    #[inline]
+    pub fn i32_from_hex_be(value: &str) -> Option<i32> {
+        let mut r: i32 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(8) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as i32,
+                    1..=7 => {
+                        r = r << 4;
+                        r += i as i32;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(r)
+        } else {
+            None
+        }
+    }
+
+    /// ```
     /// // i32 to little endian hex
     ///
     /// use cj_common::prelude::*;
@@ -320,6 +490,40 @@ pub mod hex {
             .map(|f| HEX_TABLE[*f as usize])
             .collect::<String>();
         r
+    }
+
+    /// ```
+    /// // converts up to first 8 chars of little endian hex to i32
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i32_from_hex_le("FFFFFF4F"), Some(0x4FFFFFFF));
+    /// assert_eq!(i32_from_hex_le("F4F"), Some(0x4F0F0000));
+    /// ```
+    #[inline]
+    pub fn i32_from_hex_le(value: &str) -> Option<i32> {
+        let mut r: i32 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(8) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as i32,
+                    1..=7 => {
+                        r = r << 4;
+                        r += i as i32;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(i32::from_le_bytes(r.to_be_bytes()))
+        } else {
+            None
+        }
     }
 
     ///
@@ -353,6 +557,40 @@ pub mod hex {
     }
 
     /// ```
+    /// // converts up to first 8 chars of big endian hex to u32
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u32_from_hex_be("4FFFFFFF"), Some(0x4FFFFFFF));
+    /// assert_eq!(u32_from_hex_be("4FF"), Some(0x4FF));
+    /// ```
+    #[inline]
+    pub fn u32_from_hex_be(value: &str) -> Option<u32> {
+        let mut r: u32 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(8) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as u32,
+                    1..=7 => {
+                        r = r << 4;
+                        r += i as u32;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(r)
+        } else {
+            None
+        }
+    }
+
+    /// ```
     /// // u32 to little endian hex
     ///
     /// use cj_common::prelude::*;
@@ -367,6 +605,40 @@ pub mod hex {
             .map(|f| HEX_TABLE[*f as usize])
             .collect::<String>();
         r
+    }
+
+    /// ```
+    /// // converts up to first 8 chars of little endian hex to u32
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u32_from_hex_le("FFFFFF4F"), Some(0x4FFFFFFF));
+    /// assert_eq!(u32_from_hex_le("F4F"), Some(0x4F0F0000));
+    /// ```
+    #[inline]
+    pub fn u32_from_hex_le(value: &str) -> Option<u32> {
+        let mut r: u32 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(8) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as u32,
+                    1..=7 => {
+                        r = r << 4;
+                        r += i as u32;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(u32::from_le_bytes(r.to_be_bytes()))
+        } else {
+            None
+        }
     }
 
     ///
@@ -400,6 +672,40 @@ pub mod hex {
     }
 
     /// ```
+    /// // converts up to first 16 chars of big endian hex to i64
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i64_from_hex_be("4FFFFFFFFFFFFFFF"), Some(0x4FFFFFFFFFFFFFFF));
+    /// assert_eq!(i64_from_hex_be("4FF"), Some(0x00000000000004FF));
+    /// ```
+    #[inline]
+    pub fn i64_from_hex_be(value: &str) -> Option<i64> {
+        let mut r: i64 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(16) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as i64,
+                    1..=15 => {
+                        r = r << 4;
+                        r += i as i64;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(r)
+        } else {
+            None
+        }
+    }
+
+    /// ```
     /// // i64 to little endian hex
     ///
     /// use cj_common::prelude::*;
@@ -414,6 +720,40 @@ pub mod hex {
             .map(|f| HEX_TABLE[*f as usize])
             .collect::<String>();
         r
+    }
+
+    /// ```
+    /// // converts up to first 16 chars of little endian hex to i64
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i64_from_hex_le("4FFFFFFFFFFFFF22"), Some(0x22FFFFFFFFFFFF4F));
+    /// assert_eq!(i64_from_hex_le("422"), Some(0x2204000000000000));
+    /// ```
+    #[inline]
+    pub fn i64_from_hex_le(value: &str) -> Option<i64> {
+        let mut r: i64 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(16) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as i64,
+                    1..=15 => {
+                        r = r << 4;
+                        r += i as i64;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(i64::from_le_bytes(r.to_be_bytes()))
+        } else {
+            None
+        }
     }
 
     ///
@@ -447,6 +787,40 @@ pub mod hex {
     }
 
     /// ```
+    /// // converts up to first 16 chars of big endian hex to u64
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u64_from_hex_be("4FFFFFFFFFFFFFFF"), Some(0x4FFFFFFFFFFFFFFF));
+    /// assert_eq!(u64_from_hex_be("4FF"), Some(0x00000000000004FF));
+    /// ```
+    #[inline]
+    pub fn u64_from_hex_be(value: &str) -> Option<u64> {
+        let mut r: u64 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(16) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as u64,
+                    1..=15 => {
+                        r = r << 4;
+                        r += i as u64;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(r)
+        } else {
+            None
+        }
+    }
+
+    /// ```
     /// // u64 to little endian hex
     ///
     /// use cj_common::prelude::*;
@@ -461,6 +835,40 @@ pub mod hex {
             .map(|f| HEX_TABLE[*f as usize])
             .collect::<String>();
         r
+    }
+
+    /// ```
+    /// // converts up to first 16 chars of little endian hex to u64
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i64_from_hex_le("4FFFFFFFFFFFFF22"), Some(0x22FFFFFFFFFFFF4F));
+    /// assert_eq!(i64_from_hex_le("422"), Some(0x2204000000000000));
+    /// ```
+    #[inline]
+    pub fn u64_from_hex_le(value: &str) -> Option<u64> {
+        let mut r: u64 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(16) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as u64,
+                    1..=15 => {
+                        r = r << 4;
+                        r += i as u64;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(u64::from_le_bytes(r.to_be_bytes()))
+        } else {
+            None
+        }
     }
 
     ///
@@ -494,6 +902,40 @@ pub mod hex {
     }
 
     /// ```
+    /// // converts up to first 32 chars of big endian hex to i128
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i128_from_hex_be("4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"), Some(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF));
+    /// assert_eq!(i128_from_hex_be("4FF"), Some(0x000000000000000000000000000004FF));
+    /// ```
+    #[inline]
+    pub fn i128_from_hex_be(value: &str) -> Option<i128> {
+        let mut r: i128 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(32) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as i128,
+                    1..=31 => {
+                        r = r << 4;
+                        r += i as i128;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(r)
+        } else {
+            None
+        }
+    }
+
+    /// ```
     /// // i128 to little endian hex
     ///
     /// use cj_common::prelude::*;
@@ -508,6 +950,40 @@ pub mod hex {
             .map(|f| HEX_TABLE[*f as usize])
             .collect::<String>();
         r
+    }
+
+    /// ```
+    /// // converts up to first 32 chars of little endian hex to i128
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(i128_from_hex_le("4FFFFFFFFFFFFFFFFFFFFFFFFFFFFF22"), Some(0x22FFFFFFFFFFFFFFFFFFFFFFFFFFFF4F));
+    /// assert_eq!(i128_from_hex_le("422"), Some(0x22040000000000000000000000000000));
+    /// ```
+    #[inline]
+    pub fn i128_from_hex_le(value: &str) -> Option<i128> {
+        let mut r: i128 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(32) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as i128,
+                    1..=31 => {
+                        r = r << 4;
+                        r += i as i128;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(i128::from_le_bytes(r.to_be_bytes()))
+        } else {
+            None
+        }
     }
 
     ///
@@ -541,6 +1017,40 @@ pub mod hex {
     }
 
     /// ```
+    /// // converts up to first 32 chars of big endian hex to u128
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u128_from_hex_be("4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"), Some(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF));
+    /// assert_eq!(u128_from_hex_be("4FF"), Some(0x000000000000000000000000000004FF));
+    /// ```
+    #[inline]
+    pub fn u128_from_hex_be(value: &str) -> Option<u128> {
+        let mut r: u128 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(32) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as u128,
+                    1..=31 => {
+                        r = r << 4;
+                        r += i as u128;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(r)
+        } else {
+            None
+        }
+    }
+
+    /// ```
     /// // u128 to little endian hex
     ///
     /// use cj_common::prelude::*;
@@ -555,6 +1065,40 @@ pub mod hex {
             .map(|f| HEX_TABLE[*f as usize])
             .collect::<String>();
         r
+    }
+
+    /// ```
+    /// // converts up to first 32 chars of little endian hex to u128
+    ///
+    /// use cj_common::prelude::*;
+    ///
+    /// assert_eq!(u128_from_hex_le("4FFFFFFFFFFFFFFFFFFFFFFFFFFFFF22"), Some(0x22FFFFFFFFFFFFFFFFFFFFFFFFFFFF4F));
+    /// assert_eq!(u128_from_hex_le("422"), Some(0x22040000000000000000000000000000));
+    /// ```
+    #[inline]
+    pub fn u128_from_hex_le(value: &str) -> Option<u128> {
+        let mut r: u128 = 0;
+        let mut p: usize = 0;
+        let mut found = false;
+        for c in value.chars().take(32) {
+            if let Some(i) = hex_char_to_u8(&c) {
+                found = true;
+                match p {
+                    0 => r = i as u128,
+                    1..=31 => {
+                        r = r << 4;
+                        r += i as u128;
+                    }
+                    _ => break,
+                }
+                p += 1;
+            }
+        }
+        if found {
+            Some(u128::from_le_bytes(r.to_be_bytes()))
+        } else {
+            None
+        }
     }
 
     ///
@@ -612,6 +1156,11 @@ pub mod hex {
         fn test_hex_str_to_u8_vec() {
             assert_eq!(hex_str_to_u8_vec("AABBCC"), Some(vec![0xAAu8, 0xBB, 0xCC]));
             assert_eq!(hex_str_to_u8_vec("NOPE"), None);
+        }
+
+        #[test]
+        fn test_i16be_to_hex3() {
+            assert_eq!(i16be_to_hex(0x4FFi16), "04FF");
         }
 
         #[test]
