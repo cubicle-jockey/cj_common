@@ -3,6 +3,14 @@ name = "cj_common"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "cj_common"
+path = "src/lib.rs"
+
+[[bin]] #only used for testing/stepping through the code
+name = "test"
+path = "src/main.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
