@@ -1116,9 +1116,13 @@ pub mod hex {
 
     pub trait Hex {
         fn to_hex_be(self) -> String;
-        fn from_hex_be(value: &str) -> Option<Self> where Self: Sized;
+        fn from_hex_be(value: &str) -> Option<Self>
+        where
+            Self: Sized;
         fn to_hex_le(self) -> String;
-        fn from_hex_le(value: &str) -> Option<Self> where Self: Sized;
+        fn from_hex_le(value: &str) -> Option<Self>
+        where
+            Self: Sized;
     }
 
     impl Hex for i16 {
@@ -1264,7 +1268,6 @@ pub mod hex {
             u128_from_hex_le(value)
         }
     }
-
 
     #[cfg(test)]
     mod tests {

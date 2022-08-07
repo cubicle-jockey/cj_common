@@ -227,7 +227,8 @@ fn perf_test_1() {
         s2.clear();
     }
     let elap = now.elapsed().as_millis();
-    println!("{iters} in {elap}ms. total bytes {ct}, total str bytes {total_str_bytes}"); // 122ms
+    println!("{iters} in {elap}ms. total bytes {ct}, total str bytes {total_str_bytes}");
+    // 122ms
 }
 
 fn perf_test_2() {
@@ -247,5 +248,6 @@ fn perf_test_2() {
         v.clear();
     }
     let elap = now.elapsed().as_millis();
-    println!("{iters} in {elap}ms. total bytes {ct}, total str bytes {total_str_bytes}"); // 96ms
+    println!("{iters} in {elap}ms. total bytes {ct}, total str bytes {total_str_bytes}");
+    // 96ms
 }
