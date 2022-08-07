@@ -23,19 +23,19 @@ pub mod b64 {
     impl CharToOrdResult {
         #[inline]
         pub fn is_ok(&self) -> bool {
-            *self < CharToOrdResult::Pad
+            *self < Pad
         }
         #[inline]
         pub fn is_padding(&self) -> bool {
-            *self == CharToOrdResult::Pad
+            *self == Pad
         }
         #[inline]
         pub fn is_whitespace(&self) -> bool {
-            *self == CharToOrdResult::WhiteSpace
+            *self == WhiteSpace
         }
         #[inline]
         pub fn is_invalid(&self) -> bool {
-            *self == CharToOrdResult::Invalid
+            *self == Invalid
         }
     }
 
@@ -106,104 +106,17 @@ pub mod b64 {
             '9' => &CharToOrdResult::Ok(61),
             '+' => &CharToOrdResult::Ok(62),
             '/' => &CharToOrdResult::Ok(63),
-            '=' => &CharToOrdResult::Pad,
+            '=' => &Pad,
             // chars to ignore
-            ' ' => &CharToOrdResult::WhiteSpace,
-            '\r' => &CharToOrdResult::WhiteSpace,
-            '\n' => &CharToOrdResult::WhiteSpace,
-            '\t' => &CharToOrdResult::WhiteSpace,
+            ' ' => &WhiteSpace,
+            '\r' => &WhiteSpace,
+            '\n' => &WhiteSpace,
+            '\t' => &WhiteSpace,
             // all else are failures
-            _ => &CharToOrdResult::Invalid,
+            _ => &Invalid,
         }
     }
 
-    // fn bytes_to_b64(bytes: &[u8]) -> String {
-    //     let mut s = String::with_capacity((bytes.len() as f64 * 1.25) as usize + 2);
-    //
-    //
-    //     let mut three_hit = false;
-    //     let mut x = 0i32;
-    //     let mut tmp = 0u32;
-    //     for b in bytes[..].iter() {
-    //         tmp += *b as u32;
-    //         tmp = tmp << 8;
-    //         x += 1;
-    //         if x == 3 {
-    //             tmp = tmp >> 2;
-    //             let b2 = &tmp.to_be_bytes()[0];
-    //             s.push(B64_TABLE[*b2 as usize]);
-    //             tmp = tmp << 8;
-    //             tmp = tmp >> 2;
-    //             let b2 = &tmp.to_be_bytes()[0];
-    //             s.push(B64_TABLE[*b2 as usize]);
-    //             tmp = tmp << 8;
-    //             tmp = tmp >> 2;
-    //             let b2 = &tmp.to_be_bytes()[0];
-    //             s.push(B64_TABLE[*b2 as usize]);
-    //
-    //             tmp = tmp << 2;
-    //
-    //             tmp = tmp >> 20;
-    //             tmp = tmp << 8;
-    //             x = 0;
-    //             three_hit = true;
-    //         }
-    //     }
-    //     // broken from here down vvvv
-    //     match x {
-    //         1 => {
-    //             // 0000 0000  0000 0000  0000 0000  0000 0000
-    //
-    //             //println!("one hit");
-    //             //println!("{:x?}", &tmp.to_be_bytes());
-    //             let b2 = &tmp.to_be_bytes()[1];
-    //             s.push(B64_TABLE[*b2 as usize]);
-    //             tmp = tmp << 16;
-    //             tmp = tmp >> 2;
-    //             //println!("{:x?}", &tmp.to_be_bytes());
-    //             let b2 = &tmp.to_be_bytes()[0];
-    //             s.push(B64_TABLE[*b2 as usize]);
-    //
-    //             tmp = tmp << 8;
-    //             tmp = tmp >> 2;
-    //             let b2 = &tmp.to_be_bytes()[0];
-    //             s.push(B64_TABLE[*b2 as usize]);
-    //
-    //             s.push_str("==");
-    //         }
-    //         2 => {
-    //             //println!("two hit");
-    //             //println!("{:x?}", &tmp.to_be_bytes());
-    //             let b2 = &tmp.to_be_bytes()[0];
-    //             s.push(B64_TABLE[*b2 as usize]);
-    //             tmp = tmp << 8;
-    //             tmp = tmp >> 2;
-    //             //println!("{:x?}", &tmp.to_be_bytes());
-    //             let b2 = &tmp.to_be_bytes()[0];
-    //             s.push(B64_TABLE[*b2 as usize]);
-    //
-    //             tmp = tmp << 8;
-    //             tmp = tmp >> 2;
-    //             let b2 = &tmp.to_be_bytes()[0];
-    //             s.push(B64_TABLE[*b2 as usize]);
-    //
-    //             tmp = tmp << 8;
-    //             tmp = tmp >> 2;
-    //             let b2 = &tmp.to_be_bytes()[0];
-    //             s.push(B64_TABLE[*b2 as usize]);
-    //
-    //             s.push_str("=");
-    //         }
-    //         _ => {
-    //             if three_hit {
-    //                 let b2 = &tmp.to_be_bytes()[2];
-    //                 s.push(B64_TABLE[*b2 as usize]);
-    //             }
-    //         }
-    //     }
-    //
-    //     s
-    // }
     enum BitSplit6Result {
         Ready,
         Resend,
@@ -217,7 +130,7 @@ pub mod b64 {
         // 1     XXXX1111 11112222 22223333 33330000
         // 2     XXXXXX11 11111122 22222233 33333300
         // 3     XXXXXXXX 11111111 22222222 33333333
-        match pass_of {
+        return match pass_of {
             0 => {
                 // take 6 from src
                 *b6 = src >> 2;
@@ -225,7 +138,7 @@ pub mod b64 {
                 *br = src << 6;
                 *pass_of += 1;
 
-                return BitSplit6Result::Ready;
+                BitSplit6Result::Ready
             }
             1 => {
                 // take two remaining
@@ -236,7 +149,7 @@ pub mod b64 {
                 *br = src << 4;
                 *pass_of += 1;
 
-                return BitSplit6Result::Ready;
+                BitSplit6Result::Ready
             }
             2 => {
                 // take four remaining
@@ -247,21 +160,21 @@ pub mod b64 {
                 *br = src << 2;
                 *pass_of += 1;
 
-                return BitSplit6Result::Ready;
+                BitSplit6Result::Ready
             }
             3 => {
                 // take 6 remaining
                 *b6 = *br >> 2;
                 *pass_of = 0;
 
-                return BitSplit6Result::Resend;
+                BitSplit6Result::Resend
             }
             _ => {
                 *pass_of = 0;
                 //println!("huh? not expected here");
-                return BitSplit6Result::Resend;
+                BitSplit6Result::Resend
             }
-        }
+        };
     }
 
     ///
@@ -423,19 +336,54 @@ pub mod b64 {
     }
 
     impl CjToBase64Iter for &[u8] {
+        /// Iterator for a slice of bytes that produces Base64 encoded chars
+        /// ```
+        /// # use cj_common::prelude::CjToBase64Iter;
+        /// let s = "Many hands make light work.".as_bytes();
+        /// let mut s2 = String::new();
+        /// for c in s.iter_base64() {
+        ///     s2.push(c);
+        /// }
+        /// assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+        /// ```
         fn iter_base64(&self) -> ToBase64Iter {
             ToBase64Iter::new(self[..].iter())
         }
     }
 
+    impl CjToBase64Iter for &str {
+        /// Iterator for str that produces Base64 encoded chars
+        /// ```
+        /// # use cj_common::prelude::CjToBase64Iter;
+        /// let mut s2 = String::new();
+        /// for c in "Many hands make light work.".iter_base64() {
+        ///     s2.push(c);
+        /// }
+        /// assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+        /// ```
+        fn iter_base64(&self) -> ToBase64Iter {
+            ToBase64Iter::new(self.as_bytes()[..].iter())
+        }
+    }
+
     impl CjToBase64Iter for Vec<u8> {
+        /// Iterator for a Vec<u8> that produces Base64 encoded chars
+        /// ```
+        /// # use cj_common::prelude::CjToBase64Iter;
+        /// let s = Vec::<u8>::from("Many hands make light work.");
+        /// let mut s2 = String::new();
+        /// for c in s.iter_base64() {
+        ///     s2.push(c);
+        /// }
+        /// assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+        /// ```
         fn iter_base64(&self) -> ToBase64Iter {
             ToBase64Iter::new(self[..].iter())
         }
     }
 
     ///
-    /// Iterator for a Base64 encoded str that returns byte
+    /// Iterator for a Base64 encoded str that returns decoded byte
     ///
     /// ```
     ///  # use cj_common::prelude::CjFromBase64Iter;
@@ -468,6 +416,16 @@ pub mod b64 {
                 inner: i,
             }
         }
+
+        // fn new_adapter(i: Chars) -> Self {
+        //     Self {
+        //         buf_left: 0,
+        //         buf_ct: 0,
+        //         had_pad: false,
+        //         total_added: 0,
+        //         inner: i,
+        //     }
+        // }
 
         fn next_byte(&mut self) -> Option<u8> {
             let return_b: u8;
@@ -557,6 +515,18 @@ pub mod b64 {
     }
 
     impl CjFromBase64Iter for &str {
+        /// Iterator for decoding a Base64 endoced str to bytes
+        /// ```
+        /// # use cj_common::prelude::CjFromBase64Iter;
+        /// let mut v = Vec::new();
+        /// for b in "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu".iter_b64_to_byte() {
+        ///     v.push(b);
+        /// }
+        /// assert!(v.len() > 0);
+        /// let r = String::from_utf8_lossy(v.as_slice());
+        /// let s = "Many hands make light work.";
+        /// assert_eq!(r.to_string().as_str(), s);
+        /// ```
         fn iter_b64_to_byte(&self) -> FromBase64Iter {
             FromBase64Iter::new(self.chars())
         }
@@ -651,6 +621,52 @@ pub mod b64 {
         None
     }
 
+    pub trait CjToBase64 {
+        fn to_base64_string(&self) -> String;
+    }
+
+    impl CjToBase64 for &str {
+        /// converts str to Base64 encoded String
+        /// ```
+        /// # use cj_common::prelude::CjToBase64;
+        /// let s = "Many hands make light work...8675";
+        /// let s2 = s.to_base64_string();
+        /// println!("{}", s2);
+        /// assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsuLi44Njc1");
+        /// ```
+        fn to_base64_string(&self) -> String {
+            bytes_to_b64(self.as_bytes())
+        }
+    }
+
+    impl CjToBase64 for String {
+        /// converts String to Base64 encoded String
+        /// ```
+        /// # use cj_common::prelude::CjToBase64;
+        /// let s = String::from("Many hands make light work...8675");
+        /// let s2 = s.to_base64_string();
+        /// println!("{}", s2);
+        /// assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsuLi44Njc1");
+        /// ```
+        fn to_base64_string(&self) -> String {
+            bytes_to_b64(self.as_bytes())
+        }
+    }
+
+    impl CjToBase64 for Vec<u8> {
+        /// converts Vec<u8> to Base64 encoded String
+        /// ```
+        /// # use cj_common::prelude::CjToBase64;
+        /// let s = Vec::<u8>::from("Many hands make light work...8675");
+        /// let s2 = s.to_base64_string();
+        /// println!("{}", s2);
+        /// assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsuLi44Njc1");
+        /// ```
+        fn to_base64_string(&self) -> String {
+            bytes_to_b64(self.as_slice())
+        }
+    }
+
     #[cfg(test)]
     mod test {
         use crate::cj_binary::b64::b64::*;
@@ -687,6 +703,30 @@ pub mod b64 {
         }
 
         #[test]
+        fn test_5() {
+            let s = "Many hands make light work...8675";
+            let s2 = s.to_base64_string();
+            println!("{}", s2);
+            assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsuLi44Njc1");
+        }
+
+        #[test]
+        fn test_6() {
+            let s = String::from("Many hands make light work...8675");
+            let s2 = s.to_base64_string();
+            println!("{}", s2);
+            assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsuLi44Njc1");
+        }
+
+        #[test]
+        fn test_7() {
+            let s = Vec::<u8>::from("Many hands make light work...8675");
+            let s2 = s.to_base64_string();
+            println!("{}", s2);
+            assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsuLi44Njc1");
+        }
+
+        #[test]
         fn test_iter_1() {
             let s = "Many hands make light work.".as_bytes();
             let mut s2 = String::new();
@@ -703,6 +743,15 @@ pub mod b64 {
             let mut s2 = String::new();
 
             for c in s.iter_base64() {
+                s2.push(c);
+            }
+            assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+        }
+
+        #[test]
+        fn test_iter_3() {
+            let mut s2 = String::new();
+            for c in "Many hands make light work.".iter_base64() {
                 s2.push(c);
             }
             assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
