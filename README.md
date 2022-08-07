@@ -1,6 +1,7 @@
 # cj_common
 
-Collection of common functions used for other projects
+Collection of common functions used for other projects. A lot more functionality will be added as more projects are spun
+up.
 
 cj_binary
 ---
