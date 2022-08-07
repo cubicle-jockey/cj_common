@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use cj_common::prelude::*;
 
 // main.rs is only meant to help with testing/stepping through the code.
@@ -14,6 +16,9 @@ fn main() {
     b64_test_iter2();
     b64_test_iter4();
     b64_test_iter5();
+
+    perf_test_1();
+    perf_test_2();
 }
 
 fn b64_test5() {
@@ -204,4 +209,43 @@ fn b64_test_iter5() {
         s2.push(c);
     }
     println!("{}", s2);
+}
+
+fn perf_test_1() {
+    let s = "Many hands make light work...8675".as_bytes().to_vec();
+    let mut s2 = String::new();
+    let mut ct = 0usize;
+    let now = Instant::now();
+    let iters = 1_000_000;
+    let mut total_str_bytes = 0usize;
+    for _ in 1..=iters {
+        for c in s.iter_base64() {
+            s2.push(c);
+            ct += 1;
+        }
+        total_str_bytes += s2.len();
+        s2.clear();
+    }
+    let elap = now.elapsed().as_millis();
+    println!("{iters} in {elap}ms. total bytes {ct}, total str bytes {total_str_bytes}"); // 122ms
+}
+
+fn perf_test_2() {
+    let mut ct = 0usize;
+    let now = Instant::now();
+    let iters = 1_000_000;
+    let mut total_str_bytes = 0usize;
+
+    let mut v = Vec::new();
+
+    for _ in 1..=iters {
+        for b in "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu".iter_b64_to_byte() {
+            v.push(b);
+            ct += 1;
+        }
+        total_str_bytes += v.len();
+        v.clear();
+    }
+    let elap = now.elapsed().as_millis();
+    println!("{iters} in {elap}ms. total bytes {ct}, total str bytes {total_str_bytes}"); // 96ms
 }
