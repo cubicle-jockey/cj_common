@@ -1,4 +1,6 @@
 pub mod b64 {
+    use std::slice::Iter;
+
     // general b64 table (RFC 4648.4).
     static B64_TABLE: [char; 64] = [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
@@ -204,9 +206,118 @@ pub mod b64 {
         s
     }
 
+    ///
+    /// Iterator for a slice of bytes that returns Base64
+    ///
+    /// ```
+    ///  # use cj_common::prelude::CjBase64Iter;
+    ///  # use crate::cj_common::cj_binary::b64::b64::ToBase64Iter;
+    /// // slice of bytes example
+    /// let s = "Many hands make light work.".as_bytes();
+    /// let mut s2 = String::new();
+    /// for c in s.iter_base64() {
+    ///     s2.push(c);
+    /// }
+    /// assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+    ///
+    /// // vec of bytes example
+    /// let s = "Many hands make light work.".as_bytes().to_vec();
+    /// let mut s2 = String::new();
+    ///
+    /// for c in s.iter_base64() {
+    ///     s2.push(c);
+    /// }
+    /// assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+    /// ```
+    pub struct ToBase64Iter<'a> {
+        six_bits: u8,
+        rem_bits: u8,
+        pass_no: usize,
+        char_count: usize,
+        push_last: bool,
+        pend_char: Option<char>,
+        inner: Iter<'a, u8>,
+    }
+
+    impl<'a> ToBase64Iter<'a> {
+        pub fn new(i: Iter<'a, u8>) -> Self {
+            Self {
+                six_bits: 0,
+                rem_bits: 0,
+                pass_no: 0,
+                pend_char: None,
+                char_count: 0,
+                push_last: true,
+                inner: i,
+            }
+        }
+
+        fn next_char(&mut self) -> Option<char> {
+            if let Some(c) = self.pend_char {
+                self.pend_char = None;
+                return Some(c);
+            } else {
+                if let Some(b) = &self.inner.next() {
+                    let c: char;
+                    match bit_split_6(b, &mut self.six_bits, &mut self.rem_bits, &mut self.pass_no) {
+                        BitSplit6Result::Ready => {
+                            c = B64_TABLE[self.six_bits as usize];
+                            self.char_count += 1;
+                        }
+                        BitSplit6Result::Resend => {
+                            c = B64_TABLE[self.six_bits as usize];
+                            let _ = bit_split_6(b, &mut self.six_bits, &mut self.rem_bits, &mut self.pass_no);
+                            self.pend_char = Some(B64_TABLE[self.six_bits as usize]);
+                            self.char_count += 2;
+                        }
+                    }
+                    return Some(c);
+                } else if self.char_count > 0 {
+                    if self.push_last {
+                        let x = self.rem_bits.clone();
+                        self.rem_bits = 0;
+                        self.pass_no = 0;
+                        let _ = bit_split_6(&x, &mut self.six_bits, &mut self.rem_bits, &mut self.pass_no);
+                        self.char_count += 1;
+                        self.push_last = false;
+                        return Some(B64_TABLE[self.six_bits as usize]);
+                    } else if ((self.char_count * 6) % 8) != 0 {
+                        self.char_count += 1;
+                        return Some('=');
+                    }
+                }
+                None
+            }
+        }
+    }
+
+    impl Iterator for ToBase64Iter<'_> {
+        type Item = char;
+
+        fn next(&mut self) -> Option<Self::Item> {
+            self.next_char()
+        }
+    }
+
+    pub trait CjBase64Iter {
+        fn iter_base64(&self) -> ToBase64Iter;
+    }
+
+    impl CjBase64Iter for &[u8] {
+        fn iter_base64(&self) -> ToBase64Iter {
+            ToBase64Iter::new(self[..].iter())
+        }
+    }
+
+    impl CjBase64Iter for Vec<u8> {
+        fn iter_base64(&self) -> ToBase64Iter {
+            ToBase64Iter::new(self[..].iter())
+        }
+    }
+
     #[cfg(test)]
     mod test {
-        use crate::cj_binary::b64::b64::bytes_to_b64;
+        use crate::cj_binary::b64::b64::*;
 
         #[test]
         fn test_1() {
@@ -237,6 +348,28 @@ pub mod b64 {
             let s2 = bytes_to_b64(s);
             println!("{}", s2);
             assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsuLi44Njc1");
+        }
+
+        #[test]
+        fn test_iter_1() {
+            let s = "Many hands make light work.".as_bytes();
+            let mut s2 = String::new();
+
+            for c in s.iter_base64() {
+                s2.push(c);
+            }
+            assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+        }
+
+        #[test]
+        fn test_iter_2() {
+            let s = "Many hands make light work.".as_bytes().to_vec();
+            let mut s2 = String::new();
+
+            for c in s.iter_base64() {
+                s2.push(c);
+            }
+            assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
         }
     }
 }

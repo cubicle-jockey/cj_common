@@ -10,6 +10,10 @@ fn main() {
     b64_test10();
     b64_test11();
     b64_test12();
+    b64_test_iter();
+    b64_test_iter2();
+    b64_test_iter4();
+    b64_test_iter5();
 }
 
 fn b64_test5() {
@@ -157,5 +161,47 @@ fn b64_test12() {
 
     let s = "Many hands make light work...8675".as_bytes();
     let s2 = bytes_to_b64(s);
+    println!("{}", s2);
+}
+
+fn b64_test_iter() {
+    let s = "Many hands make light work...8675".as_bytes();
+    let mut s2 = String::new();
+    //let mut bs = s[..].iter();
+    let mut it = ToBase64Iter::new(s[..].iter());
+    while let Some(c) = it.next() {
+        s2.push(c);
+    }
+    println!("{}", s2);
+}
+
+fn b64_test_iter2() {
+    let s = "Many hands make light work...8675".as_bytes();
+    let mut s2 = String::new();
+
+    let mut it = s.iter_base64();
+    while let Some(c) = it.next() {
+        s2.push(c);
+    }
+    println!("{}", s2);
+}
+
+fn b64_test_iter4() {
+    let s = "Many hands make light work...8675".as_bytes();
+    let mut s2 = String::new();
+
+    for c in s.iter_base64() {
+        s2.push(c);
+    }
+    println!("{}", s2);
+}
+
+fn b64_test_iter5() {
+    let s = "Many hands make light work...8675".as_bytes().to_vec();
+    let mut s2 = String::new();
+
+    for c in s.iter_base64() {
+        s2.push(c);
+    }
     println!("{}", s2);
 }
