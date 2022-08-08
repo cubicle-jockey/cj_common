@@ -1,4 +1,6 @@
 pub mod hex {
+    use std::slice::Iter;
+
     static HEX_TABLE: [&'static str; 256] = [
         "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E",
         "0F", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D",
@@ -122,6 +124,91 @@ pub mod hex {
             }
         } else {
             None
+        }
+    }
+
+    pub struct ToHexIter<'a> {
+        inner: Iter<'a, u8>,
+    }
+
+    impl<'a> ToHexIter<'a> {
+        pub fn new(i: Iter<'a, u8>) -> Self {
+            Self {
+                inner: i
+            }
+        }
+
+        fn next_hex_string(&mut self) -> Option<String> {
+            if let Some(b) = self.inner.next() {
+                return Some(u8_to_hex(b));
+            }
+            None
+        }
+
+        fn next_hex_str(&mut self) -> Option<&'static str> {
+            if let Some(b) = self.inner.next() {
+                return Some(u8_to_hex_str(b));
+            }
+            None
+        }
+    }
+
+    impl Iterator for ToHexIter<'_> {
+        type Item = &'static str;
+
+        fn next(&mut self) -> Option<Self::Item> {
+            self.next_hex_str()
+        }
+    }
+
+    pub trait CjToHexIter {
+        fn iter_hex(&self) -> ToHexIter;
+    }
+
+    impl CjToHexIter for &[u8] {
+        /// Iterator for a slice of bytes that produces hex str
+        /// ```
+        /// # use cj_common::prelude::CjToHexIter;
+        /// let s = "Many hands make light work.".as_bytes();
+        /// let mut s2 = String::new();
+        /// for c in s.iter_hex() {
+        ///     s2.push_str(c);
+        /// }
+        /// assert_eq!(s2.as_str(), "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
+        /// ```
+        fn iter_hex(&self) -> ToHexIter {
+            ToHexIter::new(self[..].iter())
+        }
+    }
+
+    impl CjToHexIter for &str {
+        /// Iterator for str that produces hex str
+        /// ```
+        /// # use cj_common::prelude::CjToHexIter;
+        /// let mut s2 = String::new();
+        /// for c in "Many hands make light work.".iter_hex() {
+        ///     s2.push_str(c);
+        /// }
+        /// assert_eq!(s2.as_str(), "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
+        /// ```
+        fn iter_hex(&self) -> ToHexIter {
+            ToHexIter::new(self.as_bytes()[..].iter())
+        }
+    }
+
+    impl CjToHexIter for Vec<u8> {
+        /// Iterator for vec of bytes that produces hex str
+        /// ```
+        /// # use cj_common::prelude::CjToHexIter;
+        /// let s = Vec::<u8>::from("Many hands make light work.");
+        /// let mut s2 = String::new();
+        /// for c in s.iter_hex() {
+        ///     s2.push_str(c);
+        /// }
+        /// assert_eq!(s2.as_str(), "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
+        /// ```
+        fn iter_hex(&self) -> ToHexIter {
+            ToHexIter::new(self[..].iter())
         }
     }
 
@@ -1117,12 +1204,12 @@ pub mod hex {
     pub trait Hex {
         fn to_hex_be(self) -> String;
         fn from_hex_be(value: &str) -> Option<Self>
-        where
-            Self: Sized;
+            where
+                Self: Sized;
         fn to_hex_le(self) -> String;
         fn from_hex_le(value: &str) -> Option<Self>
-        where
-            Self: Sized;
+            where
+                Self: Sized;
     }
 
     impl Hex for i16 {
