@@ -19,6 +19,8 @@ fn main() {
 
     perf_test_1();
     perf_test_2();
+
+    hex_test1();
 }
 
 fn b64_test5() {
@@ -250,4 +252,15 @@ fn perf_test_2() {
     let elap = now.elapsed().as_millis();
     println!("{iters} in {elap}ms. total bytes {ct}, total str bytes {total_str_bytes}");
     // 96ms
+}
+
+fn hex_test1() {
+    /// # use cj_common::prelude::CjToHexIter;
+    let s = "Many hands make light work.".as_bytes();
+    let mut s2 = String::new();
+    for c in s.iter_hex() {
+        s2.push_str(c);
+    }
+    println!("{s2}");
+    assert_eq!(s2.as_str(), "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
 }
