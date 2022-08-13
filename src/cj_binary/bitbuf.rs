@@ -260,7 +260,7 @@ pub mod bitbuf {
     /// assert_eq!(i.next(), Some(false));
     /// assert_eq!(i.next(), Some(true));
     /// ```
-    /// ___
+    ///
     /// ```
     /// # use cj_common::cj_binary::bitbuf::bitbuf::BitFlagIter;
     /// let x = 0xABu8;

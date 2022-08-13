@@ -22,7 +22,9 @@ fn main() {
 
     hex_test1();
 
-    remove_me();
+    bit_iter_test1();
+
+    //remove_me();
 }
 
 fn remove_me() {
@@ -317,4 +319,20 @@ fn hex_test1() {
         s2.as_str(),
         "4D616E792068616E6473206D616B65206C6967687420776F726B2E"
     );
+}
+
+fn bit_iter_test1() {
+    let now = Instant::now();
+    let mut total = 0;
+    let x = 0b01000000u8;
+    for _ in 1..=1_000_000 {
+        for i in x.bit_iter() {
+            if i {
+                total += 1;
+            }
+        }
+    }
+
+    let elap = now.elapsed().as_millis();
+    println!("{total} found in {elap}ms");
 }
