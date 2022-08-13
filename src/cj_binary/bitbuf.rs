@@ -1,6 +1,4 @@
 pub mod bitbuf {
-    //use crate::cj_binary::bitbuf::Bitflag;
-
     static BMAP_U8: [u8; 8] = [1, 2, 4, 8, 16, 32, 64, 128];
     static BMAP_U16: [u16; 16] = [
         1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768,
@@ -208,6 +206,7 @@ pub mod bitbuf {
         170141183460469231731687303715884105728,
     ];
 
+    /// iterator for the BitFlag trait
     pub struct BitIter<'a, T> {
         byte_count: usize,
         index: usize,
@@ -248,6 +247,33 @@ pub mod bitbuf {
         }
     }
 
+    /// trait to implement bit_iter() for instantiating BitIter
+    ///
+    /// - implemented for u8, u16, u32, u64 and u128
+    /// ```
+    /// # use cj_common::cj_binary::bitbuf::bitbuf::BitFlagIter;
+    /// let mut x = 0xABu8;
+    ///
+    /// let mut i = x.bit_iter();
+    /// assert_eq!(i.next(), Some(true));
+    /// assert_eq!(i.next(), Some(true));
+    /// assert_eq!(i.next(), Some(false));
+    /// assert_eq!(i.next(), Some(true));
+    /// ```
+    /// ___
+    /// ```
+    /// # use cj_common::cj_binary::bitbuf::bitbuf::BitFlagIter;
+    /// let mut x = 0xABu8;
+    /// let mut v = Vec::new();
+    /// for i in x.bit_iter() {
+    ///    v.push(i);
+    /// }
+    ///
+    /// assert_eq!(
+    ///     v.as_slice(),
+    ///     &[true, true, false, true, false, true, false, true]
+    /// );
+    /// ```
     pub trait BitFlagIter<'a, T> {
         fn bit_iter(&'a self) -> BitIter<'a, T>;
     }
@@ -282,8 +308,26 @@ pub mod bitbuf {
         }
     }
 
+    /// trait for implementing get_bit and set_bit methods.  These methods represent bit as bool and are used to get/set bits at given positions of the implemented types.
+    ///
+    /// - implemented for u8, u16, u32, u64 and u128
     pub trait Bitflag {
+        /// returns true if the bit value at the specified position is set.
+        /// * false will be returned if the bit is not set, or if the bit_pos is out of range
+        /// ```
+        /// # use cj_common::cj_binary::bitbuf::bitbuf::Bitflag;
+        /// let x = 0b00000010u8;
+        /// assert_eq!(x.get_bit(1),true);
+        /// ```
         fn get_bit(&self, bit_pos: usize) -> bool;
+        /// sets the bit value at the specified position.
+        /// * the call is ignored if the bit_pos is out of range
+        /// ```
+        /// # use cj_common::cj_binary::bitbuf::bitbuf::Bitflag;
+        /// let mut x = 0b00000000u8;
+        /// x.set_bit(1,true);
+        /// assert_eq!(x,0b00000010u8);
+        /// ```
         fn set_bit(&mut self, bit_pos: usize, value: bool);
     }
 
