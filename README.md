@@ -35,7 +35,7 @@ fn main() {
 - hex - structs, methods and traits for working with hex encoding/decoding
 
 ```rust
-fn test_i64() {
+fn main() {
     let x = 0x1F2i64;
     let s = x.to_hex_be();
     let y: Option<i64> = i64::from_hex_be(s.as_str());
@@ -50,8 +50,37 @@ fn test_i64() {
 }
 ```
 
-*            
+- bitbuf - structs, methods and traits for getting/setting bits at given positions of the implemented types
 
+```rust
+fn main() {
+    let x = 0b00000010u8;
+    assert_eq!(x.get_bit(1), true);
+}
+```
+
+```rust
+fn main() {
+    let mut x = 0b00000000u8;
+    x.set_bit(1, true);
+    assert_eq!(x, 0b00000010u8);
+}
+```
+
+```rust
+fn main() {
+    let mut x = 0xABu8;
+    let mut v = Vec::new();
+    for i in x.bit_iter() {
+        v.push(i);
+    }
+
+    assert_eq!(
+        v.as_slice(),
+        &[true, true, false, true, false, true, false, true]
+    );
+}
+```
 
 
    
