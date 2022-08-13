@@ -21,6 +21,58 @@ fn main() {
     perf_test_2();
 
     hex_test1();
+
+    remove_me();
+}
+
+fn remove_me() {
+    let mut v8 = Vec::new();
+    let mut v16 = Vec::new();
+    let mut v32 = Vec::new();
+    let mut v64 = Vec::new();
+    let mut v128 = Vec::new();
+    let mut x = 1u128;
+    let mut inx = 1;
+    loop {
+        match inx {
+            1..=8 => {
+                v8.push(x as u8);
+                v16.push(x as u16);
+                v32.push(x as u32);
+                v64.push(x as u64);
+                v128.push(x as u128);
+            }
+            9..=16 => {
+                v16.push(x as u16);
+                v32.push(x as u32);
+                v64.push(x as u64);
+                v128.push(x as u128);
+            }
+            17..=32 => {
+                v32.push(x as u32);
+                v64.push(x as u64);
+                v128.push(x as u128);
+            }
+            33..=64 => {
+                v64.push(x as u64);
+                v128.push(x as u128);
+            }
+            65..=128 => {
+                v128.push(x as u128);
+            }
+            _ => {
+                break;
+            }
+        }
+        x *= 2;
+        inx += 1;
+    }
+
+    println!("{v8:?}");
+    println!("{v16:?}");
+    println!("{v32:?}");
+    println!("{v64:?}");
+    println!("{v128:?}");
 }
 
 fn b64_test5() {
@@ -255,12 +307,14 @@ fn perf_test_2() {
 }
 
 fn hex_test1() {
-    /// # use cj_common::prelude::CjToHexIter;
     let s = "Many hands make light work.".as_bytes();
     let mut s2 = String::new();
     for c in s.iter_hex() {
         s2.push_str(c);
     }
     println!("{s2}");
-    assert_eq!(s2.as_str(), "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
+    assert_eq!(
+        s2.as_str(),
+        "4D616E792068616E6473206D616B65206C6967687420776F726B2E"
+    );
 }

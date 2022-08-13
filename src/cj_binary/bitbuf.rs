@@ -252,7 +252,7 @@ pub mod bitbuf {
     /// - implemented for u8, u16, u32, u64 and u128
     /// ```
     /// # use cj_common::cj_binary::bitbuf::bitbuf::BitFlagIter;
-    /// let mut x = 0xABu8;
+    /// let x = 0xABu8;
     ///
     /// let mut i = x.bit_iter();
     /// assert_eq!(i.next(), Some(true));
@@ -263,7 +263,7 @@ pub mod bitbuf {
     /// ___
     /// ```
     /// # use cj_common::cj_binary::bitbuf::bitbuf::BitFlagIter;
-    /// let mut x = 0xABu8;
+    /// let x = 0xABu8;
     /// let mut v = Vec::new();
     /// for i in x.bit_iter() {
     ///    v.push(i);
@@ -622,7 +622,7 @@ pub mod bitbuf {
 
         #[test]
         fn test_u8_iter() {
-            let mut x = 0xABu8;
+            let x = 0xABu8;
 
             let mut i = x.bit_iter();
             assert_eq!(i.next(), Some(true));
@@ -633,7 +633,7 @@ pub mod bitbuf {
 
         #[test]
         fn test_u16_iter() {
-            let mut x = 0xABu16;
+            let x = 0xABu16;
 
             let mut i = x.bit_iter();
             assert_eq!(i.next(), Some(true));
@@ -644,7 +644,7 @@ pub mod bitbuf {
 
         #[test]
         fn test_u32_iter() {
-            let mut x = 0xABu32;
+            let x = 0xABu32;
 
             let mut i = x.bit_iter();
             assert_eq!(i.next(), Some(true));
@@ -655,7 +655,7 @@ pub mod bitbuf {
 
         #[test]
         fn test_u64_iter() {
-            let mut x = 0xABu64;
+            let x = 0xABu64;
 
             let mut i = x.bit_iter();
             assert_eq!(i.next(), Some(true));
@@ -666,7 +666,7 @@ pub mod bitbuf {
 
         #[test]
         fn test_u128_iter() {
-            let mut x = 0xABu128;
+            let x = 0xABu128;
 
             let mut i = x.bit_iter();
             assert_eq!(i.next(), Some(true));
@@ -677,7 +677,7 @@ pub mod bitbuf {
 
         #[test]
         fn test_u8_iter2() {
-            let mut x = 0xABu8;
+            let x = 0xABu8;
             let mut v = Vec::new();
             for i in x.bit_iter() {
                 v.push(i);

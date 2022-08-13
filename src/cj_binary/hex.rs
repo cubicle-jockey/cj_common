@@ -133,17 +133,15 @@ pub mod hex {
 
     impl<'a> ToHexIter<'a> {
         pub fn new(i: Iter<'a, u8>) -> Self {
-            Self {
-                inner: i
-            }
+            Self { inner: i }
         }
 
-        fn next_hex_string(&mut self) -> Option<String> {
-            if let Some(b) = self.inner.next() {
-                return Some(u8_to_hex(b));
-            }
-            None
-        }
+        // fn next_hex_string(&mut self) -> Option<String> {
+        //     if let Some(b) = self.inner.next() {
+        //         return Some(u8_to_hex(b));
+        //     }
+        //     None
+        // }
 
         fn next_hex_str(&mut self) -> Option<&'static str> {
             if let Some(b) = self.inner.next() {
@@ -1204,12 +1202,12 @@ pub mod hex {
     pub trait Hex {
         fn to_hex_be(self) -> String;
         fn from_hex_be(value: &str) -> Option<Self>
-            where
-                Self: Sized;
+        where
+            Self: Sized;
         fn to_hex_le(self) -> String;
         fn from_hex_le(value: &str) -> Option<Self>
-            where
-                Self: Sized;
+        where
+            Self: Sized;
     }
 
     impl Hex for i16 {
