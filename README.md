@@ -20,7 +20,6 @@ fn main() {
 
 ```rust
 fn main() {
-    use cj_common::prelude::CjFromBase64Iter;
     let mut v = Vec::new();
     for b in "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu".iter_b64_to_byte() {
         v.push(b);
