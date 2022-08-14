@@ -50,6 +50,26 @@ fn main() {
 }
 ```
 
+```rust
+fn main() {
+    let mut s = String::new();
+    for c in "Many hands make light work.".iter_hex() {
+        s.push_str(c);
+    }
+    assert_eq!(
+        s.as_str(),
+        "4D616E792068616E6473206D616B65206C6967687420776F726B2E"
+    );
+
+    let mut v = Vec::new();
+    for b in s.as_str().iter_hex_to_byte() {
+        v.push(b);
+    }
+    let s2 = String::from_utf8_lossy(v.as_slice()).to_string();
+    assert_eq!(s2.as_str(), "Many hands make light work.");
+}
+```
+
 - bitbuf - structs, methods and traits for getting/setting bits at given positions of the implemented types
 
 ```rust
