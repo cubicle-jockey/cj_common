@@ -24,10 +24,10 @@ fn main() {
 
     bit_iter_test1();
 
-    //remove_me();
+    //_remove_me();
 }
 
-fn remove_me() {
+fn _remove_me() {
     let mut v8 = Vec::new();
     let mut v16 = Vec::new();
     let mut v32 = Vec::new();
