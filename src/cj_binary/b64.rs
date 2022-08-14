@@ -2,8 +2,6 @@ pub mod b64 {
     use std::slice::Iter;
     use std::str::Chars;
 
-    use crate::prelude::CharToOrdResult::{Invalid, Pad, WhiteSpace};
-
     // general b64 table (RFC 4648.4).
     static B64_TABLE: [char; 64] = [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
@@ -23,19 +21,19 @@ pub mod b64 {
     impl CharToOrdResult {
         #[inline]
         pub fn is_ok(&self) -> bool {
-            *self < Pad
+            *self < CharToOrdResult::Pad
         }
         #[inline]
         pub fn is_padding(&self) -> bool {
-            *self == Pad
+            *self == CharToOrdResult::Pad
         }
         #[inline]
         pub fn is_whitespace(&self) -> bool {
-            *self == WhiteSpace
+            *self == CharToOrdResult::WhiteSpace
         }
         #[inline]
         pub fn is_invalid(&self) -> bool {
-            *self == Invalid
+            *self == CharToOrdResult::Invalid
         }
     }
 
@@ -106,17 +104,18 @@ pub mod b64 {
             '9' => &CharToOrdResult::Ok(61),
             '+' => &CharToOrdResult::Ok(62),
             '/' => &CharToOrdResult::Ok(63),
-            '=' => &Pad,
+            '=' => &CharToOrdResult::Pad,
             // chars to ignore
-            ' ' => &WhiteSpace,
-            '\r' => &WhiteSpace,
-            '\n' => &WhiteSpace,
-            '\t' => &WhiteSpace,
+            ' ' => &CharToOrdResult::WhiteSpace,
+            '\r' => &CharToOrdResult::WhiteSpace,
+            '\n' => &CharToOrdResult::WhiteSpace,
+            '\t' => &CharToOrdResult::WhiteSpace,
             // all else are failures
-            _ => &Invalid,
+            _ => &CharToOrdResult::Invalid,
         }
     }
 
+    #[derive(Debug, PartialOrd, PartialEq, Ord, Eq)]
     enum BitSplit6Result {
         Ready,
         Resend,
@@ -272,7 +271,7 @@ pub mod b64 {
                 inner: i,
             }
         }
-
+        #[inline]
         fn next_char(&mut self) -> Option<char> {
             if let Some(c) = self.pend_char {
                 self.pend_char = None;
@@ -426,7 +425,7 @@ pub mod b64 {
         //         inner: i,
         //     }
         // }
-
+        #[inline]
         fn next_byte(&mut self) -> Option<u8> {
             let return_b: u8;
             while let Some(c) = &self.inner.next() {
@@ -480,13 +479,13 @@ pub mod b64 {
                             _ => unreachable!(),
                         }
                     }
-                    Pad => self.had_pad = true,
-                    WhiteSpace => {
+                    CharToOrdResult::Pad => self.had_pad = true,
+                    CharToOrdResult::WhiteSpace => {
                         if self.had_pad {
                             break;
                         }
                     }
-                    Invalid => {
+                    CharToOrdResult::Invalid => {
                         return None;
                     }
                 }
@@ -597,13 +596,13 @@ pub mod b64 {
                         _ => unreachable!(),
                     }
                 }
-                Pad => had_pad = true,
-                WhiteSpace => {
+                CharToOrdResult::Pad => had_pad = true,
+                CharToOrdResult::WhiteSpace => {
                     if had_pad {
                         break;
                     }
                 }
-                Invalid => {
+                CharToOrdResult::Invalid => {
                     //had_error = true;
                     break;
                 }

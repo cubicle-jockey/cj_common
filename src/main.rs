@@ -269,7 +269,7 @@ fn b64_test_iter5() {
 
 fn perf_test_1() {
     let s = "Many hands make light work...8675".as_bytes().to_vec();
-    let mut s2 = String::new();
+    let mut s2 = String::with_capacity(1024);
     let mut ct = 0usize;
     let now = Instant::now();
     let iters = 1_000_000;
@@ -289,12 +289,10 @@ fn perf_test_1() {
 
 fn perf_test_2() {
     let mut ct = 0usize;
-    let now = Instant::now();
     let iters = 1_000_000;
     let mut total_str_bytes = 0usize;
-
-    let mut v = Vec::new();
-
+    let mut v = Vec::with_capacity(1024);
+    let now = Instant::now();
     for _ in 1..=iters {
         for b in "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu".iter_b64_to_byte() {
             v.push(b);
