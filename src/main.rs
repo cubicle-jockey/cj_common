@@ -24,6 +24,9 @@ fn main() {
 
     bit_iter_test1();
 
+    hex_iter_test1();
+    hex_iter_test2();
+
     //_remove_me();
 }
 
@@ -333,4 +336,37 @@ fn bit_iter_test1() {
 
     let elap = now.elapsed().as_millis();
     println!("{total} found in {elap}ms");
+}
+
+fn hex_iter_test1() {
+    let mut s2 = String::with_capacity(1024);
+    let now = Instant::now();
+    let mut total_str_bytes = 0usize;
+    let iters = 1_000_000;
+    for _ in 1..=iters {
+        for c in "Many hands make light work.".iter_hex() {
+            s2.push_str(c);
+        }
+        total_str_bytes += s2.len();
+        s2.clear();
+    }
+    let elap = now.elapsed().as_millis();
+    println!("{iters} in {elap}ms. total str bytes {total_str_bytes}");
+}
+
+fn hex_iter_test2() {
+    let mut v = Vec::with_capacity(1024);
+    let now = Instant::now();
+    let mut total_str_bytes = 0usize;
+    let iters = 1_000_000;
+    for _ in 1..=iters {
+        for b in "4D616E792068616E6473206D616B65206C6967687420776F726B2E".iter_hex_to_byte() {
+            v.push(b);
+        }
+
+        total_str_bytes += v.len();
+        v.clear();
+    }
+    let elap = now.elapsed().as_millis();
+    println!("{iters} in {elap}ms. total str bytes {total_str_bytes}");
 }

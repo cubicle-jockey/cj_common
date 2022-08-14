@@ -1,5 +1,6 @@
 pub mod hex {
     use std::slice::Iter;
+    use std::str::Chars;
 
     static HEX_TABLE: [&'static str; 256] = [
         "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E",
@@ -124,6 +125,68 @@ pub mod hex {
             }
         } else {
             None
+        }
+    }
+
+    pub struct FromHexIter<'a> {
+        padded: bool,
+        inner: Chars<'a>,
+    }
+
+    impl<'a> FromHexIter<'a> {
+        pub fn new(padded: bool, i: Chars<'a>) -> Self {
+            Self { padded, inner: i }
+        }
+
+        fn next_byte(&mut self) -> Option<u8> {
+            if let Some(c) = &self.inner.next() {
+                let b1 = hex_char_to_u8(c);
+                if b1.is_some() {
+                    if self.padded {
+                        self.padded = false;
+                        return b1;
+                    }
+                    if let Some(c) = &self.inner.next() {
+                        let b2 = hex_char_to_u8(c);
+                        if let Some(b2) = b2 {
+                            let mut b1 = b1.unwrap();
+                            b1 = (b1 << 4) + b2;
+                            return Some(b1);
+                        }
+                    }
+                }
+                return b1;
+            }
+            None
+        }
+    }
+
+    impl Iterator for FromHexIter<'_> {
+        type Item = u8;
+
+        fn next(&mut self) -> Option<Self::Item> {
+            self.next_byte()
+        }
+    }
+
+    pub trait CjFromHexIter {
+        fn iter_hex_to_byte(&self) -> FromHexIter;
+    }
+
+    impl CjFromHexIter for &str {
+        /// Iterator for str that produces bytes from hex
+        /// ```
+        /// # use cj_common::prelude::CjFromHexIter;        
+        /// let mut v = Vec::new();
+        /// for b in "4D616E792068616E6473206D616B65206C6967687420776F726B2E".iter_hex_to_byte() {
+        ///     v.push(b);
+        /// }
+        /// let s = String::from_utf8_lossy(v.as_slice()).to_string();
+        /// assert_eq!(s.as_str(), "Many hands make light work.");
+        /// ```
+        fn iter_hex_to_byte(&self) -> FromHexIter {
+            let padded = self.chars().count() % 2 > 0; // this is extra overhead, but we need char count to know if the value is padded: 0ABC vs ABC.
+            FromHexIter::new(padded, self.chars())
         }
     }
 
@@ -1357,6 +1420,25 @@ pub mod hex {
     #[cfg(test)]
     mod tests {
         use super::*;
+
+        #[test]
+        fn test_iter_hex() {
+            let mut s = String::new();
+            for c in "Many hands make light work.".iter_hex() {
+                s.push_str(c);
+            }
+            assert_eq!(
+                s.as_str(),
+                "4D616E792068616E6473206D616B65206C6967687420776F726B2E"
+            );
+
+            let mut v = Vec::new();
+            for b in s.as_str().iter_hex_to_byte() {
+                v.push(b);
+            }
+            let s2 = String::from_utf8_lossy(v.as_slice()).to_string();
+            assert_eq!(s2.as_str(), "Many hands make light work.");
+        }
 
         #[test]
         fn test_u8_to_hex_str() {
