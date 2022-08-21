@@ -38,7 +38,7 @@ pub mod b64 {
     }
 
     #[inline]
-    pub fn b64_char_to_ord(c: &char) -> &'static CharToOrdResult {
+    pub const fn b64_char_to_ord(c: &char) -> &'static CharToOrdResult {
         match c {
             'A' => &CharToOrdResult::Ok(0),
             'B' => &CharToOrdResult::Ok(1),

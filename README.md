@@ -1,6 +1,6 @@
 # cj_common
 
-Collection of common functions used for other projects. Additional functionality will be added as more projects are spun
+Collection of common functions used for other projects. Additional functionality added as more projects are spun
 up.
 
 cj_binary
@@ -98,6 +98,25 @@ fn main() {
         v.as_slice(),
         &[true, true, false, true, false, true, false, true]
     );
+}
+```
+
+cj_helpers
+---
+
+- in_set - structs, methods and traits for checking if values are within a given range.
+
+```rust
+fn main() {
+    assert_eq!(9u8.in_set(5..12), true);
+    assert_eq!(9u8.in_set([0..6, 5..12].as_slice()), true);
+
+    assert_eq!('x'.in_set(['q'..'t', 's'..'z'].as_slice()), true);
+
+    const ALPHA_NUM: &[Range<char>] = ['a'..'z', 'A'..'Z', '0'..'9'].as_slice();
+    assert_eq!('x'.in_set(ALPHA_NUM), true);
+
+    assert_eq!('x'.in_set("abcxyz"), true);
 }
 ```
 

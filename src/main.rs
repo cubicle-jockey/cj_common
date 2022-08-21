@@ -27,6 +27,9 @@ fn main() {
     hex_iter_test1();
     hex_iter_test2();
 
+    //let x = ((0..5), (6..7), 8, 9);
+    //x.contains(3);
+
     //_remove_me();
 }
 
@@ -326,7 +329,7 @@ fn bit_iter_test1() {
     let now = Instant::now();
     let mut total = 0;
     let x = 0b01000000u8;
-    for _ in 1..=1_000_000 {
+    for _ in 1..=10_000_000 {
         for i in x.bit_iter() {
             if i {
                 total += 1;
