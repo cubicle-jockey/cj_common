@@ -108,15 +108,22 @@ cj_helpers
 
 ```rust
 fn main() {
-    assert_eq!(9u8.in_set(5..12), true);
+    assert_eq!(11u8.in_set(5..12), true);
+    assert_eq!(12u8.in_set(5..=12), true);
+
     assert_eq!(9u8.in_set([0..6, 5..12].as_slice()), true);
+    assert_eq!(12u8.in_set([0..=6, 5..=12].as_slice()), true);
 
     assert_eq!('x'.in_set(['q'..'t', 's'..'z'].as_slice()), true);
+    assert_eq!('z'.in_set(['q'..='t', 's'..='z'].as_slice()), true);
 
-    const ALPHA_NUM: &[Range<char>] = ['a'..'z', 'A'..'Z', '0'..'9'].as_slice();
+    const ALPHA_NUM: &[RangeInclusive<char>] = ['a'..='z', 'A'..='Z', '0'..='9'].as_slice();
     assert_eq!('x'.in_set(ALPHA_NUM), true);
 
     assert_eq!('x'.in_set("abcxyz"), true);
+
+    assert_eq!(9u8.in_set([0, 1, 9, 212].as_slice()), true);
+    assert_eq!('x'.in_set(['a', 's', 'x', 'z'].as_slice()), true);
 }
 ```
 
