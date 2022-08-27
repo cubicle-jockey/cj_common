@@ -27,6 +27,8 @@ fn main() {
     hex_iter_test1();
     hex_iter_test2();
 
+    in_set_test();
+
     //let x = ((0..5), (6..7), 8, 9);
     //x.contains(3);
 
@@ -41,6 +43,9 @@ fn _remove_me() {
     let mut v128 = Vec::new();
     let mut x = 1u128;
     let mut inx = 1;
+
+    //r.
+
     loop {
         match inx {
             1..=8 => {
@@ -372,4 +377,49 @@ fn hex_iter_test2() {
     }
     let elap = now.elapsed().as_millis();
     println!("{iters} in {elap}ms. total str bytes {total_str_bytes}");
+}
+
+fn in_set_test() {
+    assert_eq!('x'.in_range('a'..'z'), true);
+    assert_eq!('z'.in_range_inclusive('a'..='z'), true);
+    assert_eq!(1.in_range(1..3), true);
+    assert_eq!(
+        'z'.in_set([('a'..'r').into(), ('r'..='z').into()].as_slice()),
+        true
+    );
+
+    let list = "lmnop";
+    for c in list.chars() {
+        assert_eq!(c.in_range('k'..'q'), true);
+        assert_eq!(c.in_set([('k'..'q').into()].as_slice()), true);
+        assert_eq!(
+            c.in_set([('k'..='l').into(), ('m'..'n').into(), ('n'..='p').into()].as_slice()),
+            true
+        );
+        assert_eq!(c.in_range('w'..'z'), false);
+    }
+
+    let alpha_nums = [('a'..='z').into(), ('A'..='Z').into(), ('0'..='9').into()];
+    let list = "lmnop";
+    for c in list.chars() {
+        assert_eq!(c.in_set(alpha_nums.as_slice()), true);
+    }
+
+    let list = [1_000, 10_000, 100_000_000];
+    for n in list {
+        assert_eq!(n.in_range(1..200_000_000), true);
+        assert_eq!(n.in_set([(1..200_000_000).into()].as_slice()), true);
+        assert_eq!(
+            n.in_set(
+                [
+                    (1..=10).into(),
+                    (500..2_000).into(),
+                    (9_999..=100_000_000).into()
+                ]
+                .as_slice()
+            ),
+            true
+        );
+        assert_eq!(n.in_range(1_000_000_000..1_000_000_001), false);
+    }
 }

@@ -108,22 +108,57 @@ cj_helpers
 
 ```rust
 fn main() {
-    assert_eq!(11u8.in_set(5..12), true);
-    assert_eq!(12u8.in_set(5..=12), true);
+    assert_eq!('x'.in_range('a'..'z'), true);
+    assert_eq!('z'.in_range_inclusive('a'..='z'), true);
+    assert_eq!(1.in_range(1..3), true);
+    assert_eq!(
+        'z'.in_set([('a'..'r').into(), ('r'..='z').into()].as_slice()),
+        true
+    );
 
-    assert_eq!(9u8.in_set([0..6, 5..12].as_slice()), true);
-    assert_eq!(12u8.in_set([0..=6, 5..=12].as_slice()), true);
+    let list = "lmnop";
+    for c in list.chars() {
+        assert_eq!(c.in_range('k'..'q'), true);
+        assert_eq!(c.in_set([('k'..'q').into()].as_slice()), true);
+        assert_eq!(
+            c.in_set(
+                [
+                    ('k'..='l').into(),                // RangeInclusive
+                    ('m'..'n').into(),                 // Range
+                    ('n'..='p').into(),                // RangeInclusive
+                    ['a', 'b', 'c'].as_slice().into()  // Slice
+                ]
+                    .as_slice()
+            ),
+            true
+        );
+        assert_eq!(c.in_range('w'..'z'), false);
+    }
 
-    assert_eq!('x'.in_set(['q'..'t', 's'..'z'].as_slice()), true);
-    assert_eq!('z'.in_set(['q'..='t', 's'..='z'].as_slice()), true);
+    let alpha_nums = [('a'..='z').into(), ('A'..='Z').into(), ('0'..='9').into()];
+    let list = "lmnop";
+    for c in list.chars() {
+        assert_eq!(c.in_set(alpha_nums.as_slice()), true);
+    }
 
-    const ALPHA_NUM: &[RangeInclusive<char>] = ['a'..='z', 'A'..='Z', '0'..='9'].as_slice();
-    assert_eq!('x'.in_set(ALPHA_NUM), true);
-
-    assert_eq!('x'.in_set("abcxyz"), true);
-
-    assert_eq!(9u8.in_set([0, 1, 9, 212].as_slice()), true);
-    assert_eq!('x'.in_set(['a', 's', 'x', 'z'].as_slice()), true);
+    let list = [1_000, 10_000, 100_000_000];
+    for n in list {
+        assert_eq!(n.in_range(1..200_000_000), true);
+        assert_eq!(n.in_set([(1..200_000_000).into()].as_slice()), true);
+        assert_eq!(
+            n.in_set(
+                [
+                    (1..=10).into(),                 // RangeInclusive
+                    (500..2_000).into(),             // Range
+                    (9_999..=100_000_000).into(),    // RangeInclusive
+                    [30, 90, 700].as_slice().into()  // Slice
+                ]
+                    .as_slice()
+            ),
+            true
+        );
+        assert_eq!(n.in_range(1_000_000_000..1_000_000_001), false);
+    }
 }
 ```
 
