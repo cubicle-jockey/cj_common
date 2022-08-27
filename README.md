@@ -126,7 +126,8 @@ fn main() {
                     ('k'..='l').into(),                // RangeInclusive
                     ('m'..'n').into(),                 // Range
                     ('n'..='p').into(),                // RangeInclusive
-                    ['a', 'b', 'c'].as_slice().into()  // Slice
+                    ['a', 'b', 'c'].as_slice().into(), // Slice
+                    "test123".into(),                  // str
                 ]
                     .as_slice()
             ),

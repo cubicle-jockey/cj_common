@@ -24,6 +24,27 @@ pub mod in_set {
                 RangeType::Exact(s, e) => (s <= value) && (e >= value),
                 RangeType::Slice(s) => s.contains(value),
                 //RangeType::Array(s) => s.contains(value),
+                _ => false,
+            }
+        }
+    }
+
+    trait CjCharsOnly: CjChar + PartialOrd + PartialEq {}
+
+    impl<'a, T: CjCharsOnly> CjExactRng<T> for CjExactRange<'a, char> {
+        fn in_exact_range(&self, value: &T) -> bool {
+            match &self.inner {
+                RangeType::Exact(s, e) => (s <= value.as_char()) && (e >= value.as_char()),
+                RangeType::Slice(s) => s.contains(value.as_char()),
+                //RangeType::Array(s) => s.contains(value),
+                RangeType::Str(s) => {
+                    for c in s.chars() {
+                        if value.as_char() == &c {
+                            return true;
+                        }
+                    }
+                    false
+                }
             }
         }
     }
@@ -53,16 +74,25 @@ pub mod in_set {
         }
     }
 
+    impl<'a, T: CjChar> Into<CjExactRange<'a, T>> for &'a str {
+        fn into(self) -> CjExactRange<'a, T> {
+            CjExactRange {
+                inner: RangeType::Str(self),
+            }
+        }
+    }
+
     #[derive(Clone, PartialEq, Eq, Hash)]
     enum RangeType<'a, T> {
         Exact(T, T),
         Slice(&'a [T]),
         //Array(&'a [T;N]),
+        Str(&'a str),
     }
 
     /// CjExactRange is similar to RangeInclusive and is used by the in_set() method.
     /// in_set() requires CjExactRange in order to support a mixed slice of Range, RangeInclusive and Slice.
-    /// Note that Range<T>.into(), RangeInclusive<T>.into() and Slice<T>.into() have been implemented
+    /// Note that Range<T>.into(), RangeInclusive<T>.into(), Slice<T>.into() and &str.into() have been implemented
     /// for CjExactRange for easy conversion.
     /// ```
     /// # use cj_common::prelude::CjInSets;
@@ -72,6 +102,7 @@ pub mod in_set {
     ///             ('a'..'r').into(),               // Range
     ///             ('r'..='z').into(),              // RangeInclusive
     ///             ['a','b','c'].as_slice().into(), // Slice
+    ///             "test123".into(),                // str
     ///         ].as_slice()
     ///     ),
     ///     true
@@ -136,7 +167,7 @@ pub mod in_set {
     pub trait CjInSets<T: PartialEq + PartialOrd> {
         /// Returns true if a value is within a give slice of ranges.
         /// Note that this method requires ranges to be of type CjExactRange,
-        /// so Range<T>.into(), RangeInclusive<T>.into() and Slice<T>.into() have been implemented
+        /// so Range<T>.into(), RangeInclusive<T>.into(), Slice<T>.into() and &str.into() have been implemented
         /// for CjExactRange for easy conversion.
         /// ```
         /// # use cj_common::prelude::CjInSets;
@@ -146,6 +177,7 @@ pub mod in_set {
         ///             ('a'..'r').into(),  // Range
         ///             ('r'..='z').into(),  // RangeInclusive
         ///             ['a','b','c'].as_slice().into(), // Slice
+        ///             "test123".into(), // str
         ///         ].as_slice()
         ///     ),
         ///     true
@@ -157,6 +189,18 @@ pub mod in_set {
     impl<T: PartialEq + PartialOrd> CjInSets<T> for T {
         fn in_set(&self, value: &[CjExactRange<T>]) -> bool {
             value.in_exact_set(self)
+        }
+    }
+
+    pub trait CjChar {
+        /// returns a ref to itself. Used as a helper function to coerce char from T where T is a char
+        fn as_char(&self) -> &char;
+    }
+
+    impl CjChar for char {
+        #[inline]
+        fn as_char(&self) -> &char {
+            &self
         }
     }
 
@@ -257,7 +301,8 @@ pub mod in_set {
                             ('k'..='l').into(),                // RangeInclusive
                             ('m'..'n').into(),                 // Range
                             ('n'..='p').into(),                // RangeInclusive
-                            ['a', 'b', 'c'].as_slice().into()  // Slice
+                            ['a', 'b', 'c'].as_slice().into(), // Slice
+                            "test123".into(),                  // str
                         ]
                         .as_slice()
                     ),
