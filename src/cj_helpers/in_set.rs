@@ -7,23 +7,25 @@ pub mod in_set {
     }
 
     impl<T: PartialOrd + PartialEq> CjExactRng<T> for Range<T> {
+        #[inline]
         fn in_exact_range(&self, value: &T) -> bool {
             self.contains(value)
         }
     }
 
     impl<T: PartialOrd + PartialEq> CjExactRng<T> for RangeInclusive<T> {
+        #[inline]
         fn in_exact_range(&self, value: &T) -> bool {
             self.contains(value)
         }
     }
 
     impl<'a, T: PartialOrd + PartialEq> CjExactRng<T> for CjExactRange<'a, T> {
+        #[inline]
         fn in_exact_range(&self, value: &T) -> bool {
             match &self.inner {
                 RangeType::Exact(s, e) => (s <= value) && (e >= value),
                 RangeType::Slice(s) => s.contains(value),
-                //RangeType::Array(s) => s.contains(value),
                 _ => false,
             }
         }
@@ -32,11 +34,11 @@ pub mod in_set {
     trait CjCharsOnly: CjChar + PartialOrd + PartialEq {}
 
     impl<'a, T: CjCharsOnly> CjExactRng<T> for CjExactRange<'a, char> {
+        #[inline]
         fn in_exact_range(&self, value: &T) -> bool {
             match &self.inner {
                 RangeType::Exact(s, e) => (s <= value.as_char()) && (e >= value.as_char()),
                 RangeType::Slice(s) => s.contains(value.as_char()),
-                //RangeType::Array(s) => s.contains(value),
                 RangeType::Str(s) => {
                     for c in s.chars() {
                         if value.as_char() == &c {
@@ -50,6 +52,7 @@ pub mod in_set {
     }
 
     impl<'a, T> Into<CjExactRange<'a, T>> for Range<T> {
+        #[inline]
         fn into(self) -> CjExactRange<'a, T> {
             CjExactRange {
                 inner: RangeType::Exact(self.start, self.end),
@@ -58,6 +61,7 @@ pub mod in_set {
     }
 
     impl<'a, T> Into<CjExactRange<'a, T>> for RangeInclusive<T> {
+        #[inline]
         fn into(self) -> CjExactRange<'a, T> {
             let (s, e) = self.into_inner();
             CjExactRange {
@@ -67,6 +71,7 @@ pub mod in_set {
     }
 
     impl<'a, T> Into<CjExactRange<'a, T>> for &'a [T] {
+        #[inline]
         fn into(self) -> CjExactRange<'a, T> {
             CjExactRange {
                 inner: RangeType::Slice(self),
@@ -75,6 +80,7 @@ pub mod in_set {
     }
 
     impl<'a, T: CjChar> Into<CjExactRange<'a, T>> for &'a str {
+        #[inline]
         fn into(self) -> CjExactRange<'a, T> {
             CjExactRange {
                 inner: RangeType::Str(self),
@@ -86,7 +92,6 @@ pub mod in_set {
     enum RangeType<'a, T> {
         Exact(T, T),
         Slice(&'a [T]),
-        //Array(&'a [T;N]),
         Str(&'a str),
     }
 
@@ -118,12 +123,14 @@ pub mod in_set {
     }
 
     impl<'a, T: PartialEq + PartialOrd> CjInExactSet<T> for CjExactRange<'a, T> {
+        #[inline]
         fn in_exact_set(&self, value: &T) -> bool {
             self.in_exact_range(value)
         }
     }
 
     impl<'a, T: PartialEq + PartialOrd> CjInExactSet<T> for &[CjExactRange<'a, T>] {
+        #[inline]
         fn in_exact_set(&self, value: &T) -> bool {
             for v in self.iter() {
                 if v.in_exact_range(value) {
@@ -144,6 +151,7 @@ pub mod in_set {
     }
 
     impl<T: PartialEq + PartialOrd> CjInRange<T> for T {
+        #[inline]
         fn in_range(&self, value: Range<T>) -> bool {
             value.contains(self)
         }
@@ -159,6 +167,7 @@ pub mod in_set {
     }
 
     impl<T: PartialEq + PartialOrd> CjInRangeInclusive<T> for T {
+        #[inline]
         fn in_range_inclusive(&self, value: RangeInclusive<T>) -> bool {
             value.contains(self)
         }
@@ -187,6 +196,7 @@ pub mod in_set {
     }
 
     impl<T: PartialEq + PartialOrd> CjInSets<T> for T {
+        #[inline]
         fn in_set(&self, value: &[CjExactRange<T>]) -> bool {
             value.in_exact_set(self)
         }

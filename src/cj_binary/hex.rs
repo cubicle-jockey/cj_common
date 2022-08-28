@@ -1696,5 +1696,36 @@ pub mod hex {
             assert!(y.is_some());
             assert_eq!(x, y.unwrap());
         }
+
+        #[test]
+        fn test_hex_docs() {
+            let x = 0x1F2i64;
+            let s = x.to_hex_be();
+            let y: Option<i64> = i64::from_hex_be(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+
+            let x = 0x1F2i64;
+            let s = x.to_hex_le();
+            let y: Option<i64> = i64::from_hex_le(s.as_str());
+            assert!(y.is_some());
+            assert_eq!(x, y.unwrap());
+            //
+            let mut s = String::new();
+            for c in "Many hands make light work.".iter_hex() {
+                s.push_str(c);
+            }
+            assert_eq!(
+                s.as_str(),
+                "4D616E792068616E6473206D616B65206C6967687420776F726B2E"
+            );
+
+            let mut v = Vec::new();
+            for b in s.as_str().iter_hex_to_byte() {
+                v.push(b);
+            }
+            let s2 = String::from_utf8_lossy(v.as_slice()).to_string();
+            assert_eq!(s2.as_str(), "Many hands make light work.");
+        }
     }
 }

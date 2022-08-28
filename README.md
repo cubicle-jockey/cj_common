@@ -11,7 +11,7 @@ cj_binary
 ```rust
 fn main() {
     let mut s2 = String::new();
-    for c in "Many hands make light work.".iter_base64() {
+    for c in "Many hands make light work.".iter_to_b64() {
         s2.push(c);
     }
     assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");

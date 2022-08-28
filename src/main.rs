@@ -29,6 +29,9 @@ fn main() {
 
     in_set_test();
 
+    perf_in_set_test_1();
+    perf_in_set_test_2();
+
     //let x = ((0..5), (6..7), 8, 9);
     //x.contains(3);
 
@@ -251,7 +254,7 @@ fn b64_test_iter2() {
     let s = "Many hands make light work...8675".as_bytes();
     let mut s2 = String::new();
 
-    let mut it = s.iter_base64();
+    let mut it = s.iter_to_b64();
     while let Some(c) = it.next() {
         s2.push(c);
     }
@@ -262,7 +265,7 @@ fn b64_test_iter4() {
     let s = "Many hands make light work...8675".as_bytes();
     let mut s2 = String::new();
 
-    for c in s.iter_base64() {
+    for c in s.iter_to_b64() {
         s2.push(c);
     }
     println!("{}", s2);
@@ -272,7 +275,7 @@ fn b64_test_iter5() {
     let s = "Many hands make light work...8675".as_bytes().to_vec();
     let mut s2 = String::new();
 
-    for c in s.iter_base64() {
+    for c in s.iter_to_b64() {
         s2.push(c);
     }
     println!("{}", s2);
@@ -286,7 +289,7 @@ fn perf_test_1() {
     let iters = 1_000_000;
     let mut total_str_bytes = 0usize;
     for _ in 1..=iters {
-        for c in s.iter_base64() {
+        for c in s.iter_to_b64() {
             s2.push(c);
             ct += 1;
         }
@@ -422,4 +425,51 @@ fn in_set_test() {
         );
         assert_eq!(n.in_range(1_000_000_000..1_000_000_001), false);
     }
+}
+
+fn perf_in_set_test_1() {
+    let now = Instant::now();
+    let mut total = 0usize;
+    let list = [1_000, 10_000, 100_000_000];
+    let iters = 1_000_000_000;
+    for _ in 1..iters {
+        for n in list {
+            if n.in_set(
+                [
+                    (1..=10).into(),
+                    (500..2_000).into(),
+                    (9_999..=100_000_000).into(),
+                ]
+                .as_slice(),
+            ) {
+                total += 1;
+            }
+        }
+    }
+    let elap = now.elapsed().as_millis();
+    println!("{iters} in {elap}ms. total {total}");
+}
+
+fn perf_in_set_test_2() {
+    let now = Instant::now();
+    let mut total = 0usize;
+
+    let iters = 1_000_000;
+    for _ in 1..iters {
+        for n in "ThisIsaTest".chars() {
+            if n.in_set(
+                [
+                    ('a'..='g').into(),
+                    ('I'..'T').into(),
+                    ('T'..='P').into(),
+                    "is".into(),
+                ]
+                .as_slice(),
+            ) {
+                total += 1;
+            }
+        }
+    }
+    let elap = now.elapsed().as_millis();
+    println!("{iters} in {elap}ms. total {total}");
 }
