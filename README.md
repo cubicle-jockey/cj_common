@@ -160,6 +160,16 @@ fn main() {
         );
         assert_eq!(n.in_range(1_000_000_000..1_000_000_001), false);
     }
+
+    assert_eq!('9'.is_ascii_numeric(), true);
+    assert_eq!('T'.is_ascii_numeric(), false);
+
+    assert_eq!('9'.is_ascii_alpha(), false);
+    assert_eq!('T'.is_ascii_alpha(), true);
+
+    for c in "9T".chars() {
+        assert_eq!(c.is_ascii_alpha_numeric(), true);
+    }
 }
 ```
 

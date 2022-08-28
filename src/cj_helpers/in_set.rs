@@ -296,6 +296,29 @@ pub mod in_set {
         }
     }
 
+    pub trait CjIsAscii {
+        /// returns true if char is in ['a'..='z', 'A'..='Z']
+        fn is_ascii_alpha(&self) -> bool;
+        /// returns true if char is in ['0'..='9']
+        fn is_ascii_numeric(&self) -> bool;
+        /// returns true if char is in ['a'..='z', 'A'..='Z', '0'..='9']
+        fn is_ascii_alpha_numeric(&self) -> bool;
+    }
+
+    impl CjIsAscii for char {
+        fn is_ascii_alpha(&self) -> bool {
+            self.in_set([('a'..='z').into(), ('A'..='Z').into()].as_slice())
+        }
+
+        fn is_ascii_numeric(&self) -> bool {
+            self.in_range_inclusive('0'..='9')
+        }
+
+        fn is_ascii_alpha_numeric(&self) -> bool {
+            self.in_set([('a'..='z').into(), ('A'..='Z').into(), ('0'..='9').into()].as_slice())
+        }
+    }
+
     #[cfg(test)]
     pub mod test {
         use super::*;
@@ -426,6 +449,16 @@ pub mod in_set {
                     true
                 );
                 assert_eq!(n.in_range(1_000_000_000..1_000_000_001), false);
+            }
+
+            assert_eq!('9'.is_ascii_numeric(), true);
+            assert_eq!('T'.is_ascii_numeric(), false);
+
+            assert_eq!('9'.is_ascii_alpha(), false);
+            assert_eq!('T'.is_ascii_alpha(), true);
+
+            for c in "9T".chars() {
+                assert_eq!(c.is_ascii_alpha_numeric(), true);
             }
         }
     }
