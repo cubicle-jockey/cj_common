@@ -96,22 +96,63 @@ pub mod in_set {
     }
 
     /// CjExactRange is similar to RangeInclusive and is used by the in_set() method.
-    /// in_set() requires CjExactRange in order to support a mixed slice of Range, RangeInclusive and Slice.
+    /// in_set() requires CjExactRange in order to support a mixed slice of Range, RangeInclusive, Slice and str.
     /// Note that Range<T>.into(), RangeInclusive<T>.into(), Slice<T>.into() and &str.into() have been implemented
     /// for CjExactRange for easy conversion.
+    ///
+    /// is_set is auto implemented for all types it supports.
     /// ```
     /// # use cj_common::prelude::CjInSets;
     /// assert_eq!(
     ///    'z'.in_set(
     ///         [
-    ///             ('a'..'r').into(),               // Range
-    ///             ('r'..='z').into(),              // RangeInclusive
-    ///             ['a','b','c'].as_slice().into(), // Slice
-    ///             "test123".into(),                // str
+    ///             ('a'..'r').into(),               // Range into CjExactRange
+    ///             ('r'..='z').into(),              // RangeInclusive into CjExactRange
+    ///             ['a','b','c'].as_slice().into(), // Slice into CjExactRange
+    ///             "test123".into(),                // str into CjExactRange
     ///         ].as_slice()
     ///     ),
     ///     true
     /// );
+    /// ```
+    /// char example:
+    /// ```
+    ///  # use cj_common::prelude::CjInSets;
+    /// let list = "lmnop";
+    /// for c in list.chars() {
+    ///     assert_eq!(
+    ///        c.in_set(
+    ///             [
+    ///                 ('k'..='l').into(),                // RangeInclusive
+    ///                 ('m'..'n').into(),                 // Range
+    ///                 ('n'..='p').into(),                // RangeInclusive
+    ///                 ['a', 'b', 'c'].as_slice().into(), // Slice
+    ///                 "test123".into(),                  // str
+    ///             ]
+    ///             .as_slice()
+    ///         ),
+    ///         true
+    ///     );
+    /// }
+    /// ```
+    /// i32 example:
+    /// ```
+    ///  # use cj_common::prelude::CjInSets;
+    /// let list = [1_000, 10_000, 100_000_000];
+    /// for n in list {
+    ///     assert_eq!(
+    ///         n.in_set(
+    ///            [
+    ///                 (1..=10).into(),                 // RangeInclusive
+    ///                 (500..2_000).into(),             // Range
+    ///                 (9_999..=100_000_000).into(),    // RangeInclusive
+    ///                 [30, 90, 700].as_slice().into()  // Slice
+    ///             ]
+    ///             .as_slice()
+    ///         ),
+    ///         true
+    ///     );
+    /// }        
     /// ```
     #[derive(Clone, PartialEq, Eq, Hash)]
     pub struct CjExactRange<'a, T> {
@@ -178,19 +219,60 @@ pub mod in_set {
         /// Note that this method requires ranges to be of type CjExactRange,
         /// so Range<T>.into(), RangeInclusive<T>.into(), Slice<T>.into() and &str.into() have been implemented
         /// for CjExactRange for easy conversion.
+        ///
+        /// is_set is auto implemented for all types it supports.
         /// ```
         /// # use cj_common::prelude::CjInSets;
         /// assert_eq!(
         ///    'z'.in_set(
         ///         [
-        ///             ('a'..'r').into(),  // Range
-        ///             ('r'..='z').into(),  // RangeInclusive
+        ///             ('a'..'r').into(),               // Range
+        ///             ('r'..='z').into(),              // RangeInclusive
         ///             ['a','b','c'].as_slice().into(), // Slice
-        ///             "test123".into(), // str
+        ///             "test123".into(),                // str
         ///         ].as_slice()
         ///     ),
         ///     true
         /// );
+        /// ```
+        /// char example:
+        /// ```
+        ///  # use cj_common::prelude::CjInSets;
+        /// let list = "lmnop";
+        /// for c in list.chars() {
+        ///     assert_eq!(
+        ///        c.in_set(
+        ///             [
+        ///                 ('k'..='l').into(),                // RangeInclusive
+        ///                 ('m'..'n').into(),                 // Range
+        ///                 ('n'..='p').into(),                // RangeInclusive
+        ///                 ['a', 'b', 'c'].as_slice().into(), // Slice
+        ///                 "test123".into(),                  // str
+        ///             ]
+        ///             .as_slice()
+        ///         ),
+        ///         true
+        ///     );
+        /// }
+        /// ```
+        /// i32 example:
+        /// ```
+        ///  # use cj_common::prelude::CjInSets;
+        /// let list = [1_000, 10_000, 100_000_000];
+        /// for n in list {
+        ///     assert_eq!(
+        ///         n.in_set(
+        ///            [
+        ///                 (1..=10).into(),                 // RangeInclusive
+        ///                 (500..2_000).into(),             // Range
+        ///                 (9_999..=100_000_000).into(),    // RangeInclusive
+        ///                 [30, 90, 700].as_slice().into()  // Slice
+        ///             ]
+        ///             .as_slice()
+        ///         ),
+        ///         true
+        ///     );
+        /// }        
         /// ```
         fn in_set(&self, value: &[CjExactRange<T>]) -> bool;
     }
@@ -272,7 +354,7 @@ pub mod in_set {
                         [
                             (1..=10).into(),
                             (500..2_000).into(),
-                            (9_999..=100_000_000).into()
+                            (9_999..=100_000_000).into(),
                         ]
                         .as_slice()
                     ),
