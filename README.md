@@ -3,6 +3,13 @@
 Collection of common functions used for other projects. Additional functionality added as more projects are spun
 up.
 
+Current features relate to:
+
+    Base64 encoding/decoding
+    Hex encoding/decoding
+    Bit manipulation
+    In-set checking (values within a set of ranges)
+
 cj_binary
 ---
 
