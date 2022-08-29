@@ -104,7 +104,7 @@ fn main() {
 cj_helpers
 ---
 
-- in_set - structs, methods and traits for checking if values are within a given range.
+- in_set - structs, methods and traits for checking if values are within a given set of ranges.
 
 ```rust
 fn main() {
