@@ -323,7 +323,7 @@ fn perf_test_2() {
 fn hex_test1() {
     let s = "Many hands make light work.".as_bytes();
     let mut s2 = String::new();
-    for c in s.iter_hex() {
+    for c in s.iter_to_hex() {
         s2.push_str(c);
     }
     println!("{s2}");
@@ -355,7 +355,7 @@ fn hex_iter_test1() {
     let mut total_str_bytes = 0usize;
     let iters = 1_000_000;
     for _ in 1..=iters {
-        for c in "Many hands make light work.".iter_hex() {
+        for c in "Many hands make light work.".iter_to_hex() {
             s2.push_str(c);
         }
         total_str_bytes += s2.len();

@@ -52,7 +52,7 @@ fn main() {
 ```rust
 fn main() {
     let mut s = String::new();
-    for c in "Many hands make light work.".iter_hex() {
+    for c in "Many hands make light work.".iter_to_hex() {
         s.push_str(c);
     }
     assert_eq!(

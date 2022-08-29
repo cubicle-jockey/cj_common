@@ -223,7 +223,7 @@ pub mod hex {
     }
 
     pub trait CjToHexIter {
-        fn iter_hex(&self) -> ToHexIter;
+        fn iter_to_hex(&self) -> ToHexIter;
     }
 
     impl CjToHexIter for &[u8] {
@@ -232,12 +232,12 @@ pub mod hex {
         /// # use cj_common::prelude::CjToHexIter;
         /// let s = "Many hands make light work.".as_bytes();
         /// let mut s2 = String::new();
-        /// for c in s.iter_hex() {
+        /// for c in s.iter_to_hex() {
         ///     s2.push_str(c);
         /// }
         /// assert_eq!(s2.as_str(), "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
         /// ```
-        fn iter_hex(&self) -> ToHexIter {
+        fn iter_to_hex(&self) -> ToHexIter {
             ToHexIter::new(self[..].iter())
         }
     }
@@ -247,12 +247,12 @@ pub mod hex {
         /// ```
         /// # use cj_common::prelude::CjToHexIter;
         /// let mut s2 = String::new();
-        /// for c in "Many hands make light work.".iter_hex() {
+        /// for c in "Many hands make light work.".iter_to_hex() {
         ///     s2.push_str(c);
         /// }
         /// assert_eq!(s2.as_str(), "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
         /// ```
-        fn iter_hex(&self) -> ToHexIter {
+        fn iter_to_hex(&self) -> ToHexIter {
             ToHexIter::new(self.as_bytes()[..].iter())
         }
     }
@@ -263,12 +263,12 @@ pub mod hex {
         /// # use cj_common::prelude::CjToHexIter;
         /// let s = Vec::<u8>::from("Many hands make light work.");
         /// let mut s2 = String::new();
-        /// for c in s.iter_hex() {
+        /// for c in s.iter_to_hex() {
         ///     s2.push_str(c);
         /// }
         /// assert_eq!(s2.as_str(), "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
         /// ```
-        fn iter_hex(&self) -> ToHexIter {
+        fn iter_to_hex(&self) -> ToHexIter {
             ToHexIter::new(self[..].iter())
         }
     }
@@ -1424,7 +1424,7 @@ pub mod hex {
         #[test]
         fn test_iter_hex() {
             let mut s = String::new();
-            for c in "Many hands make light work.".iter_hex() {
+            for c in "Many hands make light work.".iter_to_hex() {
                 s.push_str(c);
             }
             assert_eq!(
@@ -1712,7 +1712,7 @@ pub mod hex {
             assert_eq!(x, y.unwrap());
             //
             let mut s = String::new();
-            for c in "Many hands make light work.".iter_hex() {
+            for c in "Many hands make light work.".iter_to_hex() {
                 s.push_str(c);
             }
             assert_eq!(
