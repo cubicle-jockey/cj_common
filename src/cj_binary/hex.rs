@@ -23,10 +23,9 @@ pub mod hex {
         "FF",
     ];
 
-    /// ```
-    /// // converts u8 to hex &str
-    ///
-    /// use cj_common::prelude::*;
+    /// converts u8 to hex &str
+    /// ```    
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u8_to_hex_str(&0xD1), "D1");
     /// ```
@@ -35,10 +34,9 @@ pub mod hex {
         HEX_TABLE[*value as usize]
     }
 
+    /// converts u8 to hex String
     /// ```
-    /// // converts u8 to hex String
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u8_to_hex(&0xD1), "D1".to_string());
     /// ```
@@ -47,10 +45,9 @@ pub mod hex {
         HEX_TABLE[*value as usize].to_string()
     }
 
+    /// converts a u8 slice to hex String
     /// ```
-    /// // converts a u8 slice to hex String
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// let array = [0xA0,0xA1,0xA2];
     /// assert_eq!(u8_array_to_hex(&array),"A0A1A2");
@@ -65,10 +62,9 @@ pub mod hex {
         rslt
     }
 
+    /// converts a hex char to u8
     /// ```
-    /// // converts a hex char to u8
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(hex_char_to_u8(&'A'),Some(0x0A));
     /// assert_eq!(hex_char_to_u8(&'G'),None);
@@ -100,13 +96,12 @@ pub mod hex {
         }
     }
 
+    /// converts a hex str to u8
     /// ```
-    /// // converts a hex str to u8
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(hex_str_to_u8("AB"),Some(0xAB));
-    ///  assert_eq!(hex_str_to_u8("G"),None);
+    /// assert_eq!(hex_str_to_u8("G"),None);
     /// ```
     #[inline]
     pub fn hex_str_to_u8(hex2: &str) -> Option<u8> {
@@ -275,10 +270,9 @@ pub mod hex {
 
     pub type HexArray = [char; 2];
 
+    /// converts a two char hex array to u8
     /// ```
-    /// // converts a two char hex array to u8
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(hex_chars_to_u8(&['A','B']),Some(0xAB));
     /// assert_eq!(hex_chars_to_u8(&['N','O']),None);
@@ -299,10 +293,9 @@ pub mod hex {
         }
     }
 
+    /// converts a str of hex to vec of u8
     /// ```
-    /// // converts a str of hex to vec of u8
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(hex_str_to_u8_vec("AABBCC"),Some(vec![0xAAu8,0xBB,0xCC]));
     /// assert_eq!(hex_str_to_u8_vec("NOPE"),None);
@@ -342,10 +335,9 @@ pub mod hex {
         Some(v)
     }
 
+    /// i16 to big endian hex
     /// ```
-    /// // i16 to big endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i16be_to_hex(0x4FFFi16), "4FFF");
     /// ```
@@ -359,10 +351,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 4 chars of big endian hex to i16
     /// ```
-    /// // converts up to first 4 chars of big endian hex to i16
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i16_from_hex_be("4FFF"), Some(0x4FFF));
     /// assert_eq!(i16_from_hex_be("4FF"), Some(0x4FF));
@@ -393,10 +384,9 @@ pub mod hex {
         }
     }
 
+    /// i16 to little endian hex
     /// ```
-    /// // i16 to little endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i16le_to_hex(0x4FFFi16), "FF4F");
     /// ```
@@ -410,10 +400,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 4 chars of little endian hex to i16
     /// ```
-    /// // converts up to first 4 chars of little endian hex to i16
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i16_from_hex_le("FF4F"), Some(0x4FFF));
     /// assert_eq!(i16_from_hex_le("F4F"), Some(0x4F0F));
@@ -457,10 +446,9 @@ pub mod hex {
         r
     }
 
+    /// u16 to big endian hex
     /// ```
-    /// // u16 to big endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u16be_to_hex(0x4FFFu16), "4FFF");
     /// ```
@@ -474,10 +462,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 4 chars of big endian hex to u16
     /// ```
-    /// // converts up to first 4 chars of big endian hex to u16
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u16_from_hex_be("4FFF"), Some(0x4FFF));
     /// assert_eq!(u16_from_hex_be("4FF"), Some(0x4FF));
@@ -508,10 +495,9 @@ pub mod hex {
         }
     }
 
+    /// u16 to little endian hex
     /// ```
-    /// // u16 to little endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u16le_to_hex(0x4FFFu16), "FF4F");
     /// ```
@@ -525,10 +511,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 4 chars of little endian hex to u16
     /// ```
-    /// // converts up to first 4 chars of little endian hex to u16
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u16_from_hex_le("FF4F"), Some(0x4FFF));
     /// assert_eq!(u16_from_hex_le("F4F"), Some(0x4F0F));
@@ -572,10 +557,9 @@ pub mod hex {
         r
     }
 
+    /// i32 to big endian hex
     /// ```
-    /// // i32 to big endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i32be_to_hex(0x4FFFFFFFi32), "4FFFFFFF");
     /// ```
@@ -589,10 +573,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 8 chars of big endian hex to i32
     /// ```
-    /// // converts up to first 8 chars of big endian hex to i32
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i32_from_hex_be("4FFFFFFF"), Some(0x4FFFFFFF));
     /// assert_eq!(i32_from_hex_be("4FF"), Some(0x4FF));
@@ -623,10 +606,9 @@ pub mod hex {
         }
     }
 
+    /// i32 to little endian hex
     /// ```
-    /// // i32 to little endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i32le_to_hex(0x4FFFFFFFi32), "FFFFFF4F");
     /// ```
@@ -640,10 +622,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 8 chars of little endian hex to i32
     /// ```
-    /// // converts up to first 8 chars of little endian hex to i32
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i32_from_hex_le("FFFFFF4F"), Some(0x4FFFFFFF));
     /// assert_eq!(i32_from_hex_le("F4F"), Some(0x4F0F0000));
@@ -687,10 +668,9 @@ pub mod hex {
         r
     }
 
+    /// u32 to big endian hex
     /// ```
-    /// // u32 to big endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u32be_to_hex(0x4FFFFFFFu32), "4FFFFFFF");
     /// ```
@@ -704,10 +684,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 8 chars of big endian hex to u32
     /// ```
-    /// // converts up to first 8 chars of big endian hex to u32
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u32_from_hex_be("4FFFFFFF"), Some(0x4FFFFFFF));
     /// assert_eq!(u32_from_hex_be("4FF"), Some(0x4FF));
@@ -738,10 +717,9 @@ pub mod hex {
         }
     }
 
+    /// u32 to little endian hex
     /// ```
-    /// // u32 to little endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u32le_to_hex(0x4FFFFFFFu32), "FFFFFF4F");
     /// ```
@@ -755,10 +733,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 8 chars of little endian hex to u32
     /// ```
-    /// // converts up to first 8 chars of little endian hex to u32
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u32_from_hex_le("FFFFFF4F"), Some(0x4FFFFFFF));
     /// assert_eq!(u32_from_hex_le("F4F"), Some(0x4F0F0000));
@@ -802,10 +779,9 @@ pub mod hex {
         r
     }
 
+    /// i64 to big endian hex
     /// ```
-    /// // i64 to big endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i64be_to_hex(0x4FFFFFFFFFFFFFFFi64), "4FFFFFFFFFFFFFFF");
     /// ```
@@ -819,10 +795,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 16 chars of big endian hex to i64
     /// ```
-    /// // converts up to first 16 chars of big endian hex to i64
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i64_from_hex_be("4FFFFFFFFFFFFFFF"), Some(0x4FFFFFFFFFFFFFFF));
     /// assert_eq!(i64_from_hex_be("4FF"), Some(0x00000000000004FF));
@@ -853,10 +828,9 @@ pub mod hex {
         }
     }
 
+    /// i64 to little endian hex
     /// ```
-    /// // i64 to little endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i64le_to_hex(0x4FFFFFFFFFFFFFFFi64), "FFFFFFFFFFFFFF4F");
     /// ```
@@ -870,10 +844,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 16 chars of little endian hex to i64
     /// ```
-    /// // converts up to first 16 chars of little endian hex to i64
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i64_from_hex_le("4FFFFFFFFFFFFF22"), Some(0x22FFFFFFFFFFFF4F));
     /// assert_eq!(i64_from_hex_le("422"), Some(0x2204000000000000));
@@ -917,10 +890,9 @@ pub mod hex {
         r
     }
 
+    /// u64 to big endian hex
     /// ```
-    /// // u64 to big endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u64be_to_hex(0x4FFFFFFFFFFFFFFFu64), "4FFFFFFFFFFFFFFF");
     /// ```
@@ -934,10 +906,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 16 chars of big endian hex to u64
     /// ```
-    /// // converts up to first 16 chars of big endian hex to u64
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u64_from_hex_be("4FFFFFFFFFFFFFFF"), Some(0x4FFFFFFFFFFFFFFF));
     /// assert_eq!(u64_from_hex_be("4FF"), Some(0x00000000000004FF));
@@ -968,10 +939,9 @@ pub mod hex {
         }
     }
 
+    /// u64 to little endian hex
     /// ```
-    /// // u64 to little endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u64le_to_hex(0x4FFFFFFFFFFFFFFFu64), "FFFFFFFFFFFFFF4F");
     /// ```
@@ -984,11 +954,9 @@ pub mod hex {
             .collect::<String>();
         r
     }
-
+    /// converts up to first 16 chars of little endian hex to u64
     /// ```
-    /// // converts up to first 16 chars of little endian hex to u64
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i64_from_hex_le("4FFFFFFFFFFFFF22"), Some(0x22FFFFFFFFFFFF4F));
     /// assert_eq!(i64_from_hex_le("422"), Some(0x2204000000000000));
@@ -1032,10 +1000,9 @@ pub mod hex {
         r
     }
 
+    /// i128 to big endian hex
     /// ```
-    /// // i128 to big endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i128be_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFi128), "4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
     /// ```
@@ -1049,10 +1016,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 32 chars of big endian hex to i128
     /// ```
-    /// // converts up to first 32 chars of big endian hex to i128
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i128_from_hex_be("4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"), Some(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF));
     /// assert_eq!(i128_from_hex_be("4FF"), Some(0x000000000000000000000000000004FF));
@@ -1083,10 +1049,9 @@ pub mod hex {
         }
     }
 
+    /// i128 to little endian hex
     /// ```
-    /// // i128 to little endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i128le_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFi128), "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4F");
     /// ```
@@ -1100,10 +1065,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 32 chars of little endian hex to i128
     /// ```
-    /// // converts up to first 32 chars of little endian hex to i128
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(i128_from_hex_le("4FFFFFFFFFFFFFFFFFFFFFFFFFFFFF22"), Some(0x22FFFFFFFFFFFFFFFFFFFFFFFFFFFF4F));
     /// assert_eq!(i128_from_hex_le("422"), Some(0x22040000000000000000000000000000));
@@ -1147,10 +1111,9 @@ pub mod hex {
         r
     }
 
+    /// u128 to big endian hex
     /// ```
-    /// // u128 to big endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u128be_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128), "4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
     /// ```
@@ -1164,10 +1127,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 32 chars of big endian hex to u128
     /// ```
-    /// // converts up to first 32 chars of big endian hex to u128
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u128_from_hex_be("4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"), Some(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF));
     /// assert_eq!(u128_from_hex_be("4FF"), Some(0x000000000000000000000000000004FF));
@@ -1198,10 +1160,9 @@ pub mod hex {
         }
     }
 
+    /// u128 to little endian hex
     /// ```
-    /// // u128 to little endian hex
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u128le_to_hex(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128), "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4F");
     /// ```
@@ -1215,10 +1176,9 @@ pub mod hex {
         r
     }
 
+    /// converts up to first 32 chars of little endian hex to u128
     /// ```
-    /// // converts up to first 32 chars of little endian hex to u128
-    ///
-    /// use cj_common::prelude::*;
+    /// # use cj_common::prelude::*;
     ///
     /// assert_eq!(u128_from_hex_le("4FFFFFFFFFFFFFFFFFFFFFFFFFFFFF22"), Some(0x22FFFFFFFFFFFFFFFFFFFFFFFFFFFF4F));
     /// assert_eq!(u128_from_hex_le("422"), Some(0x22040000000000000000000000000000));
@@ -1263,11 +1223,15 @@ pub mod hex {
     }
 
     pub trait Hex {
+        /// to big endian hex
         fn to_hex_be(self) -> String;
+        /// from big endian hex
         fn from_hex_be(value: &str) -> Option<Self>
         where
             Self: Sized;
+        /// to little endian hex
         fn to_hex_le(self) -> String;
+        /// from little endian hex
         fn from_hex_le(value: &str) -> Option<Self>
         where
             Self: Sized;
