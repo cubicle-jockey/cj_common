@@ -1,12 +1,13 @@
 [package]
 name = "cj_common"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 keywords = ["hex", "base64", "range", "bit", "inset"]
 categories = ["encoding", "parsing"]
 repository = "https://github.com/cubicle-jockey/cj_common"
 homepage = "https://github.com/cubicle-jockey/cj_common/wiki"
 description = "Collection of common functions used by cubicle-jockey projects"
+license-file = "LICENSE"
 
 [lib]
 name = "cj_common"
