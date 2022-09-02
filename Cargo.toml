@@ -1,17 +1,19 @@
 [package]
 name = "cj_common"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 keywords = ["hex", "base64", "range", "bit", "inset"]
 categories = ["encoding", "parsing"]
+repository = "https://github.com/cubicle-jockey/cj_common"
+homepage = "https://github.com/cubicle-jockey/cj_common/wiki"
 
 [lib]
 name = "cj_common"
 path = "src/lib.rs"
 
-[[bin]] #only used for testing/stepping through the code
-name = "test"
-path = "src/main.rs"
+#[[bin]] #only used for testing/stepping through the code
+#name = "test"
+#path = "src/_main.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [profile.release]

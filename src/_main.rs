@@ -2,7 +2,7 @@ use std::time::Instant;
 
 use cj_common::prelude::*;
 
-// main.rs is only meant to help with testing/stepping through the code.
+// _main is only meant to help with testing/stepping through the code.
 fn main() {
     b64_test5();
     b64_test6();
