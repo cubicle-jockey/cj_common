@@ -1,5 +1,7 @@
 # cj_common
 
+[![Rust](https://github.com/cubicle-jockey/cj_common/actions/workflows/rust.yml/badge.svg)](https://github.com/cubicle-jockey/cj_common/actions/workflows/rust.yml)
+
 Collection of common functions used for other projects. Additional functionality added as more projects are spun
 up.
 
