@@ -2,6 +2,8 @@
 
 [![Rust](https://github.com/cubicle-jockey/cj_common/actions/workflows/rust.yml/badge.svg)](https://github.com/cubicle-jockey/cj_common/actions/workflows/rust.yml)
 [![Dependency Review](https://github.com/cubicle-jockey/cj_common/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/cubicle-jockey/cj_common/actions/workflows/dependency-review.yml)
+[![Crate](https://img.shields.io/crates/v/cj_common.svg)](https://crates.io/crates/cj_common)
+[![API](https://docs.rs/cj_common/badge.svg)](https://docs.rs/cj_common)
 
 Collection of common functions used for other projects. Additional functionality added as more projects are spun
 up.
