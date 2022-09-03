@@ -7,7 +7,7 @@ categories = ["encoding", "parsing"]
 repository = "https://github.com/cubicle-jockey/cj_common"
 homepage = "https://github.com/cubicle-jockey/cj_common/wiki"
 description = "Collection of common functions used by cubicle-jockey projects"
-license-file = "LICENSE"
+license = "MIT OR Apache-2.0"
 
 [lib]
 name = "cj_common"
