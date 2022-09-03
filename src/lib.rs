@@ -36,7 +36,7 @@
 //! let r = String::from_utf8_lossy(v.as_slice()).to_string();
 //! assert_eq!(r.as_str(), "Many hands make light work.");
 //!
-//! // the above are str examples, but it works the same u8
+//! // the above are str examples, but it works the same for u8
 //! let s = vec![1u8,2,3,4,5,6].to_b64_string();
 //! let iter = [1u8,2,3,4,5,6].as_slice().iter_to_b64();
 //!
