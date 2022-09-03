@@ -143,7 +143,7 @@ pub mod bitbuf {
                     if value {
                         *self = (*self & i) + v;
                     } else {
-                        *self = *self & i;
+                        *self &= i;
                     }
                 }
                 _ => {}
@@ -170,7 +170,7 @@ pub mod bitbuf {
                     if value {
                         *self = (*self & i) + v;
                     } else {
-                        *self = *self & i;
+                        *self &= i;
                     }
                 }
                 _ => {}
@@ -197,7 +197,7 @@ pub mod bitbuf {
                     if value {
                         *self = (*self & i) + v;
                     } else {
-                        *self = *self & i;
+                        *self &= i;
                     }
                 }
                 _ => {}
@@ -224,7 +224,7 @@ pub mod bitbuf {
                     if value {
                         *self = (*self & i) + v;
                     } else {
-                        *self = *self & i;
+                        *self &= i;
                     }
                 }
                 _ => {}
@@ -251,7 +251,7 @@ pub mod bitbuf {
                     if value {
                         *self = (*self & i) + v;
                     } else {
-                        *self = *self & i;
+                        *self &= i;
                     }
                 }
                 _ => {}

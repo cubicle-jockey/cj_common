@@ -292,7 +292,7 @@ pub mod in_set {
     impl CjChar for char {
         #[inline]
         fn as_char(&self) -> &char {
-            &self
+            self
         }
     }
 

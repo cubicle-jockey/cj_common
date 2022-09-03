@@ -129,7 +129,7 @@ pub mod b64 {
         // 1     XXXX1111 11112222 22223333 33330000
         // 2     XXXXXX11 11111122 22222233 33333300
         // 3     XXXXXXXX 11111111 22222222 33333333
-        return match pass_of {
+        match pass_of {
             0 => {
                 // take 6 from src
                 *b6 = src >> 2;
@@ -173,7 +173,7 @@ pub mod b64 {
                 //println!("huh? not expected here");
                 BitSplit6Result::Resend
             }
-        };
+        }
     }
 
     ///
@@ -211,7 +211,7 @@ pub mod b64 {
         }
 
         if b_len > 0 {
-            let x = b_rem.clone();
+            let x = b_rem;
             b_rem = 0;
             pass_no = 0;
             let _ = bit_split_6(&x, &mut b_six, &mut b_rem, &mut pass_no);
@@ -275,7 +275,7 @@ pub mod b64 {
         fn next_char(&mut self) -> Option<char> {
             if let Some(c) = self.pend_char {
                 self.pend_char = None;
-                return Some(c);
+                Some(c)
             } else {
                 if let Some(b) = &self.inner.next() {
                     let c: char;
@@ -300,7 +300,7 @@ pub mod b64 {
                     return Some(c);
                 } else if self.char_count > 0 {
                     if self.push_last {
-                        let x = self.rem_bits.clone();
+                        let x = self.rem_bits;
                         self.rem_bits = 0;
                         self.pass_no = 0;
                         let _ = bit_split_6(
@@ -448,7 +448,7 @@ pub mod b64 {
                                 // drop two bits from 'b' and take 2
                                 self.buf_left += (b << 2) >> 6;
                                 // push the complete byte
-                                return_b = self.buf_left.clone();
+                                return_b = self.buf_left;
                                 // now take the remaining 4
                                 self.buf_left = b << 4;
                                 self.buf_ct += 1;
@@ -460,7 +460,7 @@ pub mod b64 {
                                 // drop two bits from 'b' and take 4
                                 self.buf_left += (b << 2) >> 4;
                                 // push the complete byte
-                                return_b = self.buf_left.clone();
+                                return_b = self.buf_left;
                                 self.buf_left = b << 6;
                                 self.buf_ct += 1;
                                 self.total_added += 1;
@@ -471,7 +471,7 @@ pub mod b64 {
                                 // 'b' only has 6 bits. take them all
                                 self.buf_left += b;
                                 // push the complete byte
-                                return_b = self.buf_left.clone();
+                                return_b = self.buf_left;
                                 self.buf_ct = 0;
                                 self.total_added += 1;
                                 return Some(return_b);
@@ -491,10 +491,8 @@ pub mod b64 {
                 }
             }
 
-            if self.total_added > 0 {
-                if (self.buf_ct != 0) && (!self.had_pad) {
-                    return Some(self.buf_left.clone());
-                }
+            if self.total_added > 0 && (self.buf_ct != 0) && (!self.had_pad) {
+                return Some(self.buf_left);
             }
 
             None
@@ -822,7 +820,7 @@ pub mod b64 {
             for b in "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu".iter_b64_to_byte() {
                 v.push(b);
             }
-            assert!(v.len() > 0);
+            assert!(!v.is_empty());
             let r = String::from_utf8_lossy(v.as_slice());
             let s = "Many hands make light work.";
             assert_eq!(r.to_string().as_str(), s);
@@ -834,7 +832,7 @@ pub mod b64 {
             for b in "TWFueSBoYW5kcyBtYWtl   IGxpZ2h0IHdvcmsuLi4=&".iter_b64_to_byte() {
                 v.push(b);
             }
-            assert!(v.len() > 0);
+            assert!(!v.is_empty());
             let r = String::from_utf8_lossy(v.as_slice());
             let s = "Many hands make light work...";
             assert_eq!(r.to_string().as_str(), s);
@@ -852,7 +850,7 @@ pub mod b64 {
             for b in "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu".iter_b64_to_byte() {
                 v.push(b);
             }
-            assert!(v.len() > 0);
+            assert!(!v.is_empty());
             let r = String::from_utf8_lossy(v.as_slice());
             let s = "Many hands make light work.";
             assert_eq!(r.to_string().as_str(), s);

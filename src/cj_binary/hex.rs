@@ -2,7 +2,7 @@ pub mod hex {
     use std::slice::Iter;
     use std::str::Chars;
 
-    static HEX_TABLE: [&'static str; 256] = [
+    static HEX_TABLE: [&str; 256] = [
         "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E",
         "0F", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D",
         "1E", "1F", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "2A", "2B", "2C",
@@ -107,7 +107,7 @@ pub mod hex {
     pub fn hex_str_to_u8(hex2: &str) -> Option<u8> {
         if hex2.chars().count() > 0 {
             let mut r: u8;
-            if let Some(x) = hex_char_to_u8(&hex2.chars().nth(0).unwrap()) {
+            if let Some(x) = hex_char_to_u8(&hex2.chars().next().unwrap()) {
                 r = x << 4;
                 if let Some(y) = hex_char_to_u8(&hex2.chars().nth(1).unwrap_or('X')) {
                     r += y;
@@ -311,8 +311,8 @@ pub mod hex {
             ct = 1;
             ca[0] = '0';
         }
-        let mut crs = hexstr.chars();
-        while let Some(c) = crs.next() {
+        let crs = hexstr.chars();
+        for c in crs {
             match ct {
                 0 => {
                     ca[0] = c;
@@ -369,7 +369,7 @@ pub mod hex {
                 match p {
                     0 => r = i as i16,
                     1..=3 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as i16;
                     }
                     _ => break,
@@ -418,7 +418,7 @@ pub mod hex {
                 match p {
                     0 => r = i as i16,
                     1..=3 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as i16;
                     }
                     _ => break,
@@ -480,7 +480,7 @@ pub mod hex {
                 match p {
                     0 => r = i as u16,
                     1..=3 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as u16;
                     }
                     _ => break,
@@ -529,7 +529,7 @@ pub mod hex {
                 match p {
                     0 => r = i as u16,
                     1..=3 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as u16;
                     }
                     _ => break,
@@ -591,7 +591,7 @@ pub mod hex {
                 match p {
                     0 => r = i as i32,
                     1..=7 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as i32;
                     }
                     _ => break,
@@ -640,7 +640,7 @@ pub mod hex {
                 match p {
                     0 => r = i as i32,
                     1..=7 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as i32;
                     }
                     _ => break,
@@ -702,7 +702,7 @@ pub mod hex {
                 match p {
                     0 => r = i as u32,
                     1..=7 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as u32;
                     }
                     _ => break,
@@ -751,7 +751,7 @@ pub mod hex {
                 match p {
                     0 => r = i as u32,
                     1..=7 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as u32;
                     }
                     _ => break,
@@ -813,7 +813,7 @@ pub mod hex {
                 match p {
                     0 => r = i as i64,
                     1..=15 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as i64;
                     }
                     _ => break,
@@ -862,7 +862,7 @@ pub mod hex {
                 match p {
                     0 => r = i as i64,
                     1..=15 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as i64;
                     }
                     _ => break,
@@ -924,7 +924,7 @@ pub mod hex {
                 match p {
                     0 => r = i as u64,
                     1..=15 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as u64;
                     }
                     _ => break,
@@ -972,7 +972,7 @@ pub mod hex {
                 match p {
                     0 => r = i as u64,
                     1..=15 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as u64;
                     }
                     _ => break,
@@ -1034,7 +1034,7 @@ pub mod hex {
                 match p {
                     0 => r = i as i128,
                     1..=31 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as i128;
                     }
                     _ => break,
@@ -1083,7 +1083,7 @@ pub mod hex {
                 match p {
                     0 => r = i as i128,
                     1..=31 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as i128;
                     }
                     _ => break,
@@ -1145,7 +1145,7 @@ pub mod hex {
                 match p {
                     0 => r = i as u128,
                     1..=31 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as u128;
                     }
                     _ => break,
@@ -1194,7 +1194,7 @@ pub mod hex {
                 match p {
                     0 => r = i as u128,
                     1..=31 => {
-                        r = r << 4;
+                        r <<= 4;
                         r += i as u128;
                     }
                     _ => break,
