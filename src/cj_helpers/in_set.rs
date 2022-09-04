@@ -1,3 +1,48 @@
+//! structs, methods and traits for checking if values are within a given set of ranges.
+//!
+//! # Quick Start
+//!
+//!```
+//! use cj_common::prelude::*;
+//!
+//! let list = "lmnop";
+//! for c in list.chars() {
+//!     assert_eq!(c.in_range('k'..'q'), true);
+//!     assert_eq!(
+//!         c.in_set(
+//!             [
+//!                 ('k'..='l').into(),                // RangeInclusive
+//!                 ('m'..'n').into(),                 // Range
+//!                 ('n'..='p').into(),                // RangeInclusive
+//!                 ['a', 'b', 'c'].as_slice().into(), // Slice
+//!                 "test123".into(),                  // str
+//!             ]
+//!             .as_slice()
+//!         ),
+//!         true
+//!     );
+//!     assert_eq!(c.in_range('w'..'z'), false);
+//! }
+//!
+//! let list = [1_000, 10_000, 100_000_000];
+//! for n in list {
+//!     assert_eq!(n.in_range(1..200_000_000), true);
+//!     assert_eq!(
+//!         n.in_set(
+//!             [
+//!                 (1..=10).into(),                 // RangeInclusive
+//!                 (500..2_000).into(),             // Range
+//!                 (9_999..=100_000_000).into(),    // RangeInclusive
+//!                 [30, 90, 700].as_slice().into()  // Slice
+//!             ]
+//!             .as_slice()
+//!         ),
+//!         true
+//!     );
+//!     assert_eq!(n.in_range(1_000_000_000..1_000_000_001), false);
+//! }
+//! ```
+
 use std::ops::{Range, RangeInclusive};
 
 trait CjExactRng<T: PartialOrd + PartialEq> {

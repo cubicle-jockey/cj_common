@@ -115,9 +115,13 @@
 //! }
 //! ```
 
+/// b64, hex and bitbuf
 pub mod cj_binary;
+
+/// in_set
 pub mod cj_helpers;
 
+/// easiest way to import all functionality
 pub mod prelude {
     pub use crate::cj_binary::b64::*;
     pub use crate::cj_binary::bitbuf::*;

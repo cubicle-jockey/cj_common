@@ -1,3 +1,29 @@
+//! structs, methods and traits for getting/setting bits at given positions of the implemented types
+//!
+//! # Quick Start
+//!
+//!```
+//! use cj_common::prelude::*;
+//!
+//! let x = 0b00000010u8;
+//! assert_eq!(x.get_bit(1),true);
+//!
+//! let mut x = 0b00000000u8;
+//! x.set_bit(1,true);
+//! assert_eq!(x,0b00000010u8);
+//!
+//! // iter example
+//! let x = 0xABu8;
+//! let mut v = Vec::new();
+//! for i in x.bit_iter() {
+//!     v.push(i);
+//! }
+//! assert_eq!(
+//!    v.as_slice(),
+//!    &[true, true, false, true, false, true, false, true]
+//! );
+//! ```
+
 /// iterator for the BitFlag trait
 pub struct BitIter<'a, T> {
     byte_count: usize,

@@ -1,3 +1,37 @@
+//! structs, methods and traits for working with b64 encoding/decoding
+//!
+//! # Quick Start
+//!
+//!```
+//! use cj_common::prelude::*;
+//!
+//! let s = "Many hands make light work.".to_b64_string();
+//! assert_eq!(s.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+//!
+//! if let Some(v) = b64_to_bytes("TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu") {
+//!     let r = String::from_utf8_lossy(v.as_slice()).to_string();
+//!     assert_eq!(r.as_str(), "Many hands make light work.");
+//! }
+//!
+//! // iter example
+//! let mut s = String::new();
+//! for c in "Many hands make light work.".iter_to_b64() {
+//!     s.push(c);
+//! }
+//! assert_eq!(s.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+//!
+//! let mut v = Vec::new();
+//! for b in "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu".iter_b64_to_byte() {
+//!     v.push(b);
+//! }
+//! let r = String::from_utf8_lossy(v.as_slice()).to_string();
+//! assert_eq!(r.as_str(), "Many hands make light work.");
+//!
+//! // the above are str examples, but it works the same for u8
+//! let s = vec![1u8,2,3,4,5,6].to_b64_string();
+//! let iter = [1u8,2,3,4,5,6].as_slice().iter_to_b64();
+//! ```
+
 use std::slice::Iter;
 use std::str::Chars;
 

@@ -1,3 +1,24 @@
+//! structs, methods and traits for working with hex encoding/decoding
+//!
+//! # Quick Start
+//!
+//!```
+//! use cj_common::prelude::*;
+//!
+//! let mut s = String::new();
+//! for c in "Many hands make light work.".iter_to_hex() {
+//!     s.push_str(c);
+//! }
+//! assert_eq!(s.as_str(), "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
+//!
+//! let mut v = Vec::new();
+//! for b in "4D616E792068616E6473206D616B65206C6967687420776F726B2E".iter_hex_to_byte() {
+//!     v.push(b);
+//! }
+//! let s = String::from_utf8_lossy(v.as_slice()).to_string();
+//! assert_eq!(s.as_str(), "Many hands make light work.");
+//! ```
+
 use std::slice::Iter;
 use std::str::Chars;
 
