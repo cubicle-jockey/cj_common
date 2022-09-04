@@ -316,7 +316,7 @@ impl Bitflag for u128 {
 
 /// bit iterator for iterating over Vec or Slice of u8, u16, u32, u64 and u128.
 ///
-/// calling next will iterate over bits in the current item until exhausted, then the next item and so-on, until all items are exhausted.
+/// calling next will iterate over bits of each item until all items are exhausted.
 /// ```
 /// # use cj_common::prelude::*;
 /// let x = vec![0xABu8, 0xAB, 0xAB];
@@ -328,8 +328,9 @@ impl Bitflag for u128 {
 /// assert_eq!(
 ///     v.as_slice(),
 ///     &[
-///         true, true, false, true, false, true, false, true, true, true, false, true, false,
-///         true, false, true, true, true, false, true, false, true, false, true
+///         true, true, false, true, false, true, false, true,
+///         true, true, false, true, false, true, false, true,
+///         true, true, false, true, false, true, false, true
 ///     ]
 /// );
 ///

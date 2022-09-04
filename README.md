@@ -10,10 +10,12 @@ up.
 
 Current features relate to:
 
-    Base64 encoding/decoding
-    Hex encoding/decoding
-    Bit manipulation
-    In-set checking (values within a set of ranges)
+```text
+* Base64 encoding/decoding
+* Hex encoding/decoding
+* Bit manipulation
+* In-set checking (values within a set of ranges)
+```
 
 cj_binary
 ---
@@ -22,6 +24,8 @@ cj_binary
 
 ```rust
 fn main() {
+    use cj_common::prelude::*;
+
     let mut s2 = String::new();
     for c in "Many hands make light work.".iter_to_b64() {
         s2.push(c);
@@ -32,6 +36,8 @@ fn main() {
 
 ```rust
 fn main() {
+    use cj_common::prelude::*;
+
     let mut v = Vec::new();
     for b in "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu".iter_b64_to_byte() {
         v.push(b);
@@ -47,6 +53,8 @@ fn main() {
 
 ```rust
 fn main() {
+    use cj_common::prelude::*;
+
     let x = 0x1F2i64;
     let s = x.to_hex_be();
     let y: Option<i64> = i64::from_hex_be(s.as_str());
@@ -63,6 +71,8 @@ fn main() {
 
 ```rust
 fn main() {
+    use cj_common::prelude::*;
+
     let mut s = String::new();
     for c in "Many hands make light work.".iter_to_hex() {
         s.push_str(c);
@@ -85,6 +95,8 @@ fn main() {
 
 ```rust
 fn main() {
+    use cj_common::prelude::*;
+
     let x = 0b00000010u8;
     assert_eq!(x.get_bit(1), true);
 }
@@ -92,6 +104,8 @@ fn main() {
 
 ```rust
 fn main() {
+    use cj_common::prelude::*;
+
     let mut x = 0b00000000u8;
     x.set_bit(1, true);
     assert_eq!(x, 0b00000010u8);
@@ -100,6 +114,8 @@ fn main() {
 
 ```rust
 fn main() {
+    use cj_common::prelude::*;
+
     let mut x = 0xABu8;
     let mut v = Vec::new();
     for i in x.bit_iter() {
@@ -113,6 +129,35 @@ fn main() {
 }
 ```
 
+```rust
+fn main() {
+    use cj_common::prelude::*;
+
+    let x = vec![0xABu8, 0xAB, 0xAB];
+    let mut v = Vec::new();
+    for i in x.iter_to_bit() {
+        v.push(i);
+    }
+
+    assert_eq!(
+        v.as_slice(),
+        &[
+            true, true, false, true, false, true, false, true,
+            true, true, false, true, false, true, false, true,
+            true, true, false, true, false, true, false, true
+        ]
+    );
+
+    let x = [2u128, 2, 2];
+    for i in x.as_slice().iter_to_bit().enumerate() {
+        match i.0 {
+            1 | 129 | 257 => assert_eq!(i.1, true),
+            _ => assert_eq!(i.1, false),
+        }
+    }
+}
+```
+
 cj_helpers
 ---
 
@@ -120,6 +165,8 @@ cj_helpers
 
 ```rust
 fn main() {
+    use cj_common::prelude::*;
+
     assert_eq!('x'.in_range('a'..'z'), true);
     assert_eq!('z'.in_range_inclusive('a'..='z'), true);
     assert_eq!(1.in_range(1..3), true);

@@ -75,7 +75,7 @@
 //!    &[true, true, false, true, false, true, false, true]
 //! );
 //!
-//! // iter over vec example
+//! // iter over vec example (iter_to_bit)
 //! let x = vec![0xABu8, 0xAB, 0xAB];
 //! let mut v = Vec::new();
 //! for i in x.iter_to_bit() {
@@ -85,12 +85,13 @@
 //! assert_eq!(
 //!     v.as_slice(),
 //!     &[
-//!         true, true, false, true, false, true, false, true, true, true, false, true, false,
-//!         true, false, true, true, true, false, true, false, true, false, true
+//!         true, true, false, true, false, true, false, true,
+//!         true, true, false, true, false, true, false, true,
+//!         true, true, false, true, false, true, false, true,
 //!     ]
 //! );
 //!
-//! // iter over slice example
+//! // iter over slice example (iter_to_bit)
 //! let x = [2u128, 2, 2];
 //! for i in x.as_slice().iter_to_bit().enumerate() {
 //!     match i.0 {
@@ -152,3 +153,7 @@ pub mod prelude {
     pub use crate::cj_binary::hex::*;
     pub use crate::cj_helpers::in_set::*;
 }
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;
