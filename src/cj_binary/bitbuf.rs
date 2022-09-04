@@ -33,8 +33,9 @@
 //! assert_eq!(
 //!     v.as_slice(),
 //!     &[
-//!         true, true, false, true, false, true, false, true, true, true, false, true, false,
-//!         true, false, true, true, true, false, true, false, true, false, true
+//!         true, true, false, true, false, true, false, true,
+//!         true, true, false, true, false, true, false, true,
+//!         true, true, false, true, false, true, false, true,
 //!     ]
 //! );
 //!
@@ -365,7 +366,7 @@ impl<'a, T: BitFlagIter<'a, T> + Bitflag + Sized> BitStreamIter<'a, T> {
             is_done: false,
         }
     }
-
+    #[inline]
     fn increment_item(&mut self) -> bool {
         if let Some(next) = self.stream.next() {
             self.index = 0;
