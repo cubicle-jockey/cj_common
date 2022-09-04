@@ -22,7 +22,34 @@
 //!    v.as_slice(),
 //!    &[true, true, false, true, false, true, false, true]
 //! );
+//!
+//! // iter over vec example
+//! let x = vec![0xABu8, 0xAB, 0xAB];
+//! let mut v = Vec::new();
+//! for i in x.iter_to_bit() {
+//!     v.push(i);
+//! }
+//!
+//! assert_eq!(
+//!     v.as_slice(),
+//!     &[
+//!         true, true, false, true, false, true, false, true, true, true, false, true, false,
+//!         true, false, true, true, true, false, true, false, true, false, true
+//!     ]
+//! );
+//!
+//! // iter over slice example
+//! let x = [2u128, 2, 2];
+//! for i in x.as_slice().iter_to_bit().enumerate() {
+//!     match i.0 {
+//!         1 | 129 | 257 => assert_eq!(i.1, true),
+//!         _ => assert_eq!(i.1, false),
+//!     }
+//! }
 //! ```
+
+use std::mem::size_of;
+use std::slice::Iter;
 
 /// iterator for the BitFlag trait
 pub struct BitIter<'a, T> {
@@ -93,6 +120,9 @@ impl<T: Bitflag + Sized> Iterator for BitIter<'_, T> {
 /// );
 /// ```
 pub trait BitFlagIter<'a, T> {
+    /// Iter for iterating over each bit of binary data returning true for 1 and false for 0
+    ///
+    /// implemented for u8, u16, u32, u64 and u128
     fn bit_iter(&'a self) -> BitIter<'a, T>;
 }
 
@@ -284,9 +314,121 @@ impl Bitflag for u128 {
     }
 }
 
+/// bit iterator for iterating over Vec or Slice of u8, u16, u32, u64 and u128.
+///
+/// calling next will iterate over bits in the current item until exhausted, then the next item and so-on, until all items are exhausted.
+/// ```
+/// # use cj_common::prelude::*;
+/// let x = vec![0xABu8, 0xAB, 0xAB];
+/// let mut v = Vec::new();
+/// for i in x.iter_to_bit() {
+///     v.push(i);
+/// }
+///
+/// assert_eq!(
+///     v.as_slice(),
+///     &[
+///         true, true, false, true, false, true, false, true, true, true, false, true, false,
+///         true, false, true, true, true, false, true, false, true, false, true
+///     ]
+/// );
+///
+/// let x = [2u128, 2, 2];
+/// for i in x.as_slice().iter_to_bit().enumerate() {
+///     match i.0 {
+///         1 | 129 | 257 => assert_eq!(i.1, true),
+///         _ => assert_eq!(i.1, false),
+///     }
+/// }
+/// ```
+pub struct BitStreamIter<'a, T>
+where
+    T: BitFlagIter<'a, T> + Bitflag + Sized,
+{
+    bit_count: usize,
+    index: usize,
+    stream: Iter<'a, T>,
+    item: Option<BitIter<'a, T>>,
+    is_first: bool,
+    is_done: bool,
+}
+
+impl<'a, T: BitFlagIter<'a, T> + Bitflag + Sized> BitStreamIter<'a, T> {
+    pub fn new(iter: Iter<'a, T>, bit_count: usize) -> BitStreamIter<'a, T> {
+        BitStreamIter {
+            bit_count,
+            index: 0,
+            stream: iter,
+            item: None,
+            is_first: true,
+            is_done: false,
+        }
+    }
+
+    fn increment_item(&mut self) -> bool {
+        if let Some(next) = self.stream.next() {
+            self.index = 0;
+            self.item = Some(next.bit_iter());
+        } else {
+            self.is_done = true;
+            self.item = None;
+        }
+
+        self.is_done
+    }
+
+    fn next_bit(&mut self) -> Option<bool> {
+        if self.is_first {
+            self.increment_item();
+            self.is_first = false;
+        }
+        if !self.is_done {
+            if self.index >= self.bit_count {
+                self.increment_item();
+            }
+            if let Some(iter) = self.item.as_mut() {
+                self.index += 1;
+                iter.next_bit()
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+}
+
+impl<'a, T: BitFlagIter<'a, T> + Bitflag + Sized> Iterator for BitStreamIter<'a, T> {
+    type Item = bool;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.next_bit()
+    }
+}
+
+pub trait CjToBitStreamIter<'a, T: BitFlagIter<'a, T> + Bitflag + Sized> {
+    /// returns a BitStreamIter for iterating over each bit of each item in a Vec or Slice
+    fn iter_to_bit(&'a self) -> BitStreamIter<'a, T>;
+}
+
+impl<'a, T: BitFlagIter<'a, T> + Bitflag> CjToBitStreamIter<'a, T> for Vec<T> {
+    fn iter_to_bit(&'a self) -> BitStreamIter<'a, T> {
+        let size = size_of::<T>() * 8;
+        BitStreamIter::new(self[..].iter(), size)
+    }
+}
+
+impl<'a, T: BitFlagIter<'a, T> + Bitflag> CjToBitStreamIter<'a, T> for &[T] {
+    fn iter_to_bit(&'a self) -> BitStreamIter<'a, T> {
+        let size = size_of::<T>() * 8;
+        BitStreamIter::new(self[..].iter(), size)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use crate::cj_binary::bitbuf::{BitFlagIter, Bitflag};
+    use crate::prelude::CjToBitStreamIter;
 
     #[test]
     fn test_u8_get() {
@@ -505,5 +647,143 @@ mod test {
             v.as_slice(),
             &[true, true, false, true, false, true, false, true]
         );
+    }
+
+    #[test]
+    fn test_vec_u8_iter() {
+        let x = vec![0xABu8, 0xAB, 0xAB];
+        let mut v = Vec::new();
+        for i in x.iter_to_bit() {
+            v.push(i);
+        }
+
+        assert_eq!(
+            v.as_slice(),
+            &[
+                true, true, false, true, false, true, false, true, true, true, false, true, false,
+                true, false, true, true, true, false, true, false, true, false, true
+            ]
+        );
+    }
+
+    #[test]
+    fn test_vec_u16_iter() {
+        let x = vec![0xAB00u16, 0xAB00, 0xAB00];
+        let mut v = Vec::new();
+        for i in x.iter_to_bit() {
+            v.push(i);
+        }
+
+        assert_eq!(
+            v.as_slice(),
+            &[
+                false, false, false, false, false, false, false, false, true, true, false, true,
+                false, true, false, true, false, false, false, false, false, false, false, false,
+                true, true, false, true, false, true, false, true, false, false, false, false,
+                false, false, false, false, true, true, false, true, false, true, false, true,
+            ]
+        );
+    }
+
+    #[test]
+    fn test_vec_u32_iter() {
+        let x = vec![2u32, 2, 2];
+        for i in x.iter_to_bit().enumerate() {
+            match i.0 {
+                1 | 33 | 65 => assert_eq!(i.1, true),
+                _ => assert_eq!(i.1, false),
+            }
+        }
+    }
+
+    #[test]
+    fn test_vec_u64_iter() {
+        let x = vec![2u64, 2, 2];
+        for i in x.iter_to_bit().enumerate() {
+            match i.0 {
+                1 | 65 | 129 => assert_eq!(i.1, true),
+                _ => assert_eq!(i.1, false),
+            }
+        }
+    }
+
+    #[test]
+    fn test_vec_u128_iter() {
+        let x = vec![2u128, 2, 2];
+        for i in x.iter_to_bit().enumerate() {
+            match i.0 {
+                1 | 129 | 257 => assert_eq!(i.1, true),
+                _ => assert_eq!(i.1, false),
+            }
+        }
+    }
+
+    #[test]
+    fn test_u8_slice_iter() {
+        let x = [0xABu8, 0xAB, 0xAB];
+        let mut v = Vec::new();
+        for i in x.as_slice().iter_to_bit() {
+            v.push(i);
+        }
+
+        assert_eq!(
+            v.as_slice(),
+            &[
+                true, true, false, true, false, true, false, true, true, true, false, true, false,
+                true, false, true, true, true, false, true, false, true, false, true
+            ]
+        );
+    }
+
+    #[test]
+    fn test_u16_slice_iter() {
+        let x = [0xAB00u16, 0xAB00, 0xAB00];
+        let mut v = Vec::new();
+        for i in x.as_slice().iter_to_bit() {
+            v.push(i);
+        }
+
+        assert_eq!(
+            v.as_slice(),
+            &[
+                false, false, false, false, false, false, false, false, true, true, false, true,
+                false, true, false, true, false, false, false, false, false, false, false, false,
+                true, true, false, true, false, true, false, true, false, false, false, false,
+                false, false, false, false, true, true, false, true, false, true, false, true,
+            ]
+        );
+    }
+
+    #[test]
+    fn test_u32_slice_iter() {
+        let x = [2u32, 2, 2];
+        for i in x.as_slice().iter_to_bit().enumerate() {
+            match i.0 {
+                1 | 33 | 65 => assert_eq!(i.1, true),
+                _ => assert_eq!(i.1, false),
+            }
+        }
+    }
+
+    #[test]
+    fn test_u64_slice_iter() {
+        let x = [2u64, 2, 2];
+        for i in x.as_slice().iter_to_bit().enumerate() {
+            match i.0 {
+                1 | 65 | 129 => assert_eq!(i.1, true),
+                _ => assert_eq!(i.1, false),
+            }
+        }
+    }
+
+    #[test]
+    fn test_u128_slice_iter() {
+        let x = [2u128, 2, 2];
+        for i in x.as_slice().iter_to_bit().enumerate() {
+            match i.0 {
+                1 | 129 | 257 => assert_eq!(i.1, true),
+                _ => assert_eq!(i.1, false),
+            }
+        }
     }
 }

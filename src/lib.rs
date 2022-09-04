@@ -75,6 +75,30 @@
 //!    &[true, true, false, true, false, true, false, true]
 //! );
 //!
+//! // iter over vec example
+//! let x = vec![0xABu8, 0xAB, 0xAB];
+//! let mut v = Vec::new();
+//! for i in x.iter_to_bit() {
+//!     v.push(i);
+//! }
+//!
+//! assert_eq!(
+//!     v.as_slice(),
+//!     &[
+//!         true, true, false, true, false, true, false, true, true, true, false, true, false,
+//!         true, false, true, true, true, false, true, false, true, false, true
+//!     ]
+//! );
+//!
+//! // iter over slice example
+//! let x = [2u128, 2, 2];
+//! for i in x.as_slice().iter_to_bit().enumerate() {
+//!     match i.0 {
+//!         1 | 129 | 257 => assert_eq!(i.1, true),
+//!         _ => assert_eq!(i.1, false),
+//!     }
+//! }
+//!
 //!
 //! // in_set example
 //! let list = "lmnop";
