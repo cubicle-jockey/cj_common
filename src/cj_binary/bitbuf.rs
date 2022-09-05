@@ -343,6 +343,47 @@ impl Bitflag for u128 {
 ///     }
 /// }
 /// ```
+
+static DEF_U8: &u8 = &0;
+static DEF_U16: &u16 = &0;
+static DEF_U32: &u32 = &0;
+static DEF_U64: &u64 = &0;
+static DEF_U128: &u128 = &0;
+
+pub trait DefaultStatic<T: Bitflag + Sized> {
+    fn default_static() -> &'static T;
+}
+
+impl DefaultStatic<u8> for u8 {
+    fn default_static() -> &'static u8 {
+        DEF_U8
+    }
+}
+
+impl DefaultStatic<u16> for u16 {
+    fn default_static() -> &'static u16 {
+        DEF_U16
+    }
+}
+
+impl DefaultStatic<u32> for u32 {
+    fn default_static() -> &'static u32 {
+        DEF_U32
+    }
+}
+
+impl DefaultStatic<u64> for u64 {
+    fn default_static() -> &'static u64 {
+        DEF_U64
+    }
+}
+
+impl DefaultStatic<u128> for u128 {
+    fn default_static() -> &'static u128 {
+        DEF_U128
+    }
+}
+
 pub struct BitStreamIter<'a, T>
 where
     T: BitFlagIter<'a, T> + Bitflag + Sized,
@@ -350,57 +391,53 @@ where
     bit_count: usize,
     index: usize,
     stream: Iter<'a, T>,
-    item: Option<BitIter<'a, T>>,
-    is_first: bool,
+    item: BitIter<'a, T>,
     is_done: bool,
 }
 
-impl<'a, T: BitFlagIter<'a, T> + Bitflag + Sized> BitStreamIter<'a, T> {
-    pub fn new(iter: Iter<'a, T>, bit_count: usize) -> BitStreamIter<'a, T> {
+impl<'a, T: BitFlagIter<'a, T> + Bitflag + Sized + DefaultStatic<T> + 'static>
+    BitStreamIter<'a, T>
+{
+    pub fn new(mut iter: Iter<'a, T>, bit_count: usize) -> BitStreamIter<'a, T> {
+        let x = iter.next();
+        let is_none = x.is_none();
+
         BitStreamIter {
             bit_count,
             index: 0,
             stream: iter,
-            item: None,
-            is_first: true,
-            is_done: false,
+            item: x.unwrap_or(T::default_static()).bit_iter(),
+            is_done: is_none,
         }
     }
-    #[inline]
+    #[inline(always)]
     fn increment_item(&mut self) -> bool {
         if let Some(next) = self.stream.next() {
             self.index = 0;
-            self.item = Some(next.bit_iter());
+            self.item = next.bit_iter();
         } else {
             self.is_done = true;
-            self.item = None;
         }
 
         self.is_done
     }
-
+    #[inline(always)]
     fn next_bit(&mut self) -> Option<bool> {
-        if self.is_first {
-            self.increment_item();
-            self.is_first = false;
-        }
         if !self.is_done {
             if self.index >= self.bit_count {
                 self.increment_item();
             }
-            if let Some(iter) = self.item.as_mut() {
-                self.index += 1;
-                iter.next_bit()
-            } else {
-                None
-            }
+            self.index += 1;
+            self.item.next_bit()
         } else {
             None
         }
     }
 }
 
-impl<'a, T: BitFlagIter<'a, T> + Bitflag + Sized> Iterator for BitStreamIter<'a, T> {
+impl<'a, T: BitFlagIter<'a, T> + Bitflag + Sized + DefaultStatic<T> + 'static> Iterator
+    for BitStreamIter<'a, T>
+{
     type Item = bool;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -413,14 +450,18 @@ pub trait CjToBitStreamIter<'a, T: BitFlagIter<'a, T> + Bitflag + Sized> {
     fn iter_to_bit(&'a self) -> BitStreamIter<'a, T>;
 }
 
-impl<'a, T: BitFlagIter<'a, T> + Bitflag> CjToBitStreamIter<'a, T> for Vec<T> {
+impl<'a, T: BitFlagIter<'a, T> + Bitflag + DefaultStatic<T> + 'static> CjToBitStreamIter<'a, T>
+    for Vec<T>
+{
     fn iter_to_bit(&'a self) -> BitStreamIter<'a, T> {
         let size = size_of::<T>() * 8;
         BitStreamIter::new(self[..].iter(), size)
     }
 }
 
-impl<'a, T: BitFlagIter<'a, T> + Bitflag> CjToBitStreamIter<'a, T> for &[T] {
+impl<'a, T: BitFlagIter<'a, T> + Bitflag + DefaultStatic<T> + 'static> CjToBitStreamIter<'a, T>
+    for &[T]
+{
     fn iter_to_bit(&'a self) -> BitStreamIter<'a, T> {
         let size = size_of::<T>() * 8;
         BitStreamIter::new(self[..].iter(), size)
