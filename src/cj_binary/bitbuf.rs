@@ -47,6 +47,29 @@
 //!         _ => assert_eq!(i.1, false),
 //!     }
 //! }
+//!
+//! // mask examples
+//! let mask = 0b00011010u8;
+//! let byte = 0b01011010u8;
+//! assert_eq!(byte.matches_mask(&mask),true);
+//! assert_eq!(mask.as_mask_matches(&byte),true);
+//!
+//! let read_permission  = 0b00000001u8;
+//! let write_permission = 0b00000010u8;
+//! let mod_permission   = 0b00000100u8;
+//! let del_permission   = 0b00001000u8;
+//! let full_permission  = read_permission + write_permission + mod_permission + del_permission;
+//! let user             = read_permission + write_permission;
+//! let moderator        = user + mod_permission;
+//! let admin            = full_permission;
+//!
+//! let fred = user;
+//! let jane = moderator;
+//! assert_eq!(fred.matches_mask(&read_permission),true);
+//! assert_eq!(fred.matches_mask(&write_permission),true);
+//! assert_eq!(fred.matches_mask(&moderator),false);
+//! assert_eq!(user.as_mask_matches(&jane),true);
+//! assert_eq!(admin.as_mask_matches(&jane),false);
 //! ```
 
 use std::mem::size_of;
@@ -344,13 +367,19 @@ impl Bitflag for u128 {
 /// }
 /// ```
 
+// TO.DO these need moved out of bitbuf and into a dedicated file
 static DEF_U8: &u8 = &0;
 static DEF_U16: &u16 = &0;
 static DEF_U32: &u32 = &0;
 static DEF_U64: &u64 = &0;
 static DEF_U128: &u128 = &0;
 
+/// Trait for returning references to default static values for a give types
 pub trait DefaultStatic<T: Bitflag + Sized> {
+    /// returns a reference to a default static value for a give type
+    /// * example. &'static 0u8 for u8
+    /// * example. &'static 0u16 for u16
+    /// * .. u128
     fn default_static() -> &'static T;
 }
 
@@ -384,6 +413,17 @@ impl DefaultStatic<u128> for u128 {
     }
 }
 
+/// Iterator for iterating over each bit of each item in a Vec or Slice
+///```
+///  # use crate::cj_common::prelude::*;
+/// let x = [2u64, 2, 2];
+/// for i in x.as_slice().iter_to_bit().enumerate() {
+///     match i.0 {
+///         1 | 65 | 129 => assert_eq!(i.1, true),
+///         _ => assert_eq!(i.1, false),
+///     }
+/// }
+///```
 pub struct BitStreamIter<'a, T>
 where
     T: BitFlagIter<'a, T> + Bitflag + Sized,
@@ -465,6 +505,75 @@ impl<'a, T: BitFlagIter<'a, T> + Bitflag + DefaultStatic<T> + 'static> CjToBitSt
     fn iter_to_bit(&'a self) -> BitStreamIter<'a, T> {
         let size = size_of::<T>() * 8;
         BitStreamIter::new(self[..].iter(), size)
+    }
+}
+
+pub trait CjMatchesMask<'a, T> {
+    /// matches_mask performs bitwise '&(self & mask) == mask' to verify all bits in mask are matched in self.
+    /// ```
+    /// # use crate::cj_common::prelude::*;
+    /// let mask = 0b00011010u8;
+    /// let byte = 0b01011010u8;
+    /// assert_eq!(byte.matches_mask(&mask),true);
+    /// ```
+    fn matches_mask(&self, mask: &T) -> bool;
+    /// performs bitwise '&(self & value) == self' to verify all bits in self are matched in value
+    /// ```
+    /// # use crate::cj_common::prelude::*;
+    /// let mask = 0b00011010u8;
+    /// let byte = 0b01011010u8;
+    /// assert_eq!(mask.as_mask_matches(&byte),true);
+    /// ```
+    fn as_mask_matches(&self, value: &T) -> bool;
+}
+
+impl<'a> CjMatchesMask<'a, u8> for u8 {
+    fn matches_mask(&self, mask: &u8) -> bool {
+        &(self & mask) == mask
+    }
+
+    fn as_mask_matches(&self, value: &u8) -> bool {
+        &(self & value) == self
+    }
+}
+
+impl<'a> CjMatchesMask<'a, u16> for u16 {
+    fn matches_mask(&self, mask: &u16) -> bool {
+        &(self & mask) == mask
+    }
+
+    fn as_mask_matches(&self, value: &u16) -> bool {
+        &(self & value) == self
+    }
+}
+
+impl<'a> CjMatchesMask<'a, u32> for u32 {
+    fn matches_mask(&self, mask: &u32) -> bool {
+        &(self & mask) == mask
+    }
+
+    fn as_mask_matches(&self, value: &u32) -> bool {
+        &(self & value) == self
+    }
+}
+
+impl<'a> CjMatchesMask<'a, u64> for u64 {
+    fn matches_mask(&self, mask: &u64) -> bool {
+        &(self & mask) == mask
+    }
+
+    fn as_mask_matches(&self, value: &u64) -> bool {
+        &(self & value) == self
+    }
+}
+
+impl<'a> CjMatchesMask<'a, u128> for u128 {
+    fn matches_mask(&self, mask: &u128) -> bool {
+        &(self & mask) == mask
+    }
+
+    fn as_mask_matches(&self, value: &u128) -> bool {
+        &(self & value) == self
     }
 }
 

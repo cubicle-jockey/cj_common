@@ -158,6 +158,34 @@ fn main() {
 }
 ```
 
+```rust
+fn main() {
+    use cj_common::prelude::*;
+    // mask examples
+    let mask = 0b00011010u8;
+    let byte = 0b01011010u8;
+    assert_eq!(byte.matches_mask(&mask), true);
+    assert_eq!(mask.as_mask_matches(&byte), true);
+
+    let read_permission = 0b00000001u8;
+    let write_permission = 0b00000010u8;
+    let mod_permission = 0b00000100u8;
+    let del_permission = 0b00001000u8;
+    let full_permission = read_permission + write_permission + mod_permission + del_permission;
+    let user = read_permission + write_permission;
+    let moderator = user + mod_permission;
+    let admin = full_permission;
+
+    let fred = user;
+    let jane = moderator;
+    assert_eq!(fred.matches_mask(&read_permission), true);
+    assert_eq!(fred.matches_mask(&write_permission), true);
+    assert_eq!(fred.matches_mask(&moderator), false);
+    assert_eq!(user.as_mask_matches(&jane), true);
+    assert_eq!(admin.as_mask_matches(&jane), false);
+}
+```
+
 cj_helpers
 ---
 
