@@ -93,7 +93,7 @@ impl<T: Bitflag + Sized> BitIter<'_, T> {
             inner: value,
         }
     }
-
+    #[inline]
     fn next_bit(&mut self) -> Option<bool>
     where
         T: Bitflag + Sized,
@@ -110,7 +110,7 @@ impl<T: Bitflag + Sized> BitIter<'_, T> {
 
 impl<T: Bitflag + Sized> Iterator for BitIter<'_, T> {
     type Item = bool;
-
+    #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         self.next_bit()
     }
@@ -151,30 +151,35 @@ pub trait BitFlagIter<'a, T> {
 }
 
 impl<'a> BitFlagIter<'a, u8> for u8 {
+    #[inline]
     fn bit_iter(&'a self) -> BitIter<'a, u8> {
         BitIter::new(8, self)
     }
 }
 
 impl<'a> BitFlagIter<'a, u16> for u16 {
+    #[inline]
     fn bit_iter(&'a self) -> BitIter<'a, u16> {
         BitIter::new(16, self)
     }
 }
 
 impl<'a> BitFlagIter<'a, u32> for u32 {
+    #[inline]
     fn bit_iter(&'a self) -> BitIter<'a, u32> {
         BitIter::new(32, self)
     }
 }
 
 impl<'a> BitFlagIter<'a, u64> for u64 {
+    #[inline]
     fn bit_iter(&'a self) -> BitIter<'a, u64> {
         BitIter::new(64, self)
     }
 }
 
 impl<'a> BitFlagIter<'a, u128> for u128 {
+    #[inline]
     fn bit_iter(&'a self) -> BitIter<'a, u128> {
         BitIter::new(128, self)
     }
@@ -204,6 +209,7 @@ pub trait Bitflag {
 }
 
 impl Bitflag for u8 {
+    #[inline]
     fn get_bit(&self, bit_pos: usize) -> bool {
         match bit_pos {
             0..=7 => {
@@ -213,7 +219,7 @@ impl Bitflag for u8 {
             _ => false,
         }
     }
-
+    #[inline]
     fn set_bit(&mut self, bit_pos: usize, value: bool) {
         match bit_pos {
             0..=7 => {
@@ -231,6 +237,7 @@ impl Bitflag for u8 {
 }
 
 impl Bitflag for u16 {
+    #[inline]
     fn get_bit(&self, bit_pos: usize) -> bool {
         match bit_pos {
             0..=15 => {
@@ -240,7 +247,7 @@ impl Bitflag for u16 {
             _ => false,
         }
     }
-
+    #[inline]
     fn set_bit(&mut self, bit_pos: usize, value: bool) {
         match bit_pos {
             0..=15 => {
@@ -258,6 +265,7 @@ impl Bitflag for u16 {
 }
 
 impl Bitflag for u32 {
+    #[inline]
     fn get_bit(&self, bit_pos: usize) -> bool {
         match bit_pos {
             0..=31 => {
@@ -267,7 +275,7 @@ impl Bitflag for u32 {
             _ => false,
         }
     }
-
+    #[inline]
     fn set_bit(&mut self, bit_pos: usize, value: bool) {
         match bit_pos {
             0..=31 => {
@@ -285,6 +293,7 @@ impl Bitflag for u32 {
 }
 
 impl Bitflag for u64 {
+    #[inline]
     fn get_bit(&self, bit_pos: usize) -> bool {
         match bit_pos {
             0..=63 => {
@@ -294,7 +303,7 @@ impl Bitflag for u64 {
             _ => false,
         }
     }
-
+    #[inline]
     fn set_bit(&mut self, bit_pos: usize, value: bool) {
         match bit_pos {
             0..=63 => {
@@ -312,6 +321,7 @@ impl Bitflag for u64 {
 }
 
 impl Bitflag for u128 {
+    #[inline]
     fn get_bit(&self, bit_pos: usize) -> bool {
         match bit_pos {
             0..=127 => {
@@ -321,7 +331,7 @@ impl Bitflag for u128 {
             _ => false,
         }
     }
-
+    #[inline]
     fn set_bit(&mut self, bit_pos: usize, value: bool) {
         match bit_pos {
             0..=127 => {
@@ -479,7 +489,7 @@ impl<'a, T: BitFlagIter<'a, T> + Bitflag + Sized + DefaultStatic<T> + 'static> I
     for BitStreamIter<'a, T>
 {
     type Item = bool;
-
+    #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         self.next_bit()
     }
@@ -493,6 +503,7 @@ pub trait CjToBitStreamIter<'a, T: BitFlagIter<'a, T> + Bitflag + Sized> {
 impl<'a, T: BitFlagIter<'a, T> + Bitflag + DefaultStatic<T> + 'static> CjToBitStreamIter<'a, T>
     for Vec<T>
 {
+    #[inline]
     fn iter_to_bit(&'a self) -> BitStreamIter<'a, T> {
         let size = size_of::<T>() * 8;
         BitStreamIter::new(self[..].iter(), size)
@@ -502,6 +513,7 @@ impl<'a, T: BitFlagIter<'a, T> + Bitflag + DefaultStatic<T> + 'static> CjToBitSt
 impl<'a, T: BitFlagIter<'a, T> + Bitflag + DefaultStatic<T> + 'static> CjToBitStreamIter<'a, T>
     for &[T]
 {
+    #[inline]
     fn iter_to_bit(&'a self) -> BitStreamIter<'a, T> {
         let size = size_of::<T>() * 8;
         BitStreamIter::new(self[..].iter(), size)
@@ -528,50 +540,55 @@ pub trait CjMatchesMask<'a, T> {
 }
 
 impl<'a> CjMatchesMask<'a, u8> for u8 {
+    #[inline]
     fn matches_mask(&self, mask: &u8) -> bool {
         &(self & mask) == mask
     }
-
+    #[inline]
     fn as_mask_matches(&self, value: &u8) -> bool {
         &(self & value) == self
     }
 }
 
 impl<'a> CjMatchesMask<'a, u16> for u16 {
+    #[inline]
     fn matches_mask(&self, mask: &u16) -> bool {
         &(self & mask) == mask
     }
-
+    #[inline]
     fn as_mask_matches(&self, value: &u16) -> bool {
         &(self & value) == self
     }
 }
 
 impl<'a> CjMatchesMask<'a, u32> for u32 {
+    #[inline]
     fn matches_mask(&self, mask: &u32) -> bool {
         &(self & mask) == mask
     }
-
+    #[inline]
     fn as_mask_matches(&self, value: &u32) -> bool {
         &(self & value) == self
     }
 }
 
 impl<'a> CjMatchesMask<'a, u64> for u64 {
+    #[inline]
     fn matches_mask(&self, mask: &u64) -> bool {
         &(self & mask) == mask
     }
-
+    #[inline]
     fn as_mask_matches(&self, value: &u64) -> bool {
         &(self & value) == self
     }
 }
 
 impl<'a> CjMatchesMask<'a, u128> for u128 {
+    #[inline]
     fn matches_mask(&self, mask: &u128) -> bool {
         &(self & mask) == mask
     }
-
+    #[inline]
     fn as_mask_matches(&self, value: &u128) -> bool {
         &(self & value) == self
     }
