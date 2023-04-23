@@ -602,10 +602,10 @@ mod test {
     #[test]
     fn test_u8_get() {
         let x = 0xABu8;
-        assert_eq!(x.get_bit(0), true);
-        assert_eq!(x.get_bit(1), true);
-        assert_eq!(x.get_bit(2), false);
-        assert_eq!(x.get_bit(100), false);
+        assert!(x.get_bit(0));
+        assert!(x.get_bit(1));
+        assert!(!x.get_bit(2));
+        assert!(!x.get_bit(100));
     }
 
     #[test]
@@ -614,28 +614,28 @@ mod test {
 
         x.set_bit(0, true);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(0), true);
+        assert!(x.get_bit(0));
 
         x.set_bit(1, true);
         assert_eq!(x, 3);
-        assert_eq!(x.get_bit(1), true);
+        assert!(x.get_bit(1));
 
         x.set_bit(1, false);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(1), false);
+        assert!(!x.get_bit(1));
 
         x.set_bit(1, false);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(1), false);
+        assert!(!x.get_bit(1));
     }
 
     #[test]
     fn test_u16_get() {
         let x = 0xABu16;
-        assert_eq!(x.get_bit(0), true);
-        assert_eq!(x.get_bit(1), true);
-        assert_eq!(x.get_bit(2), false);
-        assert_eq!(x.get_bit(100), false);
+        assert!(x.get_bit(0));
+        assert!(x.get_bit(1));
+        assert!(!x.get_bit(2));
+        assert!(!x.get_bit(100));
     }
 
     #[test]
@@ -644,28 +644,28 @@ mod test {
 
         x.set_bit(0, true);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(0), true);
+        assert!(x.get_bit(0));
 
         x.set_bit(1, true);
         assert_eq!(x, 3);
-        assert_eq!(x.get_bit(1), true);
+        assert!(x.get_bit(1));
 
         x.set_bit(1, false);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(1), false);
+        assert!(!x.get_bit(1));
 
         x.set_bit(1, false);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(1), false);
+        assert!(!x.get_bit(1));
     }
 
     #[test]
     fn test_u32_get() {
         let x = 0xABu32;
-        assert_eq!(x.get_bit(0), true);
-        assert_eq!(x.get_bit(1), true);
-        assert_eq!(x.get_bit(2), false);
-        assert_eq!(x.get_bit(100), false);
+        assert!(x.get_bit(0));
+        assert!(x.get_bit(1));
+        assert!(!x.get_bit(2));
+        assert!(!x.get_bit(100));
     }
 
     #[test]
@@ -674,28 +674,28 @@ mod test {
 
         x.set_bit(0, true);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(0), true);
+        assert!(x.get_bit(0));
 
         x.set_bit(1, true);
         assert_eq!(x, 3);
-        assert_eq!(x.get_bit(1), true);
+        assert!(x.get_bit(1));
 
         x.set_bit(1, false);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(1), false);
+        assert!(!x.get_bit(1));
 
         x.set_bit(1, false);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(1), false);
+        assert!(!x.get_bit(1));
     }
 
     #[test]
     fn test_u64_get() {
         let x = 0xABu64;
-        assert_eq!(x.get_bit(0), true);
-        assert_eq!(x.get_bit(1), true);
-        assert_eq!(x.get_bit(2), false);
-        assert_eq!(x.get_bit(100), false);
+        assert!(x.get_bit(0));
+        assert!(x.get_bit(1));
+        assert!(!x.get_bit(2));
+        assert!(!x.get_bit(100));
     }
 
     #[test]
@@ -704,28 +704,28 @@ mod test {
 
         x.set_bit(0, true);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(0), true);
+        assert!(x.get_bit(0));
 
         x.set_bit(1, true);
         assert_eq!(x, 3);
-        assert_eq!(x.get_bit(1), true);
+        assert!(x.get_bit(1));
 
         x.set_bit(1, false);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(1), false);
+        assert!(!x.get_bit(1));
 
         x.set_bit(1, false);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(1), false);
+        assert!(!x.get_bit(1));
     }
 
     #[test]
     fn test_u128_get() {
         let x = 0xABu128;
-        assert_eq!(x.get_bit(0), true);
-        assert_eq!(x.get_bit(1), true);
-        assert_eq!(x.get_bit(2), false);
-        assert_eq!(x.get_bit(100), false);
+        assert!(x.get_bit(0));
+        assert!(x.get_bit(1));
+        assert!(!x.get_bit(2));
+        assert!(!x.get_bit(100));
     }
 
     #[test]
@@ -734,19 +734,19 @@ mod test {
 
         x.set_bit(0, true);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(0), true);
+        assert!(x.get_bit(0));
 
         x.set_bit(1, true);
         assert_eq!(x, 3);
-        assert_eq!(x.get_bit(1), true);
+        assert!(x.get_bit(1));
 
         x.set_bit(1, false);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(1), false);
+        assert!(!x.get_bit(1));
 
         x.set_bit(1, false);
         assert_eq!(x, 1);
-        assert_eq!(x.get_bit(1), false);
+        assert!(!x.get_bit(1));
     }
 
     #[test]
@@ -859,8 +859,8 @@ mod test {
         let x = vec![2u32, 2, 2];
         for i in x.iter_to_bit().enumerate() {
             match i.0 {
-                1 | 33 | 65 => assert_eq!(i.1, true),
-                _ => assert_eq!(i.1, false),
+                1 | 33 | 65 => assert!(i.1),
+                _ => assert!(!i.1),
             }
         }
     }
@@ -870,8 +870,8 @@ mod test {
         let x = vec![2u64, 2, 2];
         for i in x.iter_to_bit().enumerate() {
             match i.0 {
-                1 | 65 | 129 => assert_eq!(i.1, true),
-                _ => assert_eq!(i.1, false),
+                1 | 65 | 129 => assert!(i.1),
+                _ => assert!(!i.1),
             }
         }
     }
@@ -881,8 +881,8 @@ mod test {
         let x = vec![2u128, 2, 2];
         for i in x.iter_to_bit().enumerate() {
             match i.0 {
-                1 | 129 | 257 => assert_eq!(i.1, true),
-                _ => assert_eq!(i.1, false),
+                1 | 129 | 257 => assert!(i.1),
+                _ => assert!(!i.1),
             }
         }
     }
@@ -928,8 +928,8 @@ mod test {
         let x = [2u32, 2, 2];
         for i in x.as_slice().iter_to_bit().enumerate() {
             match i.0 {
-                1 | 33 | 65 => assert_eq!(i.1, true),
-                _ => assert_eq!(i.1, false),
+                1 | 33 | 65 => assert!(i.1),
+                _ => assert!(!i.1),
             }
         }
     }
@@ -939,8 +939,8 @@ mod test {
         let x = [2u64, 2, 2];
         for i in x.as_slice().iter_to_bit().enumerate() {
             match i.0 {
-                1 | 65 | 129 => assert_eq!(i.1, true),
-                _ => assert_eq!(i.1, false),
+                1 | 65 | 129 => assert!(i.1),
+                _ => assert!(!i.1),
             }
         }
     }
@@ -950,8 +950,8 @@ mod test {
         let x = [2u128, 2, 2];
         for i in x.as_slice().iter_to_bit().enumerate() {
             match i.0 {
-                1 | 129 | 257 => assert_eq!(i.1, true),
-                _ => assert_eq!(i.1, false),
+                1 | 129 | 257 => assert!(i.1),
+                _ => assert!(!i.1),
             }
         }
     }

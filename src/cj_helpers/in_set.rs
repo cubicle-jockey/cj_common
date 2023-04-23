@@ -94,39 +94,39 @@ impl<'a, T: CjCharsOnly> CjExactRng<T> for CjExactRange<'a, char> {
     }
 }
 
-impl<'a, T> Into<CjExactRange<'a, T>> for Range<T> {
+impl<'a, T> From<Range<T>> for CjExactRange<'a, T> {
     #[inline]
-    fn into(self) -> CjExactRange<'a, T> {
+    fn from(val: Range<T>) -> Self {
         CjExactRange {
-            inner: RangeType::Exact(self.start, self.end),
+            inner: RangeType::Exact(val.start, val.end),
         }
     }
 }
 
-impl<'a, T> Into<CjExactRange<'a, T>> for RangeInclusive<T> {
+impl<'a, T> From<RangeInclusive<T>> for CjExactRange<'a, T> {
     #[inline]
-    fn into(self) -> CjExactRange<'a, T> {
-        let (s, e) = self.into_inner();
+    fn from(val: RangeInclusive<T>) -> Self {
+        let (s, e) = val.into_inner();
         CjExactRange {
             inner: RangeType::Exact(s, e),
         }
     }
 }
 
-impl<'a, T> Into<CjExactRange<'a, T>> for &'a [T] {
+impl<'a, T> From<&'a [T]> for CjExactRange<'a, T> {
     #[inline]
-    fn into(self) -> CjExactRange<'a, T> {
+    fn from(val: &'a [T]) -> Self {
         CjExactRange {
-            inner: RangeType::Slice(self),
+            inner: RangeType::Slice(val),
         }
     }
 }
 
-impl<'a, T: CjChar> Into<CjExactRange<'a, T>> for &'a str {
+impl<'a, T: CjChar> From<&'a str> for CjExactRange<'a, T> {
     #[inline]
-    fn into(self) -> CjExactRange<'a, T> {
+    fn from(val: &'a str) -> Self {
         CjExactRange {
-            inner: RangeType::Str(self),
+            inner: RangeType::Str(val),
         }
     }
 }
@@ -368,42 +368,39 @@ pub mod test {
 
     #[test]
     fn test_inset_1() {
-        assert_eq!('x'.in_range('a'..'z'), true);
-        assert_eq!('z'.in_range_inclusive('a'..='z'), true);
-        assert_eq!(1.in_range(1..3), true);
+        assert!('x'.in_range('a'..'z'));
+        assert!('z'.in_range_inclusive('a'..='z'));
+        assert!(1.in_range(1..3));
     }
 
     #[test]
     fn test_inset_1b() {
-        assert_eq!('x'.in_range_inclusive('a'..='z'), true);
-        assert_eq!('z'.in_range_inclusive('a'..='z'), true);
-        assert_eq!(1.in_range_inclusive(1..=3), true);
+        assert!('x'.in_range_inclusive('a'..='z'));
+        assert!('z'.in_range_inclusive('a'..='z'));
+        assert!(1.in_range_inclusive(1..=3));
     }
 
     #[test]
     fn test_inset_2() {
-        assert_eq!(
-            'x'.in_set([('a'..'r').into(), ('r'..'y').into()].as_slice()),
-            true
+        assert!(
+            'x'.in_set([('a'..'r').into(), ('r'..'y').into()].as_slice())
         );
-        assert_eq!(
-            'z'.in_set([('a'..'r').into(), ('r'..='z').into()].as_slice()),
-            true
+        assert!(
+            'z'.in_set([('a'..'r').into(), ('r'..='z').into()].as_slice())
         );
-        assert_eq!(10.in_set([(1..3).into(), (3..=10).into()].as_slice()), true);
+        assert!(10.in_set([(1..3).into(), (3..=10).into()].as_slice()));
     }
 
     #[test]
     fn test_inset_3() {
         let list = "lmnop";
         for c in list.chars() {
-            assert_eq!(c.in_range('k'..'q'), true);
-            assert_eq!(c.in_set([('k'..'q').into()].as_slice()), true);
-            assert_eq!(
-                c.in_set([('k'..='l').into(), ('m'..'n').into(), ('n'..='p').into()].as_slice()),
-                true
+            assert!(c.in_range('k'..'q'));
+            assert!(c.in_set([('k'..'q').into()].as_slice()));
+            assert!(
+                c.in_set([('k'..='l').into(), ('m'..'n').into(), ('n'..='p').into()].as_slice())
             );
-            assert_eq!(c.in_range('w'..'z'), false);
+            assert!(!c.in_range('w'..'z'));
         }
     }
 
@@ -411,9 +408,9 @@ pub mod test {
     fn test_inset_4() {
         let list = [1_000, 10_000, 100_000_000];
         for n in list {
-            assert_eq!(n.in_range(1..200_000_000), true);
-            assert_eq!(n.in_set([(1..200_000_000).into()].as_slice()), true);
-            assert_eq!(
+            assert!(n.in_range(1..200_000_000));
+            assert!(n.in_set([(1..200_000_000).into()].as_slice()));
+            assert!(
                 n.in_set(
                     [
                         (1..=10).into(),
@@ -421,10 +418,9 @@ pub mod test {
                         (9_999..=100_000_000).into(),
                     ]
                     .as_slice()
-                ),
-                true
+                )
             );
-            assert_eq!(n.in_range(1_000_000_000..1_000_000_001), false);
+            assert!(!n.in_range(1_000_000_000..1_000_000_001));
         }
     }
 
@@ -433,25 +429,24 @@ pub mod test {
         let alpha_nums = [('a'..='z').into(), ('A'..='Z').into(), ('0'..='9').into()];
         let list = "lmnop";
         for c in list.chars() {
-            assert_eq!(c.in_set(alpha_nums.as_slice()), true);
+            assert!(c.in_set(alpha_nums.as_slice()));
         }
     }
 
     #[test]
     fn test_inset_readme() {
-        assert_eq!('x'.in_range('a'..'z'), true);
-        assert_eq!('z'.in_range_inclusive('a'..='z'), true);
-        assert_eq!(1.in_range(1..3), true);
-        assert_eq!(
-            'z'.in_set([('a'..'r').into(), ('r'..='z').into()].as_slice()),
-            true
+        assert!('x'.in_range('a'..'z'));
+        assert!('z'.in_range_inclusive('a'..='z'));
+        assert!(1.in_range(1..3));
+        assert!(
+            'z'.in_set([('a'..'r').into(), ('r'..='z').into()].as_slice())
         );
 
         let list = "lmnop";
         for c in list.chars() {
-            assert_eq!(c.in_range('k'..'q'), true);
-            assert_eq!(c.in_set([('k'..'q').into()].as_slice()), true);
-            assert_eq!(
+            assert!(c.in_range('k'..'q'));
+            assert!(c.in_set([('k'..'q').into()].as_slice()));
+            assert!(
                 c.in_set(
                     [
                         ('k'..='l').into(),                // RangeInclusive
@@ -461,23 +456,22 @@ pub mod test {
                         "test123".into(),                  // str
                     ]
                     .as_slice()
-                ),
-                true
+                )
             );
-            assert_eq!(c.in_range('w'..'z'), false);
+            assert!(!c.in_range('w'..'z'));
         }
 
         let alpha_nums = [('a'..='z').into(), ('A'..='Z').into(), ('0'..='9').into()];
         let list = "lmnop";
         for c in list.chars() {
-            assert_eq!(c.in_set(alpha_nums.as_slice()), true);
+            assert!(c.in_set(alpha_nums.as_slice()));
         }
 
         let list = [1_000, 10_000, 100_000_000];
         for n in list {
-            assert_eq!(n.in_range(1..200_000_000), true);
-            assert_eq!(n.in_set([(1..200_000_000).into()].as_slice()), true);
-            assert_eq!(
+            assert!(n.in_range(1..200_000_000));
+            assert!(n.in_set([(1..200_000_000).into()].as_slice()));
+            assert!(
                 n.in_set(
                     [
                         (1..=10).into(),                 // RangeInclusive
@@ -486,20 +480,19 @@ pub mod test {
                         [30, 90, 700].as_slice().into()  // Slice
                     ]
                     .as_slice()
-                ),
-                true
+                )
             );
-            assert_eq!(n.in_range(1_000_000_000..1_000_000_001), false);
+            assert!(!n.in_range(1_000_000_000..1_000_000_001));
         }
 
-        assert_eq!('9'.is_ascii_numeric(), true);
-        assert_eq!('T'.is_ascii_numeric(), false);
+        assert!('9'.is_ascii_numeric());
+        assert!(!'T'.is_ascii_numeric());
 
-        assert_eq!('9'.is_ascii_alpha(), false);
-        assert_eq!('T'.is_ascii_alpha(), true);
+        assert!(!'9'.is_ascii_alpha());
+        assert!('T'.is_ascii_alpha());
 
         for c in "9T".chars() {
-            assert_eq!(c.is_ascii_alpha_numeric(), true);
+            assert!(c.is_ascii_alpha_numeric());
         }
     }
 }
