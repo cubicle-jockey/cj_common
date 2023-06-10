@@ -41,6 +41,25 @@ static HEX_TABLE: [&str; 256] = [
     "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "FA", "FB", "FC", "FD", "FE", "FF",
 ];
 
+static HEX_TABLE_LOWER: [&str; 256] = [
+    "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0a", "0b", "0c", "0d", "0e", "0f",
+    "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1a", "1b", "1c", "1d", "1e", "1f",
+    "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "2a", "2b", "2c", "2d", "2e", "2f",
+    "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "3a", "3b", "3c", "3d", "3e", "3f",
+    "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "4a", "4b", "4c", "4d", "4e", "4f",
+    "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "5a", "5b", "5c", "5d", "5e", "5f",
+    "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "6a", "6b", "6c", "6d", "6e", "6f",
+    "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "7a", "7b", "7c", "7d", "7e", "7f",
+    "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "8a", "8b", "8c", "8d", "8e", "8f",
+    "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "9a", "9b", "9c", "9d", "9e", "9f",
+    "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "aa", "ab", "ac", "ad", "ae", "af",
+    "b0", "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8", "b9", "ba", "bb", "bc", "bd", "be", "bf",
+    "c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "ca", "cb", "cc", "cd", "ce", "cf",
+    "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "da", "db", "dc", "dd", "de", "df",
+    "e0", "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8", "e9", "ea", "eb", "ec", "ed", "ee", "ef",
+    "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "fa", "fb", "fc", "fd", "fe", "ff",
+];
+
 /// converts u8 to hex &str
 /// ```    
 /// # use cj_common::prelude::*;
@@ -52,6 +71,17 @@ pub fn u8_to_hex_str(value: &u8) -> &'static str {
     HEX_TABLE[*value as usize]
 }
 
+/// converts u8 to lowercase hex &str
+/// ```    
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(u8_to_hex_low_str(&0xD1), "d1");
+/// ```
+#[inline]
+pub fn u8_to_hex_low_str(value: &u8) -> &'static str {
+    HEX_TABLE_LOWER[*value as usize]
+}
+
 /// converts u8 to hex String
 /// ```
 /// # use cj_common::prelude::*;
@@ -61,6 +91,17 @@ pub fn u8_to_hex_str(value: &u8) -> &'static str {
 #[inline]
 pub fn u8_to_hex(value: &u8) -> String {
     HEX_TABLE[*value as usize].to_string()
+}
+
+/// converts u8 to lowercase hex String
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(u8_to_hex_low(&0xD1), "d1".to_string());
+/// ```
+#[inline]
+pub fn u8_to_hex_low(value: &u8) -> String {
+    HEX_TABLE_LOWER[*value as usize].to_string()
 }
 
 /// converts a u8 slice to hex String
@@ -76,6 +117,23 @@ pub fn u8_array_to_hex(value: &[u8]) -> String {
     let _: () = value
         .iter()
         .map(|f| rslt.push_str(u8_to_hex_str(f)))
+        .collect();
+    rslt
+}
+
+/// converts a u8 slice to lowercase hex String
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// let array = [0xA0,0xA1,0xA2];
+/// assert_eq!(u8_array_to_hex_low(&array),"a0a1a2");
+/// ```
+#[inline]
+pub fn u8_array_to_hex_low(value: &[u8]) -> String {
+    let mut rslt = String::with_capacity(value.len() * 2);
+    let _: () = value
+        .iter()
+        .map(|f| rslt.push_str(u8_to_hex_low_str(f)))
         .collect();
     rslt
 }
@@ -212,13 +270,6 @@ impl<'a> ToHexIter<'a> {
         Self { inner: i }
     }
 
-    // fn next_hex_string(&mut self) -> Option<String> {
-    //     if let Some(b) = self.inner.next() {
-    //         return Some(u8_to_hex(b));
-    //     }
-    //     None
-    // }
-
     fn next_hex_str(&mut self) -> Option<&'static str> {
         if let Some(b) = self.inner.next() {
             return Some(u8_to_hex_str(b));
@@ -235,8 +286,34 @@ impl Iterator for ToHexIter<'_> {
     }
 }
 
+pub struct ToHexLowIter<'a> {
+    inner: Iter<'a, u8>,
+}
+
+impl<'a> ToHexLowIter<'a> {
+    pub fn new(i: Iter<'a, u8>) -> Self {
+        Self { inner: i }
+    }
+
+    fn next_hex_low_str(&mut self) -> Option<&'static str> {
+        if let Some(b) = self.inner.next() {
+            return Some(u8_to_hex_low_str(b));
+        }
+        None
+    }
+}
+
+impl Iterator for ToHexLowIter<'_> {
+    type Item = &'static str;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.next_hex_low_str()
+    }
+}
+
 pub trait CjToHexIter {
     fn iter_to_hex(&self) -> ToHexIter;
+    fn iter_to_hex_low(&self) -> ToHexLowIter;
 }
 
 impl CjToHexIter for &[u8] {
@@ -253,6 +330,19 @@ impl CjToHexIter for &[u8] {
     fn iter_to_hex(&self) -> ToHexIter {
         ToHexIter::new(self[..].iter())
     }
+    /// Iterator for a slice of bytes that produces lowercase hex str
+    /// ```
+    /// # use cj_common::prelude::CjToHexIter;
+    /// let s = "Many hands make light work.".as_bytes();
+    /// let mut s2 = String::new();
+    /// for c in s.iter_to_hex_low() {
+    ///     s2.push_str(c);
+    /// }
+    /// assert_eq!(s2.as_str(), "4d616e792068616e6473206d616b65206c6967687420776f726b2e");     
+    /// ```
+    fn iter_to_hex_low(&self) -> ToHexLowIter {
+        ToHexLowIter::new(self[..].iter())
+    }
 }
 
 impl CjToHexIter for &str {
@@ -267,6 +357,18 @@ impl CjToHexIter for &str {
     /// ```
     fn iter_to_hex(&self) -> ToHexIter {
         ToHexIter::new(self.as_bytes()[..].iter())
+    }
+    /// Iterator for str that produces lowercase hex str
+    /// ```
+    /// # use cj_common::prelude::CjToHexIter;
+    /// let mut s2 = String::new();
+    /// for c in "Many hands make light work.".iter_to_hex_low() {
+    ///     s2.push_str(c);
+    /// }
+    /// assert_eq!(s2.as_str(), "4d616e792068616e6473206d616b65206c6967687420776f726b2e");    
+    /// ```
+    fn iter_to_hex_low(&self) -> ToHexLowIter {
+        ToHexLowIter::new(self.as_bytes()[..].iter())
     }
 }
 
@@ -283,6 +385,19 @@ impl CjToHexIter for Vec<u8> {
     /// ```
     fn iter_to_hex(&self) -> ToHexIter {
         ToHexIter::new(self[..].iter())
+    }
+    /// Iterator for vec of bytes that produces lowercase hex str
+    /// ```
+    /// # use cj_common::prelude::CjToHexIter;
+    /// let s = Vec::<u8>::from("Many hands make light work.");
+    /// let mut s2 = String::new();
+    /// for c in s.iter_to_hex_low() {
+    ///     s2.push_str(c);
+    /// }
+    /// assert_eq!(s2.as_str(), "4d616e792068616e6473206d616b65206c6967687420776f726b2e");    
+    /// ```
+    fn iter_to_hex_low(&self) -> ToHexLowIter {
+        ToHexLowIter::new(self[..].iter())
     }
 }
 
@@ -368,6 +483,21 @@ pub fn i16be_to_hex(i: i16) -> String {
         .collect::<String>();
     r
 }
+/// i16 to big endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(i16be_to_hex_low(0x4FFFi16), "4fff");
+/// ```
+#[inline]
+pub fn i16be_to_hex_low(i: i16) -> String {
+    let r = i
+        .to_be_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// converts up to first 4 chars of big endian hex to i16
 /// ```
@@ -414,6 +544,21 @@ pub fn i16le_to_hex(i: i16) -> String {
         .to_le_bytes()
         .iter()
         .map(|f| HEX_TABLE[*f as usize])
+        .collect::<String>();
+    r
+}
+/// i16 to little endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(i16le_to_hex_low(0x4FFFi16), "ff4f");
+/// ```
+#[inline]
+pub fn i16le_to_hex_low(i: i16) -> String {
+    let r = i
+        .to_le_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
         .collect::<String>();
     r
 }
@@ -464,6 +609,19 @@ pub fn i16ne_to_hex(i: i16) -> String {
     r
 }
 
+///
+/// i16 to native endian lowercase hex
+///
+#[inline]
+pub fn i16ne_to_hex_low(i: i16) -> String {
+    let r = i
+        .to_ne_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
+
 /// u16 to big endian hex
 /// ```
 /// # use cj_common::prelude::*;
@@ -476,6 +634,21 @@ pub fn u16be_to_hex(i: u16) -> String {
         .to_be_bytes()
         .iter()
         .map(|f| HEX_TABLE[*f as usize])
+        .collect::<String>();
+    r
+}
+/// u16 to big endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(u16be_to_hex_low(0x4FFFu16), "4fff");
+/// ```
+#[inline]
+pub fn u16be_to_hex_low(i: u16) -> String {
+    let r = i
+        .to_be_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
         .collect::<String>();
     r
 }
@@ -528,6 +701,21 @@ pub fn u16le_to_hex(i: u16) -> String {
         .collect::<String>();
     r
 }
+/// u16 to little endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(u16le_to_hex_low(0x4FFFu16), "ff4f");
+/// ```
+#[inline]
+pub fn u16le_to_hex_low(i: u16) -> String {
+    let r = i
+        .to_le_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// converts up to first 4 chars of little endian hex to u16
 /// ```
@@ -574,6 +762,18 @@ pub fn u16ne_to_hex(i: u16) -> String {
         .collect::<String>();
     r
 }
+///
+/// u16 to native endian lowercase hex
+///
+#[inline]
+pub fn u16ne_to_hex_low(i: u16) -> String {
+    let r = i
+        .to_ne_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// i32 to big endian hex
 /// ```
@@ -587,6 +787,21 @@ pub fn i32be_to_hex(i: i32) -> String {
         .to_be_bytes()
         .iter()
         .map(|f| HEX_TABLE[*f as usize])
+        .collect::<String>();
+    r
+}
+/// i32 to big endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(i32be_to_hex_low(0x4FFFFFFFi32), "4fffffff");
+/// ```
+#[inline]
+pub fn i32be_to_hex_low(i: i32) -> String {
+    let r = i
+        .to_be_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
         .collect::<String>();
     r
 }
@@ -639,6 +854,21 @@ pub fn i32le_to_hex(i: i32) -> String {
         .collect::<String>();
     r
 }
+/// i32 to little endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(i32le_to_hex_low(0x4FFFFFFFi32), "ffffff4f");
+/// ```
+#[inline]
+pub fn i32le_to_hex_low(i: i32) -> String {
+    let r = i
+        .to_le_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// converts up to first 8 chars of little endian hex to i32
 /// ```
@@ -685,6 +915,18 @@ pub fn i32ne_to_hex(i: i32) -> String {
         .collect::<String>();
     r
 }
+///
+/// i32 to native endian lowercase hex
+///
+#[inline]
+pub fn i32ne_to_hex_low(i: i32) -> String {
+    let r = i
+        .to_ne_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// u32 to big endian hex
 /// ```
@@ -698,6 +940,21 @@ pub fn u32be_to_hex(i: u32) -> String {
         .to_be_bytes()
         .iter()
         .map(|f| HEX_TABLE[*f as usize])
+        .collect::<String>();
+    r
+}
+/// u32 to big endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(u32be_to_hex_low(0x4FFFFFFFu32), "4fffffff");
+/// ```
+#[inline]
+pub fn u32be_to_hex_low(i: u32) -> String {
+    let r = i
+        .to_be_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
         .collect::<String>();
     r
 }
@@ -750,6 +1007,21 @@ pub fn u32le_to_hex(i: u32) -> String {
         .collect::<String>();
     r
 }
+/// u32 to little endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(u32le_to_hex_low(0x4FFFFFFFu32), "ffffff4f");
+/// ```
+#[inline]
+pub fn u32le_to_hex_low(i: u32) -> String {
+    let r = i
+        .to_le_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// converts up to first 8 chars of little endian hex to u32
 /// ```
@@ -796,6 +1068,18 @@ pub fn u32ne_to_hex(i: u32) -> String {
         .collect::<String>();
     r
 }
+///
+/// u32 to native endian lowercase hex
+///
+#[inline]
+pub fn u32ne_to_hex_low(i: u32) -> String {
+    let r = i
+        .to_ne_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// i64 to big endian hex
 /// ```
@@ -809,6 +1093,21 @@ pub fn i64be_to_hex(i: i64) -> String {
         .to_be_bytes()
         .iter()
         .map(|f| HEX_TABLE[*f as usize])
+        .collect::<String>();
+    r
+}
+/// i64 to big endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(i64be_to_hex_low(0x4FFFFFFFFFFFFFFFi64), "4fffffffffffffff");
+/// ```
+#[inline]
+pub fn i64be_to_hex_low(i: i64) -> String {
+    let r = i
+        .to_be_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
         .collect::<String>();
     r
 }
@@ -861,6 +1160,21 @@ pub fn i64le_to_hex(i: i64) -> String {
         .collect::<String>();
     r
 }
+/// i64 to little endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(i64le_to_hex_low(0x4FFFFFFFFFFFFFFFi64), "ffffffffffffff4f");
+/// ```
+#[inline]
+pub fn i64le_to_hex_low(i: i64) -> String {
+    let r = i
+        .to_le_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// converts up to first 16 chars of little endian hex to i64
 /// ```
@@ -907,6 +1221,18 @@ pub fn i64ne_to_hex(i: i64) -> String {
         .collect::<String>();
     r
 }
+///
+/// i64 to native endian lowercase hex
+///
+#[inline]
+pub fn i64ne_to_hex_low(i: i64) -> String {
+    let r = i
+        .to_ne_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// u64 to big endian hex
 /// ```
@@ -920,6 +1246,21 @@ pub fn u64be_to_hex(i: u64) -> String {
         .to_be_bytes()
         .iter()
         .map(|f| HEX_TABLE[*f as usize])
+        .collect::<String>();
+    r
+}
+/// u64 to big endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(u64be_to_hex_low(0x4FFFFFFFFFFFFFFFu64), "4fffffffffffffff");
+/// ```
+#[inline]
+pub fn u64be_to_hex_low(i: u64) -> String {
+    let r = i
+        .to_be_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
         .collect::<String>();
     r
 }
@@ -972,6 +1313,22 @@ pub fn u64le_to_hex(i: u64) -> String {
         .collect::<String>();
     r
 }
+/// u64 to little endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(u64le_to_hex_low(0x4FFFFFFFFFFFFFFFu64), "ffffffffffffff4f");
+/// ```
+#[inline]
+pub fn u64le_to_hex_low(i: u64) -> String {
+    let r = i
+        .to_le_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
+
 /// converts up to first 16 chars of little endian hex to u64
 /// ```
 /// # use cj_common::prelude::*;
@@ -1017,6 +1374,18 @@ pub fn u64ne_to_hex(i: u64) -> String {
         .collect::<String>();
     r
 }
+///
+/// u64 to native endian lowercase hex
+///
+#[inline]
+pub fn u64ne_to_hex_low(i: u64) -> String {
+    let r = i
+        .to_ne_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// i128 to big endian hex
 /// ```
@@ -1030,6 +1399,21 @@ pub fn i128be_to_hex(i: i128) -> String {
         .to_be_bytes()
         .iter()
         .map(|f| HEX_TABLE[*f as usize])
+        .collect::<String>();
+    r
+}
+/// i128 to big endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(i128be_to_hex_low(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFi128), "4fffffffffffffffffffffffffffffff");
+/// ```
+#[inline]
+pub fn i128be_to_hex_low(i: i128) -> String {
+    let r = i
+        .to_be_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
         .collect::<String>();
     r
 }
@@ -1082,6 +1466,21 @@ pub fn i128le_to_hex(i: i128) -> String {
         .collect::<String>();
     r
 }
+/// i128 to little endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(i128le_to_hex_low(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFi128), "ffffffffffffffffffffffffffffff4f");
+/// ```
+#[inline]
+pub fn i128le_to_hex_low(i: i128) -> String {
+    let r = i
+        .to_le_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// converts up to first 32 chars of little endian hex to i128
 /// ```
@@ -1128,6 +1527,18 @@ pub fn i128ne_to_hex(i: i128) -> String {
         .collect::<String>();
     r
 }
+///
+/// u64 to native endian lowercase hex
+///
+#[inline]
+pub fn i128ne_to_hex_low(i: i128) -> String {
+    let r = i
+        .to_ne_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// u128 to big endian hex
 /// ```
@@ -1141,6 +1552,21 @@ pub fn u128be_to_hex(i: u128) -> String {
         .to_be_bytes()
         .iter()
         .map(|f| HEX_TABLE[*f as usize])
+        .collect::<String>();
+    r
+}
+/// u128 to big endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(u128be_to_hex_low(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128), "4fffffffffffffffffffffffffffffff");
+/// ```
+#[inline]
+pub fn u128be_to_hex_low(i: u128) -> String {
+    let r = i
+        .to_be_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
         .collect::<String>();
     r
 }
@@ -1193,6 +1619,21 @@ pub fn u128le_to_hex(i: u128) -> String {
         .collect::<String>();
     r
 }
+/// u128 to little endian lowercase hex
+/// ```
+/// # use cj_common::prelude::*;
+///
+/// assert_eq!(u128le_to_hex_low(0x4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128), "ffffffffffffffffffffffffffffff4f");
+/// ```
+#[inline]
+pub fn u128le_to_hex_low(i: u128) -> String {
+    let r = i
+        .to_le_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 /// converts up to first 32 chars of little endian hex to u128
 /// ```
@@ -1239,16 +1680,32 @@ pub fn u128ne_to_hex(i: u128) -> String {
         .collect::<String>();
     r
 }
+///
+/// u64 to native endian lowercase hex
+///
+#[inline]
+pub fn u128ne_to_hex_low(i: u128) -> String {
+    let r = i
+        .to_ne_bytes()
+        .iter()
+        .map(|f| HEX_TABLE_LOWER[*f as usize])
+        .collect::<String>();
+    r
+}
 
 pub trait Hex {
     /// to big endian hex
     fn to_hex_be(self) -> String;
+    /// to big endian lowercase hex
+    fn to_hex_be_low(self) -> String;
     /// from big endian hex
     fn from_hex_be(value: &str) -> Option<Self>
     where
         Self: Sized;
     /// to little endian hex
     fn to_hex_le(self) -> String;
+    /// to little endian lowercase hex
+    fn to_hex_le_low(self) -> String;
     /// from little endian hex
     fn from_hex_le(value: &str) -> Option<Self>
     where
@@ -1260,12 +1717,20 @@ impl Hex for i16 {
         i16be_to_hex(self)
     }
 
+    fn to_hex_be_low(self) -> String {
+        i16be_to_hex_low(self)
+    }
+
     fn from_hex_be(value: &str) -> Option<Self> {
         i16_from_hex_be(value)
     }
 
     fn to_hex_le(self) -> String {
         i16le_to_hex(self)
+    }
+
+    fn to_hex_le_low(self) -> String {
+        i16le_to_hex_low(self)
     }
 
     fn from_hex_le(value: &str) -> Option<Self> {
@@ -1278,12 +1743,20 @@ impl Hex for u16 {
         u16be_to_hex(self)
     }
 
+    fn to_hex_be_low(self) -> String {
+        u16be_to_hex_low(self)
+    }
+
     fn from_hex_be(value: &str) -> Option<Self> {
         u16_from_hex_be(value)
     }
 
     fn to_hex_le(self) -> String {
         u16le_to_hex(self)
+    }
+
+    fn to_hex_le_low(self) -> String {
+        u16le_to_hex_low(self)
     }
 
     fn from_hex_le(value: &str) -> Option<Self> {
@@ -1296,12 +1769,20 @@ impl Hex for i32 {
         i32be_to_hex(self)
     }
 
+    fn to_hex_be_low(self) -> String {
+        i32be_to_hex_low(self)
+    }
+
     fn from_hex_be(value: &str) -> Option<Self> {
         i32_from_hex_be(value)
     }
 
     fn to_hex_le(self) -> String {
         i32le_to_hex(self)
+    }
+
+    fn to_hex_le_low(self) -> String {
+        i32le_to_hex_low(self)
     }
 
     fn from_hex_le(value: &str) -> Option<Self> {
@@ -1314,12 +1795,20 @@ impl Hex for u32 {
         u32be_to_hex(self)
     }
 
+    fn to_hex_be_low(self) -> String {
+        u32be_to_hex_low(self)
+    }
+
     fn from_hex_be(value: &str) -> Option<Self> {
         u32_from_hex_be(value)
     }
 
     fn to_hex_le(self) -> String {
         u32le_to_hex(self)
+    }
+
+    fn to_hex_le_low(self) -> String {
+        u32le_to_hex_low(self)
     }
 
     fn from_hex_le(value: &str) -> Option<Self> {
@@ -1332,12 +1821,20 @@ impl Hex for i64 {
         i64be_to_hex(self)
     }
 
+    fn to_hex_be_low(self) -> String {
+        i64be_to_hex_low(self)
+    }
+
     fn from_hex_be(value: &str) -> Option<Self> {
         i64_from_hex_be(value)
     }
 
     fn to_hex_le(self) -> String {
         i64le_to_hex(self)
+    }
+
+    fn to_hex_le_low(self) -> String {
+        i64le_to_hex_low(self)
     }
 
     fn from_hex_le(value: &str) -> Option<Self> {
@@ -1350,12 +1847,20 @@ impl Hex for u64 {
         u64be_to_hex(self)
     }
 
+    fn to_hex_be_low(self) -> String {
+        u64be_to_hex_low(self)
+    }
+
     fn from_hex_be(value: &str) -> Option<Self> {
         u64_from_hex_be(value)
     }
 
     fn to_hex_le(self) -> String {
         u64le_to_hex(self)
+    }
+
+    fn to_hex_le_low(self) -> String {
+        u64le_to_hex_low(self)
     }
 
     fn from_hex_le(value: &str) -> Option<Self> {
@@ -1368,12 +1873,20 @@ impl Hex for i128 {
         i128be_to_hex(self)
     }
 
+    fn to_hex_be_low(self) -> String {
+        i128be_to_hex_low(self)
+    }
+
     fn from_hex_be(value: &str) -> Option<Self> {
         i128_from_hex_be(value)
     }
 
     fn to_hex_le(self) -> String {
         i128le_to_hex(self)
+    }
+
+    fn to_hex_le_low(self) -> String {
+        i128le_to_hex_low(self)
     }
 
     fn from_hex_le(value: &str) -> Option<Self> {
@@ -1386,12 +1899,20 @@ impl Hex for u128 {
         u128be_to_hex(self)
     }
 
+    fn to_hex_be_low(self) -> String {
+        u128be_to_hex_low(self)
+    }
+
     fn from_hex_be(value: &str) -> Option<Self> {
         u128_from_hex_be(value)
     }
 
     fn to_hex_le(self) -> String {
         u128le_to_hex(self)
+    }
+
+    fn to_hex_le_low(self) -> String {
+        u128le_to_hex_low(self)
     }
 
     fn from_hex_le(value: &str) -> Option<Self> {
@@ -1423,8 +1944,32 @@ mod tests {
     }
 
     #[test]
+    fn test_iter_hex_low() {
+        let mut s = String::new();
+        for c in "Many hands make light work.".iter_to_hex_low() {
+            s.push_str(c);
+        }
+        assert_eq!(
+            s.as_str(),
+            "4d616e792068616e6473206d616b65206c6967687420776f726b2e"
+        );
+
+        let mut v = Vec::new();
+        for b in s.as_str().iter_hex_to_byte() {
+            v.push(b);
+        }
+        let s2 = String::from_utf8_lossy(v.as_slice()).to_string();
+        assert_eq!(s2.as_str(), "Many hands make light work.");
+    }
+
+    #[test]
     fn test_u8_to_hex_str() {
         assert_eq!(u8_to_hex_str(&0xD1), "D1");
+    }
+
+    #[test]
+    fn test_u8_to_hex_str_low() {
+        assert_eq!(u8_to_hex_low_str(&0xD1), "d1");
     }
 
     #[test]
@@ -1433,9 +1978,20 @@ mod tests {
     }
 
     #[test]
+    fn test_u8_to_hex_low() {
+        assert_eq!(u8_to_hex_low(&0xD1), "d1".to_string());
+    }
+
+    #[test]
     fn test_u8_array_to_hex() {
         let array = [0xA0, 0xA1, 0xA2];
         assert_eq!(u8_array_to_hex(&array), "A0A1A2");
+    }
+
+    #[test]
+    fn test_u8_array_to_hex_low() {
+        let array = [0xA0, 0xA1, 0xA2];
+        assert_eq!(u8_array_to_hex_low(&array), "a0a1a2");
     }
 
     #[test]
@@ -1465,6 +2021,11 @@ mod tests {
     #[test]
     fn test_i16be_to_hex3() {
         assert_eq!(i16be_to_hex(0x4FFi16), "04FF");
+    }
+
+    #[test]
+    fn test_i16be_to_hex_low3() {
+        assert_eq!(i16be_to_hex_low(0x4FFi16), "04ff");
     }
 
     #[test]
