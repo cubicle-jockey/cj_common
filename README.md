@@ -50,6 +50,11 @@ fn main() {
 ```
 
 - hex - structs, methods and traits for working with hex encoding/decoding
+  <br>
+  <br>
+  <i>Note that uppercase hex is the default output. Lowercase is supported too
+  and most methods have a corresponding _low() implementation. For example, calling
+  to_hex_be_low() instead of to_hex_be() will result in lowercase output</i>
 
 ```rust
 fn main() {
@@ -57,6 +62,7 @@ fn main() {
 
     let x = 0x1F2i64;
     let s = x.to_hex_be();
+    x.to_hex_be_low();
     let y: Option<i64> = i64::from_hex_be(s.as_str());
     assert!(y.is_some());
     assert_eq!(x, y.unwrap());
