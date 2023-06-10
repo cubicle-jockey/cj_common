@@ -211,27 +211,24 @@ pub trait Bitflag {
 impl Bitflag for u8 {
     #[inline]
     fn get_bit(&self, bit_pos: usize) -> bool {
-        match bit_pos {
-            0..=7 => {
-                let v = 1u8 << bit_pos;
-                self & v == v
-            }
-            _ => false,
+        if let 0..=7 = bit_pos {
+            let v = 1u8 << bit_pos;
+            self & v == v
+        } else {
+            false
         }
     }
+
     #[inline]
     fn set_bit(&mut self, bit_pos: usize, value: bool) {
-        match bit_pos {
-            0..=7 => {
-                let v = 1u8 << bit_pos;
-                let i = 0xFF - v;
-                if value {
-                    *self = (*self & i) + v;
-                } else {
-                    *self &= i;
-                }
+        if let 0..=7 = bit_pos {
+            let v = 1u8 << bit_pos;
+            let i = 0xFF - v;
+            if value {
+                *self = (*self & i) + v;
+            } else {
+                *self &= i;
             }
-            _ => {}
         }
     }
 }
@@ -239,27 +236,23 @@ impl Bitflag for u8 {
 impl Bitflag for u16 {
     #[inline]
     fn get_bit(&self, bit_pos: usize) -> bool {
-        match bit_pos {
-            0..=15 => {
-                let v = 1u16 << bit_pos;
-                self & v == v
-            }
-            _ => false,
+        if let 0..=15 = bit_pos {
+            let v = 1u16 << bit_pos;
+            self & v == v
+        } else {
+            false
         }
     }
     #[inline]
     fn set_bit(&mut self, bit_pos: usize, value: bool) {
-        match bit_pos {
-            0..=15 => {
-                let v = 1u16 << bit_pos;
-                let i = 0xFFFF - v;
-                if value {
-                    *self = (*self & i) + v;
-                } else {
-                    *self &= i;
-                }
+        if let 0..=15 = bit_pos {
+            let v = 1u16 << bit_pos;
+            let i = 0xFFFF - v;
+            if value {
+                *self = (*self & i) + v;
+            } else {
+                *self &= i;
             }
-            _ => {}
         }
     }
 }
@@ -267,27 +260,23 @@ impl Bitflag for u16 {
 impl Bitflag for u32 {
     #[inline]
     fn get_bit(&self, bit_pos: usize) -> bool {
-        match bit_pos {
-            0..=31 => {
-                let v = 1u32 << bit_pos;
-                self & v == v
-            }
-            _ => false,
+        if let 0..=31 = bit_pos {
+            let v = 1u32 << bit_pos;
+            self & v == v
+        } else {
+            false
         }
     }
     #[inline]
     fn set_bit(&mut self, bit_pos: usize, value: bool) {
-        match bit_pos {
-            0..=31 => {
-                let v = 1u32 << bit_pos;
-                let i = 0xFFFFFFFF - v;
-                if value {
-                    *self = (*self & i) + v;
-                } else {
-                    *self &= i;
-                }
+        if let 0..=31 = bit_pos {
+            let v = 1u32 << bit_pos;
+            let i = 0xFFFFFFFF - v;
+            if value {
+                *self = (*self & i) + v;
+            } else {
+                *self &= i;
             }
-            _ => {}
         }
     }
 }
@@ -295,27 +284,23 @@ impl Bitflag for u32 {
 impl Bitflag for u64 {
     #[inline]
     fn get_bit(&self, bit_pos: usize) -> bool {
-        match bit_pos {
-            0..=63 => {
-                let v = 1u64 << bit_pos;
-                self & v == v
-            }
-            _ => false,
+        if let 0..=63 = bit_pos {
+            let v = 1u64 << bit_pos;
+            self & v == v
+        } else {
+            false
         }
     }
     #[inline]
     fn set_bit(&mut self, bit_pos: usize, value: bool) {
-        match bit_pos {
-            0..=63 => {
-                let v = 1u64 << bit_pos;
-                let i = 0xFFFFFFFFFFFFFFFF - v;
-                if value {
-                    *self = (*self & i) + v;
-                } else {
-                    *self &= i;
-                }
+        if let 0..=63 = bit_pos {
+            let v = 1u64 << bit_pos;
+            let i = 0xFFFFFFFFFFFFFFFF - v;
+            if value {
+                *self = (*self & i) + v;
+            } else {
+                *self &= i;
             }
-            _ => {}
         }
     }
 }
@@ -323,27 +308,23 @@ impl Bitflag for u64 {
 impl Bitflag for u128 {
     #[inline]
     fn get_bit(&self, bit_pos: usize) -> bool {
-        match bit_pos {
-            0..=127 => {
-                let v = 1u128 << bit_pos;
-                self & v == v
-            }
-            _ => false,
+        if let 0..=127 = bit_pos {
+            let v = 1u128 << bit_pos;
+            self & v == v
+        } else {
+            false
         }
     }
     #[inline]
     fn set_bit(&mut self, bit_pos: usize, value: bool) {
-        match bit_pos {
-            0..=127 => {
-                let v = 1u128 << bit_pos;
-                let i = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF - v;
-                if value {
-                    *self = (*self & i) + v;
-                } else {
-                    *self &= i;
-                }
+        if let 0..=127 = bit_pos {
+            let v = 1u128 << bit_pos;
+            let i = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF - v;
+            if value {
+                *self = (*self & i) + v;
+            } else {
+                *self &= i;
             }
-            _ => {}
         }
     }
 }

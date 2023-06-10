@@ -212,15 +212,14 @@ impl<'a> FromHexIter<'a> {
     fn next_byte(&mut self) -> Option<u8> {
         if let Some(c) = &self.inner.next() {
             let b1 = hex_char_to_u8(c);
-            if b1.is_some() {
+            if let Some(mut b1) = b1 {
                 if self.padded {
                     self.padded = false;
-                    return b1;
+                    return Some(b1);
                 }
                 if let Some(c) = &self.inner.next() {
                     let b2 = hex_char_to_u8(c);
                     if let Some(b2) = b2 {
-                        let mut b1 = b1.unwrap();
                         b1 = (b1 << 4) + b2;
                         return Some(b1);
                     }
