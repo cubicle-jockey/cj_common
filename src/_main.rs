@@ -4,32 +4,53 @@ use cj_common::prelude::*;
 
 // _main is only meant to help with testing/stepping through the code.
 fn main() {
+    println!("test1");
     b64_test5();
+    println!("test2");
     b64_test6();
+    println!("test3");
     b64_test7();
+    println!("test4");
     b64_test8();
+    println!("test5");
     b64_test9();
+    println!("test6");
     b64_test10();
+    println!("test7");
     b64_test11();
+    println!("test8");
     b64_test12();
+    println!("test9");
     b64_test_iter();
+    println!("test10");
     b64_test_iter2();
+    println!("test11");
     b64_test_iter4();
+    println!("test12");
     b64_test_iter5();
 
+    println!("test13");
     perf_test_1();
+    println!("test14");
     perf_test_2();
 
+    println!("test15");
     hex_test1();
 
+    println!("test16");
     bit_iter_test1();
 
+    println!("test17");
     hex_iter_test1();
+    println!("test18");
     hex_iter_test2();
 
+    println!("test19");
     in_set_test();
 
+    println!("test20");
     perf_in_set_test_1();
+    println!("test21");
     perf_in_set_test_2();
 
     //let x = ((0..5), (6..7), 8, 9);
@@ -431,7 +452,7 @@ fn perf_in_set_test_1() {
     let now = Instant::now();
     let mut total = 0usize;
     let list = [1_000, 10_000, 100_000_000];
-    let iters = 1_000_000_000;
+    let iters = 1_000_000;
     for _ in 1..iters {
         for n in list {
             if n.in_set(
