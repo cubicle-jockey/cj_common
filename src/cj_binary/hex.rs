@@ -407,7 +407,7 @@ pub type HexArray = [char; 2];
 /// assert_eq!(hex_chars_to_u8(&['A','B']),Some(0xAB));
 /// assert_eq!(hex_chars_to_u8(&['N','O']),None);
 /// ```
-#[inline]
+#[inline(always)]
 pub fn hex_chars_to_u8(hex2: &HexArray) -> Option<u8> {
     let mut r: u8;
     if let Some(x) = hex_char_to_u8(&hex2[0]) {
