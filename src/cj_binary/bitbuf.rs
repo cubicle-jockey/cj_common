@@ -359,11 +359,11 @@ impl Bitflag for u128 {
 /// ```
 
 // TO.DO these need moved out of bitbuf and into a dedicated file
-static DEF_U8: &u8 = &0;
-static DEF_U16: &u16 = &0;
-static DEF_U32: &u32 = &0;
-static DEF_U64: &u64 = &0;
-static DEF_U128: &u128 = &0;
+const DEF_U8: &u8 = &0;
+const DEF_U16: &u16 = &0;
+const DEF_U32: &u32 = &0;
+const DEF_U64: &u64 = &0;
+const DEF_U128: &u128 = &0;
 
 /// Trait for returning references to default static values for a give types
 pub trait DefaultStatic<T: Bitflag + Sized> {
