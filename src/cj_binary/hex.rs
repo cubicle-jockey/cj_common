@@ -22,7 +22,7 @@
 use std::slice::Iter;
 use std::str::Chars;
 
-static HEX_TABLE: [&str; 256] = [
+const HEX_TABLE: [&str; 256] = [
     "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F",
     "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D", "1E", "1F",
     "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "2A", "2B", "2C", "2D", "2E", "2F",
@@ -41,7 +41,7 @@ static HEX_TABLE: [&str; 256] = [
     "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "FA", "FB", "FC", "FD", "FE", "FF",
 ];
 
-static HEX_TABLE_LOWER: [&str; 256] = [
+const HEX_TABLE_LOWER: [&str; 256] = [
     "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0a", "0b", "0c", "0d", "0e", "0f",
     "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1a", "1b", "1c", "1d", "1e", "1f",
     "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "2a", "2b", "2c", "2d", "2e", "2f",
@@ -67,7 +67,7 @@ static HEX_TABLE_LOWER: [&str; 256] = [
 /// assert_eq!(u8_to_hex_str(&0xD1), "D1");
 /// ```
 #[inline]
-pub fn u8_to_hex_str(value: &u8) -> &'static str {
+pub const fn u8_to_hex_str(value: &u8) -> &'static str {
     HEX_TABLE[*value as usize]
 }
 
@@ -78,7 +78,7 @@ pub fn u8_to_hex_str(value: &u8) -> &'static str {
 /// assert_eq!(u8_to_hex_low_str(&0xD1), "d1");
 /// ```
 #[inline]
-pub fn u8_to_hex_low_str(value: &u8) -> &'static str {
+pub const fn u8_to_hex_low_str(value: &u8) -> &'static str {
     HEX_TABLE_LOWER[*value as usize]
 }
 
@@ -114,10 +114,8 @@ pub fn u8_to_hex_low(value: &u8) -> String {
 #[inline]
 pub fn u8_array_to_hex(value: &[u8]) -> String {
     let mut rslt = String::with_capacity(value.len() * 2);
-    let _: () = value
-        .iter()
-        .map(|f| rslt.push_str(u8_to_hex_str(f)))
-        .collect();
+    value.iter().for_each(|f| rslt.push_str(u8_to_hex_str(f)));
+
     rslt
 }
 
@@ -131,10 +129,10 @@ pub fn u8_array_to_hex(value: &[u8]) -> String {
 #[inline]
 pub fn u8_array_to_hex_low(value: &[u8]) -> String {
     let mut rslt = String::with_capacity(value.len() * 2);
-    let _: () = value
+    value
         .iter()
-        .map(|f| rslt.push_str(u8_to_hex_low_str(f)))
-        .collect();
+        .for_each(|f| rslt.push_str(u8_to_hex_low_str(f)));
+
     rslt
 }
 
@@ -146,7 +144,7 @@ pub fn u8_array_to_hex_low(value: &[u8]) -> String {
 /// assert_eq!(hex_char_to_u8(&'G'),None);
 /// ```
 #[inline]
-pub fn hex_char_to_u8(hex1: &char) -> Option<u8> {
+pub const fn hex_char_to_u8(hex1: &char) -> Option<u8> {
     let r = match hex1 {
         '0' => 0u8,
         '1' => 1,
@@ -181,9 +179,9 @@ pub fn hex_char_to_u8(hex1: &char) -> Option<u8> {
 /// ```
 #[inline]
 pub fn hex_str_to_u8(hex2: &str) -> Option<u8> {
-    if hex2.chars().count() > 0 {
+    if hex2.len() > 0 {
         let mut r: u8;
-        if let Some(x) = hex_char_to_u8(&hex2.chars().next().unwrap()) {
+        if let Some(x) = hex_char_to_u8(&hex2.chars().next()?) {
             r = x << 4;
             if let Some(y) = hex_char_to_u8(&hex2.chars().nth(1).unwrap_or('X')) {
                 r += y;
@@ -437,7 +435,7 @@ pub fn hex_str_to_u8_vec(hexstr: &str) -> Option<Vec<u8>> {
     let mut ca: HexArray = ['0', '0'];
     let mut ct = 0;
 
-    let mut v: Vec<u8> = Vec::with_capacity((hexstr.chars().count() / 2) + 1);
+    let mut v: Vec<u8> = Vec::with_capacity((hexstr.len() / 2) + 1);
 
     if hexstr.len() % 2 != 0 {
         ct = 1;
