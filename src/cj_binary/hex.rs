@@ -66,7 +66,7 @@ const HEX_TABLE_LOWER: [&str; 256] = [
 ///
 /// assert_eq!(u8_to_hex_str(&0xD1), "D1");
 /// ```
-#[inline]
+#[inline(always)]
 pub const fn u8_to_hex_str(value: &u8) -> &'static str {
     HEX_TABLE[*value as usize]
 }
@@ -77,7 +77,7 @@ pub const fn u8_to_hex_str(value: &u8) -> &'static str {
 ///
 /// assert_eq!(u8_to_hex_low_str(&0xD1), "d1");
 /// ```
-#[inline]
+#[inline(always)]
 pub const fn u8_to_hex_low_str(value: &u8) -> &'static str {
     HEX_TABLE_LOWER[*value as usize]
 }
@@ -88,7 +88,7 @@ pub const fn u8_to_hex_low_str(value: &u8) -> &'static str {
 ///
 /// assert_eq!(u8_to_hex(&0xD1), "D1".to_string());
 /// ```
-#[inline]
+#[inline(always)]
 pub fn u8_to_hex(value: &u8) -> String {
     HEX_TABLE[*value as usize].to_string()
 }
@@ -99,7 +99,7 @@ pub fn u8_to_hex(value: &u8) -> String {
 ///
 /// assert_eq!(u8_to_hex_low(&0xD1), "d1".to_string());
 /// ```
-#[inline]
+#[inline(always)]
 pub fn u8_to_hex_low(value: &u8) -> String {
     HEX_TABLE_LOWER[*value as usize].to_string()
 }
@@ -111,7 +111,7 @@ pub fn u8_to_hex_low(value: &u8) -> String {
 /// let array = [0xA0,0xA1,0xA2];
 /// assert_eq!(u8_array_to_hex(&array),"A0A1A2");
 /// ```
-#[inline]
+#[inline(always)]
 pub fn u8_array_to_hex(value: &[u8]) -> String {
     let mut rslt = String::with_capacity(value.len() * 2);
     value.iter().for_each(|f| rslt.push_str(u8_to_hex_str(f)));
@@ -126,7 +126,7 @@ pub fn u8_array_to_hex(value: &[u8]) -> String {
 /// let array = [0xA0,0xA1,0xA2];
 /// assert_eq!(u8_array_to_hex_low(&array),"a0a1a2");
 /// ```
-#[inline]
+#[inline(always)]
 pub fn u8_array_to_hex_low(value: &[u8]) -> String {
     let mut rslt = String::with_capacity(value.len() * 2);
     value
@@ -143,7 +143,7 @@ pub fn u8_array_to_hex_low(value: &[u8]) -> String {
 /// assert_eq!(hex_char_to_u8(&'A'),Some(0x0A));
 /// assert_eq!(hex_char_to_u8(&'G'),None);
 /// ```
-#[inline]
+#[inline(always)]
 pub const fn hex_char_to_u8(hex1: &char) -> Option<u8> {
     let r = match hex1 {
         '0' => 0u8,
@@ -177,7 +177,7 @@ pub const fn hex_char_to_u8(hex1: &char) -> Option<u8> {
 /// assert_eq!(hex_str_to_u8("AB"),Some(0xAB));
 /// assert_eq!(hex_str_to_u8("G"),None);
 /// ```
-#[inline]
+#[inline(always)]
 pub fn hex_str_to_u8(hex2: &str) -> Option<u8> {
     if hex2.len() > 0 {
         let mut r: u8;
@@ -407,7 +407,7 @@ pub type HexArray = [char; 2];
 /// assert_eq!(hex_chars_to_u8(&['A','B']),Some(0xAB));
 /// assert_eq!(hex_chars_to_u8(&['N','O']),None);
 /// ```
-#[inline]
+#[inline(always)]
 pub fn hex_chars_to_u8(hex2: &HexArray) -> Option<u8> {
     let mut r: u8;
     if let Some(x) = hex_char_to_u8(&hex2[0]) {
