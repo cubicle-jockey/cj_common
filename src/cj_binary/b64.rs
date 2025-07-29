@@ -43,7 +43,8 @@ const B64_TABLE: [char; 64] = [
     '5', '6', '7', '8', '9', '+', '/',
 ];
 
-#[derive(Debug, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Debug)]
+#[repr(u8)]
 pub enum CharToOrdResult {
     Ok(u8),
     Pad,
@@ -53,20 +54,20 @@ pub enum CharToOrdResult {
 
 impl CharToOrdResult {
     #[inline]
-    pub fn is_ok(&self) -> bool {
-        *self < CharToOrdResult::Pad
+    pub const fn is_ok(&self) -> bool {
+        matches!(self, CharToOrdResult::Ok(_))
     }
     #[inline]
-    pub fn is_padding(&self) -> bool {
-        *self == CharToOrdResult::Pad
+    pub const fn is_padding(&self) -> bool {
+        matches!(self, CharToOrdResult::Pad)
     }
     #[inline]
-    pub fn is_whitespace(&self) -> bool {
-        *self == CharToOrdResult::WhiteSpace
+    pub const fn is_whitespace(&self) -> bool {
+        matches!(self, CharToOrdResult::WhiteSpace)
     }
     #[inline]
-    pub fn is_invalid(&self) -> bool {
-        *self == CharToOrdResult::Invalid
+    pub const fn is_invalid(&self) -> bool {
+        matches!(self, CharToOrdResult::Invalid)
     }
 }
 
@@ -149,6 +150,7 @@ pub const fn b64_char_to_ord(c: &char) -> &'static CharToOrdResult {
 }
 
 #[derive(Debug, PartialOrd, PartialEq, Ord, Eq)]
+#[repr(u8)]
 enum BitSplit6Result {
     Ready,
     Resend,
