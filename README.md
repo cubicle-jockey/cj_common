@@ -24,14 +24,14 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-cj_common = "1.0.2"
+cj_common = "1.1.0"
 ```
 
 For async channel functionality, enable the `channel` feature:
 
 ```toml
 [dependencies]
-cj_common = { version = "1.0.2", features = ["channel"] }
+cj_common = { version = "1.1.0", features = ["channel"] }
 ```
 
 ## Quick Start

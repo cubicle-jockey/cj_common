@@ -1,6 +1,6 @@
 [package]
 name = "cj_common"
-version = "1.0.2"
+version = "1.1.0"
 edition = "2024"
 keywords = ["hex", "base64", "range", "bit", "inset"]
 categories = ["encoding", "parsing"]
