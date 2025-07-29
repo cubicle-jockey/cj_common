@@ -316,4 +316,3 @@ discuss what you would like to change.
 - [Documentation](https://docs.rs/cj_common)
 - [Crates.io](https://crates.io/crates/cj_common)
 - [Repository](https://github.com/cubicle-jockey/cj_common)
-- [Wiki](https://github.com/cubicle-jockey/cj_common/wiki)
