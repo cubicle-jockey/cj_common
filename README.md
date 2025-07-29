@@ -5,112 +5,182 @@
 [![Crate](https://img.shields.io/crates/v/cj_common.svg)](https://crates.io/crates/cj_common)
 [![API](https://docs.rs/cj_common/badge.svg)](https://docs.rs/cj_common)
 
-Collection of common functions used for other projects. Additional functionality added as more projects are spun
-up.
+A comprehensive Rust library providing essential utilities for encoding, bit manipulation, and data validation. This
+crate offers high-performance implementations of commonly needed functionality with both direct conversion methods and
+efficient iterator-based approaches.
 
-Current features relate to:
+## Features
 
-```text
-* Base64 encoding/decoding
-* Hex encoding/decoding
-* Bit manipulation
-* In-set checking (values within a set of ranges)
+- **🔐 Base64 Encoding/Decoding** - Complete Base64 support with string conversion and streaming iterators
+- **🔢 Hexadecimal Encoding/Decoding** - Full hex support with uppercase/lowercase options and iterator interfaces
+- **⚡ Bit Manipulation** - Efficient bit-level operations with get/set functionality and bit iteration
+- **📊 Range Validation** - Flexible in-set checking for values within ranges, slices, and collections
+- **🚀 High Performance** - Optimized implementations with zero-copy iterators where possible
+- **🔧 Easy Integration** - Simple prelude module for importing all functionality
+
+## Installation
+
+Add this to your `Cargo.toml`:
+
+```toml
+[dependencies]
+cj_common = "1.0.2"
 ```
 
-cj_binary
----
+For async channel functionality, enable the `channel` feature:
 
-- b64 - structs, methods and traits for working with b64 encoding/decoding
+```toml
+[dependencies]
+cj_common = { version = "1.0.2", features = ["channel"] }
+```
+
+## Quick Start
+
+The easiest way to get started is by importing the prelude module:
 
 ```rust
-fn main() {
-    use cj_common::prelude::*;
+use cj_common::prelude::*;
 
-    let mut s2 = String::new();
+fn quick_start_example() {
+    // Base64 encoding
+    let encoded = "Hello, World!".to_b64_string();
+    println!("Encoded: {}", encoded);
+
+    // Base64 decoding
+    if let Some(decoded_bytes) = b64_to_bytes(&encoded) {
+        let decoded = String::from_utf8_lossy(&decoded_bytes);
+        println!("Decoded: {}", decoded);
+    }
+
+    // Hex encoding
+    let mut hex_string = String::new();
+    for hex_pair in "Hello".iter_to_hex() {
+        hex_string.push_str(hex_pair);
+    }
+    println!("Hex: {}", hex_string);
+
+    // Bit manipulation
+    let mut value = 0u8;
+    value.set_bit(3, true);  // Set bit 3
+    assert_eq!(value.get_bit(3), true);
+
+    // Range checking
+    assert_eq!('m'.in_range('a'..'z'), true);
+}
+
+```
+
+## API Documentation
+
+### 🔐 Base64 (`cj_binary::b64`)
+
+Complete Base64 encoding and decoding with multiple approaches:
+
+#### Direct Conversion
+
+```rust
+use cj_common::prelude::*;
+
+fn base64_direct_conversion_example() {
+    // String to Base64
+    let encoded = "Many hands make light work.".to_b64_string();
+    assert_eq!(encoded, "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+
+    // Base64 to bytes
+    if let Some(decoded) = b64_to_bytes("TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu") {
+        let text = String::from_utf8_lossy(&decoded);
+        assert_eq!(text, "Many hands make light work.");
+    }
+}
+```
+
+#### Iterator-Based Approach
+
+```rust
+use cj_common::prelude::*;
+
+fn base64_iterator_example() {
+    // Encode using iterator
+    let mut encoded = String::new();
     for c in "Many hands make light work.".iter_to_b64() {
-        s2.push(c);
+        encoded.push(c);
     }
-    assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+    assert_eq!(encoded, "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+
+    // Decode using iterator
+    let mut decoded = Vec::new();
+    for byte in "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu".iter_b64_to_byte() {
+        decoded.push(byte);
+    }
+    let text = String::from_utf8_lossy(&decoded);
+    assert_eq!(text, "Many hands make light work.");
 }
 ```
 
-```rust
-fn main() {
-    use cj_common::prelude::*;
+### 🔢 Hexadecimal (`cj_binary::hex`)
 
-    let mut v = Vec::new();
-    for b in "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu".iter_b64_to_byte() {
-        v.push(b);
+Flexible hexadecimal encoding and decoding with case options:
+
+> **Note:** Uppercase hex is the default output. Most methods have a corresponding `_low()` variant for lowercase
+> output (e.g., `to_hex_be_low()` instead of `to_hex()`).
+
+#### Basic Usage
+
+```rust
+use cj_common::prelude::*;
+
+fn hex_basic_usage_example() {
+    // String to hex
+    let mut hex = String::new();
+    for hex_pair in "Hello".iter_to_hex() {
+        hex.push_str(hex_pair);
     }
-    assert!(v.len() > 0);
-    let r = String::from_utf8_lossy(v.as_slice());
-    let s = "Many hands make light work.";
-    assert_eq!(r.to_string().as_str(), s);
+    println!("Hex: {}", hex);
+
+    // Numeric values
+    let value = 0x1F2i64;
+    let hex_be = value.to_hex_be();      // Big-endian
+    let hex_le = value.to_hex_le();      // Little-endian
+    let hex_be_low = value.to_hex_be_low(); // Lowercase
 }
 ```
 
-- hex - structs, methods and traits for working with hex encoding/decoding
-  <br>
-  <br>
-  <i>Note that uppercase hex is the default output. Lowercase is supported too
-  and most methods have a corresponding _low() implementation. For example, calling
-  to_hex_be_low() instead of to_hex_be() will result in lowercase output</i>
+#### Iterator-Based Approach
 
 ```rust
-fn main() {
-    use cj_common::prelude::*;
+use cj_common::prelude::*;
 
-    let x = 0x1F2i64;
-    let s = x.to_hex_be();
-    x.to_hex_be_low();
-    let y: Option<i64> = i64::from_hex_be(s.as_str());
-    assert!(y.is_some());
-    assert_eq!(x, y.unwrap());
+fn hex_iterator_example() {
+    // Encode using iterator
+    let mut hex_string = String::new();
+    for hex_pair in "Many hands make light work.".iter_to_hex() {
+        hex_string.push_str(hex_pair);
+    }
+    assert_eq!(hex_string, "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
 
-    let x = 0x1F2i64;
-    let s = x.to_hex_le();
-    let y: Option<i64> = i64::from_hex_le(s.as_str());
-    assert!(y.is_some());
-    assert_eq!(x, y.unwrap());
+    // Decode using iterator
+    let mut decoded = Vec::new();
+    for byte in "4D616E792068616E6473206D616B65206C6967687420776F726B2E".iter_hex_to_byte() {
+        decoded.push(byte);
+    }
+    let text = String::from_utf8_lossy(&decoded);
+    assert_eq!(text, "Many hands make light work.");
 }
 ```
 
-```rust
-fn main() {
-    use cj_common::prelude::*;
+### ⚡ Bit Manipulation (`cj_binary::bitbuf`)
 
-    let mut s = String::new();
-    for c in "Many hands make light work.".iter_to_hex() {
-        s.push_str(c);
-    }
-    assert_eq!(
-        s.as_str(),
-        "4D616E792068616E6473206D616B65206C6967687420776F726B2E"
-    );
+Efficient bit-level operations with comprehensive functionality:
 
-    let mut v = Vec::new();
-    for b in s.as_str().iter_hex_to_byte() {
-        v.push(b);
-    }
-    let s2 = String::from_utf8_lossy(v.as_slice()).to_string();
-    assert_eq!(s2.as_str(), "Many hands make light work.");
-}
-```
-
-- bitbuf - structs, methods and traits for getting/setting bits at given positions of the implemented types
+#### Basic Bit Operations
 
 ```rust
-fn main() {
-    use cj_common::prelude::*;
+use cj_common::prelude::*;
 
+fn basic_bit_operations_example() {
+    // Get and set individual bits
     let x = 0b00000010u8;
     assert_eq!(x.get_bit(1), true);
-}
-```
-
-```rust
-fn main() {
-    use cj_common::prelude::*;
 
     let mut x = 0b00000000u8;
     x.set_bit(1, true);
@@ -118,153 +188,132 @@ fn main() {
 }
 ```
 
+#### Bit Iteration
+
 ```rust
-fn main() {
-    use cj_common::prelude::*;
+use cj_common::prelude::*;
 
-    let mut x = 0xABu8;
-    let mut v = Vec::new();
-    for i in x.bit_iter() {
-        v.push(i);
+fn bit_iteration_example() {
+    // Iterate over bits in a single value
+    let x = 0xABu8;
+    let mut bits = Vec::new();
+    for bit in x.bit_iter() {
+        bits.push(bit);
     }
+    assert_eq!(bits, [true, true, false, true, false, true, false, true]);
 
-    assert_eq!(
-        v.as_slice(),
-        &[true, true, false, true, false, true, false, true]
-    );
+    // Iterate over bits in a collection
+    let data = vec![0xABu8, 0xAB, 0xAB];
+    let mut all_bits = Vec::new();
+    for bit in data.iter_to_bit() {
+        all_bits.push(bit);
+    }
+    // Results in 24 bits total (3 bytes × 8 bits each)
 }
 ```
 
+#### Advanced Bit Operations
+
 ```rust
-fn main() {
-    use cj_common::prelude::*;
+use cj_common::prelude::*;
 
-    let x = vec![0xABu8, 0xAB, 0xAB];
-    let mut v = Vec::new();
-    for i in x.iter_to_bit() {
-        v.push(i);
-    }
-
-    assert_eq!(
-        v.as_slice(),
-        &[
-            true, true, false, true, false, true, false, true,
-            true, true, false, true, false, true, false, true,
-            true, true, false, true, false, true, false, true
-        ]
-    );
-
+fn advanced_bit_operations_example() {
+    // Work with different integer types
     let x = [2u128, 2, 2];
-    for i in x.as_slice().iter_to_bit().enumerate() {
-        match i.0 {
-            1 | 129 | 257 => assert_eq!(i.1, true),
-            _ => assert_eq!(i.1, false),
+    for (index, bit) in x.as_slice().iter_to_bit().enumerate() {
+        match index {
+            1 | 129 | 257 => assert_eq!(bit, true),  // Bit position 1 in each u128
+            _ => assert_eq!(bit, false),
         }
     }
 }
 ```
 
+### 📊 Range Validation (`cj_helpers::in_set`)
+
+Flexible validation for checking if values exist within specified ranges or collections:
+
+#### Basic Range Checking
+
 ```rust
-fn main() {
-    use cj_common::prelude::*;
-    // mask examples
-    let mask = 0b00011010u8;
-    let byte = 0b01011010u8;
-    assert_eq!(byte.matches_mask(&mask), true);
-    assert_eq!(mask.as_mask_matches(&byte), true);
+use cj_common::prelude::*;
 
-    let read_permission = 0b00000001u8;
-    let write_permission = 0b00000010u8;
-    let mod_permission = 0b00000100u8;
-    let del_permission = 0b00001000u8;
-    let full_permission = read_permission + write_permission + mod_permission + del_permission;
-    let user = read_permission + write_permission;
-    let moderator = user + mod_permission;
-    let admin = full_permission;
-
-    let fred = user;
-    let jane = moderator;
-    assert_eq!(fred.matches_mask(&read_permission), true);
-    assert_eq!(fred.matches_mask(&write_permission), true);
-    assert_eq!(fred.matches_mask(&moderator), false);
-    assert_eq!(user.as_mask_matches(&jane), true);
-    assert_eq!(admin.as_mask_matches(&jane), false);
+fn basic_range_checking_example() {
+    // Simple range checking
+    assert_eq!('m'.in_range('a'..'z'), true);
+    assert_eq!(15.in_range(10..20), true);
+    assert_eq!(25.in_range(10..20), false);
 }
 ```
 
-cj_helpers
----
-
-- in_set - structs, methods and traits for checking if values are within a given set of ranges.
+#### Complex Set Validation
 
 ```rust
-fn main() {
-    use cj_common::prelude::*;
+use cj_common::prelude::*;
 
-    assert_eq!('x'.in_range('a'..'z'), true);
-    assert_eq!('z'.in_range_inclusive('a'..='z'), true);
-    assert_eq!(1.in_range(1..3), true);
-    assert_eq!(
-        'z'.in_set([('a'..'r').into(), ('r'..='z').into()].as_slice()),
-        true
-    );
-
-    let list = "lmnop";
-    for c in list.chars() {
+fn complex_set_validation_example() {
+    // Character validation with multiple criteria
+    let test_chars = "lmnop";
+    for c in test_chars.chars() {
         assert_eq!(c.in_range('k'..'q'), true);
-        assert_eq!(c.in_set([('k'..'q').into()].as_slice()), true);
+
+        // Check against multiple sets
         assert_eq!(
-            c.in_set(
-                [
-                    ('k'..='l').into(),                // RangeInclusive
-                    ('m'..'n').into(),                 // Range
-                    ('n'..='p').into(),                // RangeInclusive
-                    ['a', 'b', 'c'].as_slice().into(), // Slice
-                    "test123".into(),                  // str
-                ]
-                    .as_slice()
-            ),
+            c.in_set([
+                ('k'..='l').into(),                // RangeInclusive
+                ('m'..'n').into(),                 // Range
+                ('n'..='p').into(),                // RangeInclusive
+                ['a', 'b', 'c'].as_slice().into(), // Slice
+                "test123".into(),                  // str
+            ].as_slice()),
             true
         );
-        assert_eq!(c.in_range('w'..'z'), false);
     }
 
-    let alpha_nums = [('a'..='z').into(), ('A'..='Z').into(), ('0'..='9').into()];
-    let list = "lmnop";
-    for c in list.chars() {
-        assert_eq!(c.in_set(alpha_nums.as_slice()), true);
-    }
-
-    let list = [1_000, 10_000, 100_000_000];
-    for n in list {
+    // Numeric validation
+    let numbers = [1_000, 10_000, 100_000_000];
+    for n in numbers {
         assert_eq!(n.in_range(1..200_000_000), true);
-        assert_eq!(n.in_set([(1..200_000_000).into()].as_slice()), true);
+
         assert_eq!(
-            n.in_set(
-                [
-                    (1..=10).into(),                 // RangeInclusive
-                    (500..2_000).into(),             // Range
-                    (9_999..=100_000_000).into(),    // RangeInclusive
-                    [30, 90, 700].as_slice().into()  // Slice
-                ]
-                    .as_slice()
-            ),
+            n.in_set([
+                (1..=10).into(),                 // RangeInclusive
+                (500..2_000).into(),             // Range
+                (9_999..=100_000_000).into(),    // RangeInclusive
+                [30, 90, 700].as_slice().into()  // Slice
+            ].as_slice()),
             true
         );
-        assert_eq!(n.in_range(1_000_000_000..1_000_000_001), false);
-    }
-
-    assert_eq!('9'.is_ascii_numeric(), true);
-    assert_eq!('T'.is_ascii_numeric(), false);
-
-    assert_eq!('9'.is_ascii_alpha(), false);
-    assert_eq!('T'.is_ascii_alpha(), true);
-
-    for c in "9T".chars() {
-        assert_eq!(c.is_ascii_alpha_numeric(), true);
     }
 }
 ```
 
+## Performance
 
-   
+This crate is designed with performance in mind:
+
+- **Zero-copy iterators** where possible to minimize memory allocations
+- **Optimized algorithms** for encoding/decoding operations
+- **Efficient bit manipulation** using native CPU instructions
+- **Minimal dependencies** to reduce compilation time and binary size
+
+## License
+
+This project is licensed under either of
+
+- Apache License, Version 2.0, ([LICENSE_APACHE](LICENSE_APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE_MIT](LICENSE_MIT) or http://opensource.org/licenses/MIT)
+
+at your option.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to
+discuss what you would like to change.
+
+## Links
+
+- [Documentation](https://docs.rs/cj_common)
+- [Crates.io](https://crates.io/crates/cj_common)
+- [Repository](https://github.com/cubicle-jockey/cj_common)
+- [Wiki](https://github.com/cubicle-jockey/cj_common/wiki)
