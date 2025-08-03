@@ -297,6 +297,35 @@ This crate is designed with performance in mind:
 - **Efficient bit manipulation** using native CPU instructions
 - **Minimal dependencies** to reduce compilation time and binary size
 
+## Benchmarks
+
+This crate includes comprehensive benchmarks to measure performance across all major functionality. The benchmarks cover:
+
+- **Base64 encoding/decoding** - Both direct conversion and iterator-based approaches
+- **Hex encoding/decoding** - String and binary data with various sizes
+- **Bit manipulation** - Get/set operations and bit iteration across different integer types
+- **Range validation** - Simple range checks and complex set operations
+
+### Running Benchmarks
+
+To run the benchmarks:
+
+```bash
+cargo bench
+```
+
+This will generate detailed performance reports and HTML output (if available) showing timing comparisons across different operations and data sizes.
+
+### Benchmark Results
+
+The benchmarks test various scenarios including:
+- Small vs. large data sets
+- String vs. binary data encoding
+- Direct function calls vs. iterator-based processing
+- Different integer types for bit operations
+
+Results are displayed with statistical analysis including confidence intervals and outlier detection.
+
 ## License
 
 This project is licensed under either of
