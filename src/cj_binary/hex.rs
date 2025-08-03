@@ -268,7 +268,8 @@ impl CjFromHexIter for &str {
     /// assert_eq!(s.as_str(), "Many hands make light work.");
     /// ```
     fn iter_hex_to_byte(&self) -> FromHexIter {
-        let padded = self.chars().count() % 2 > 0; // this is extra overhead, but we need char count to know if the value is padded: 0ABC vs ABC.
+        //let padded = self.chars().count() % 2 > 0; // this is extra overhead, but we need char count to know if the value is padded: 0ABC vs ABC.
+        let padded = self.len() % 2 > 0; // since this is a hex string, we can assume that the chars are valid ASCII.
         FromHexIter::new(padded, self.chars())
     }
 }
@@ -537,11 +538,7 @@ pub fn i16_from_hex_be(value: &str) -> Option<i16> {
             p += 1;
         }
     }
-    if found {
-        Some(r)
-    } else {
-        None
-    }
+    if found { Some(r) } else { None }
 }
 
 /// i16 to little endian hex
@@ -691,11 +688,7 @@ pub fn u16_from_hex_be(value: &str) -> Option<u16> {
             p += 1;
         }
     }
-    if found {
-        Some(r)
-    } else {
-        None
-    }
+    if found { Some(r) } else { None }
 }
 
 /// u16 to little endian hex
@@ -844,11 +837,7 @@ pub fn i32_from_hex_be(value: &str) -> Option<i32> {
             p += 1;
         }
     }
-    if found {
-        Some(r)
-    } else {
-        None
-    }
+    if found { Some(r) } else { None }
 }
 
 /// i32 to little endian hex
@@ -997,11 +986,7 @@ pub fn u32_from_hex_be(value: &str) -> Option<u32> {
             p += 1;
         }
     }
-    if found {
-        Some(r)
-    } else {
-        None
-    }
+    if found { Some(r) } else { None }
 }
 
 /// u32 to little endian hex
@@ -1150,11 +1135,7 @@ pub fn i64_from_hex_be(value: &str) -> Option<i64> {
             p += 1;
         }
     }
-    if found {
-        Some(r)
-    } else {
-        None
-    }
+    if found { Some(r) } else { None }
 }
 
 /// i64 to little endian hex
@@ -1303,11 +1284,7 @@ pub fn u64_from_hex_be(value: &str) -> Option<u64> {
             p += 1;
         }
     }
-    if found {
-        Some(r)
-    } else {
-        None
-    }
+    if found { Some(r) } else { None }
 }
 
 /// u64 to little endian hex
@@ -1456,11 +1433,7 @@ pub fn i128_from_hex_be(value: &str) -> Option<i128> {
             p += 1;
         }
     }
-    if found {
-        Some(r)
-    } else {
-        None
-    }
+    if found { Some(r) } else { None }
 }
 
 /// i128 to little endian hex
@@ -1609,11 +1582,7 @@ pub fn u128_from_hex_be(value: &str) -> Option<u128> {
             p += 1;
         }
     }
-    if found {
-        Some(r)
-    } else {
-        None
-    }
+    if found { Some(r) } else { None }
 }
 
 /// u128 to little endian hex
