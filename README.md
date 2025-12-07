@@ -139,12 +139,11 @@ Enable the feature and use it like this:
 cj_common = { version = "1.2.0", features = ["timext"] }
 ```
 
-```rust
+```rust,ignore
 use time::OffsetDateTime;
 use cj_common::cj_helpers::timext::OffsetDateTimeExt; // trait
 
 fn timext_example() {
-    // Example timestamp: adjust as needed
     let dt = OffsetDateTime::from_unix_timestamp(1_766_496_840).unwrap();
     let primitive = dt.to_primitive();
     // primitive is a time::PrimitiveDateTime
