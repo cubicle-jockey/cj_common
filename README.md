@@ -15,6 +15,8 @@ efficient iterator-based approaches.
 - **🔢 Hexadecimal Encoding/Decoding** - Full hex support with uppercase/lowercase options and iterator interfaces
 - **⚡ Bit Manipulation** - Efficient bit-level operations with get/set functionality and bit iteration
 - **📊 Range Validation** - Flexible in-set checking for values within ranges, slices, and collections
+- **🕒 Time Utilities (feature: `timext`)** - `OffsetDateTimeExt` with helpers like `to_primitive()` to get a
+  `PrimitiveDateTime`
 - **🚀 High Performance** - Optimized implementations with zero-copy iterators where possible
 - **🔧 Easy Integration** - Simple prelude module for importing all functionality
 
@@ -32,6 +34,13 @@ For async channel functionality, enable the `channel` feature:
 ```toml
 [dependencies]
 cj_common = { version = "1.2.0", features = ["channel"] }
+```
+
+For time utilities (e.g., `OffsetDateTimeExt`), enable the `timext` feature:
+
+```toml
+[dependencies]
+cj_common = { version = "1.2.0", features = ["timext"] }
 ```
 
 ## Quick Start
@@ -114,6 +123,33 @@ fn base64_iterator_example() {
     }
     let text = String::from_utf8_lossy(&decoded);
     assert_eq!(text, "Many hands make light work.");
+}
+```
+
+### 🕒 Time Utilities (`cj_helpers::timext`, feature: `timext`)
+
+Helpers for working with the `time` crate types. Currently provides `OffsetDateTimeExt` with methods for converting or
+deriving related types.
+
+- `OffsetDateTimeExt::to_primitive()` — strips the offset and returns the wall-clock `PrimitiveDateTime`.
+
+Enable the feature and use it like this:
+
+```toml
+ Cargo.toml
+cj_common = { version = "1.2.0", features = ["timext"] }
+```
+
+```rust
+use time::OffsetDateTime;
+use cj_common::cj_helpers::timext::OffsetDateTimeExt; // trait
+
+fn timext_example() {
+    // Example timestamp: adjust as needed
+    let dt = OffsetDateTime::from_unix_timestamp(1_766_496_840).unwrap();
+    let primitive = dt.to_primitive();
+    // primitive is a time::PrimitiveDateTime
+    println!("{} {}", primitive.date(), primitive.time());
 }
 ```
 

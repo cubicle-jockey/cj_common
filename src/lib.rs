@@ -5,6 +5,7 @@
 //! * Hex encoding/decoding
 //! * Bit manipulation
 //! * In-set checking (values within a set of ranges)
+//! * Time utilities (feature: `timext`) — `OffsetDateTimeExt` with helpers like `to_primitive()`
 //!
 //! # Quick Start
 //!
