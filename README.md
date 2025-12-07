@@ -15,6 +15,8 @@ efficient iterator-based approaches.
 - **🔢 Hexadecimal Encoding/Decoding** - Full hex support with uppercase/lowercase options and iterator interfaces
 - **⚡ Bit Manipulation** - Efficient bit-level operations with get/set functionality and bit iteration
 - **📊 Range Validation** - Flexible in-set checking for values within ranges, slices, and collections
+- **🕒 Time Utilities (feature: `timext`)** - `OffsetDateTimeExt` with helpers like `to_primitive()` to get a
+  `PrimitiveDateTime`
 - **🚀 High Performance** - Optimized implementations with zero-copy iterators where possible
 - **🔧 Easy Integration** - Simple prelude module for importing all functionality
 
@@ -24,14 +26,21 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-cj_common = "1.1.0"
+cj_common = "1.2.0"
 ```
 
 For async channel functionality, enable the `channel` feature:
 
 ```toml
 [dependencies]
-cj_common = { version = "1.1.0", features = ["channel"] }
+cj_common = { version = "1.2.0", features = ["channel"] }
+```
+
+For time utilities (e.g., `OffsetDateTimeExt`), enable the `timext` feature:
+
+```toml
+[dependencies]
+cj_common = { version = "1.2.0", features = ["timext"] }
 ```
 
 ## Quick Start
@@ -114,6 +123,31 @@ fn base64_iterator_example() {
     }
     let text = String::from_utf8_lossy(&decoded);
     assert_eq!(text, "Many hands make light work.");
+}
+```
+
+### 🕒 Time Utilities (`cj_helpers::timext`, feature: `timext`)
+
+Helpers for working with the `time` crate types. Currently provides `OffsetDateTimeExt` with methods for converting or
+deriving related types.
+
+- `OffsetDateTimeExt::to_primitive()` — strips the offset and returns the wall-clock `PrimitiveDateTime`.
+
+Enable the feature and use it like this:
+
+```toml
+cj_common = { version = "1.2.0", features = ["timext"] }
+```
+
+```rust,ignore
+use time::OffsetDateTime;
+use cj_common::cj_helpers::timext::OffsetDateTimeExt; // trait
+
+fn timext_example() {
+    let dt = OffsetDateTime::from_unix_timestamp(1_766_496_840).unwrap();
+    let primitive = dt.to_primitive();
+    // primitive is a time::PrimitiveDateTime
+    println!("{} {}", primitive.date(), primitive.time());
 }
 ```
 
@@ -299,7 +333,8 @@ This crate is designed with performance in mind:
 
 ## Benchmarks
 
-This crate includes comprehensive benchmarks to measure performance across all major functionality. The benchmarks cover:
+This crate includes comprehensive benchmarks to measure performance across all major functionality. The benchmarks
+cover:
 
 - **Base64 encoding/decoding** - Both direct conversion and iterator-based approaches
 - **Hex encoding/decoding** - String and binary data with various sizes
@@ -314,11 +349,13 @@ To run the benchmarks:
 cargo bench
 ```
 
-This will generate detailed performance reports and HTML output (if available) showing timing comparisons across different operations and data sizes.
+This will generate detailed performance reports and HTML output (if available) showing timing comparisons across
+different operations and data sizes.
 
 ### Benchmark Results
 
 The benchmarks test various scenarios including:
+
 - Small vs. large data sets
 - String vs. binary data encoding
 - Direct function calls vs. iterator-based processing
