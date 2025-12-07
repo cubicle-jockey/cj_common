@@ -29,9 +29,15 @@ tokio-util = { version = "0.7.17", optional = true }
 futures = { version = "0.3.31", optional = true }
 time = { version = "0.3.44", optional = true }
 
+
+[package.metadata.docs.rs]
+all-features = true
+
+
 [dev-dependencies]
 criterion = { version = "0.8", features = ["html_reports"] }
 
 [[bench]]
 name = "benchmarks"
 harness = false
+
