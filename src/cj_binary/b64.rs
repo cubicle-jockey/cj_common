@@ -400,7 +400,7 @@ impl CjToBase64Iter for &str {
 }
 
 impl CjToBase64Iter for Vec<u8> {
-    /// Iterator for a Vec<u8> that produces Base64 encoded chars
+    /// Iterator for a `Vec<u8>` that produces Base64 encoded chars
     /// ```
     /// # use cj_common::prelude::CjToBase64Iter;
     /// let s = Vec::<u8>::from("Many hands make light work.");
@@ -684,7 +684,7 @@ impl CjToBase64 for String {
 }
 
 impl CjToBase64 for Vec<u8> {
-    /// converts Vec<u8> to Base64 encoded String
+    /// converts `Vec<u8>` to Base64 encoded String
     /// ```
     /// # use cj_common::prelude::CjToBase64;
     /// let s = Vec::<u8>::from("Many hands make light work...8675");

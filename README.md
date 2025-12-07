@@ -26,21 +26,21 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-cj_common = "1.2.0"
+cj_common = "1.2.1"
 ```
 
 For async channel functionality, enable the `channel` feature:
 
 ```toml
 [dependencies]
-cj_common = { version = "1.2.0", features = ["channel"] }
+cj_common = { version = "1.2.1", features = ["channel"] }
 ```
 
 For time utilities (e.g., `OffsetDateTimeExt`), enable the `timext` feature:
 
 ```toml
 [dependencies]
-cj_common = { version = "1.2.0", features = ["timext"] }
+cj_common = { version = "1.2.1", features = ["timext"] }
 ```
 
 ## Quick Start
@@ -136,7 +136,7 @@ deriving related types.
 Enable the feature and use it like this:
 
 ```toml
-cj_common = { version = "1.2.0", features = ["timext"] }
+cj_common = { version = "1.2.1", features = ["timext"] }
 ```
 
 ```rust,ignore

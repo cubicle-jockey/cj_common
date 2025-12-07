@@ -140,7 +140,7 @@ enum RangeType<'a, T> {
 
 /// CjExactRange is similar to RangeInclusive and is used by the in_set() method.
 /// in_set() requires CjExactRange in order to support a mixed slice of Range, RangeInclusive, Slice and str.
-/// Note that Range<T>.into(), RangeInclusive<T>.into(), Slice<T>.into() and &str.into() have been implemented
+/// Note that `Range<T>.into()`, `RangeInclusive<T>.into()`, `Slice<T>.into()` and `&str.into()` have been implemented
 /// for CjExactRange for easy conversion.
 ///
 /// is_set is auto implemented for all types it supports.
@@ -260,7 +260,7 @@ impl<T: PartialEq + PartialOrd> CjInRangeInclusive<T> for T {
 pub trait CjInSets<T: PartialEq + PartialOrd> {
     /// Returns true if a value is within a give slice of ranges.
     /// Note that this method requires ranges to be of type CjExactRange,
-    /// so Range<T>.into(), RangeInclusive<T>.into(), Slice<T>.into() and &str.into() have been implemented
+    /// so `Range<T>.into()`, `RangeInclusive<T>.into()`, `Slice<T>.into()` and `&str.into()` have been implemented
     /// for CjExactRange for easy conversion.
     ///
     /// is_set is auto implemented for all types it supports.
@@ -382,12 +382,8 @@ pub mod test {
 
     #[test]
     fn test_inset_2() {
-        assert!(
-            'x'.in_set([('a'..'r').into(), ('r'..'y').into()].as_slice())
-        );
-        assert!(
-            'z'.in_set([('a'..'r').into(), ('r'..='z').into()].as_slice())
-        );
+        assert!('x'.in_set([('a'..'r').into(), ('r'..'y').into()].as_slice()));
+        assert!('z'.in_set([('a'..'r').into(), ('r'..='z').into()].as_slice()));
         assert!(10.in_set([(1..3).into(), (3..=10).into()].as_slice()));
     }
 
@@ -438,9 +434,7 @@ pub mod test {
         assert!('x'.in_range('a'..'z'));
         assert!('z'.in_range_inclusive('a'..='z'));
         assert!(1.in_range(1..3));
-        assert!(
-            'z'.in_set([('a'..'r').into(), ('r'..='z').into()].as_slice())
-        );
+        assert!('z'.in_set([('a'..'r').into(), ('r'..='z').into()].as_slice()));
 
         let list = "lmnop";
         for c in list.chars() {
