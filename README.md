@@ -136,7 +136,6 @@ deriving related types.
 Enable the feature and use it like this:
 
 ```toml
- Cargo.toml
 cj_common = { version = "1.2.0", features = ["timext"] }
 ```
 
