@@ -253,7 +253,7 @@ impl Iterator for FromHexIter<'_> {
 }
 
 pub trait CjFromHexIter {
-    fn iter_hex_to_byte(&self) -> FromHexIter;
+    fn iter_hex_to_byte(&self) -> FromHexIter<'_>;
 }
 
 impl CjFromHexIter for &str {
@@ -267,7 +267,7 @@ impl CjFromHexIter for &str {
     /// let s = String::from_utf8_lossy(v.as_slice()).to_string();
     /// assert_eq!(s.as_str(), "Many hands make light work.");
     /// ```
-    fn iter_hex_to_byte(&self) -> FromHexIter {
+    fn iter_hex_to_byte(&self) -> FromHexIter<'_> {
         //let padded = self.chars().count() % 2 > 0; // this is extra overhead, but we need char count to know if the value is padded: 0ABC vs ABC.
         let padded = self.len() % 2 > 0; // since this is a hex string, we can assume that the chars are valid ASCII.
         FromHexIter::new(padded, self.chars())
@@ -325,8 +325,8 @@ impl Iterator for ToHexLowIter<'_> {
 }
 
 pub trait CjToHexIter {
-    fn iter_to_hex(&self) -> ToHexIter;
-    fn iter_to_hex_low(&self) -> ToHexLowIter;
+    fn iter_to_hex(&self) -> ToHexIter<'_>;
+    fn iter_to_hex_low(&self) -> ToHexLowIter<'_>;
 }
 
 impl CjToHexIter for &[u8] {
@@ -340,7 +340,7 @@ impl CjToHexIter for &[u8] {
     /// }
     /// assert_eq!(s2.as_str(), "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
     /// ```
-    fn iter_to_hex(&self) -> ToHexIter {
+    fn iter_to_hex(&self) -> ToHexIter<'_> {
         ToHexIter::new(self[..].iter())
     }
     /// Iterator for a slice of bytes that produces lowercase hex str
@@ -353,7 +353,7 @@ impl CjToHexIter for &[u8] {
     /// }
     /// assert_eq!(s2.as_str(), "4d616e792068616e6473206d616b65206c6967687420776f726b2e");     
     /// ```
-    fn iter_to_hex_low(&self) -> ToHexLowIter {
+    fn iter_to_hex_low(&self) -> ToHexLowIter<'_> {
         ToHexLowIter::new(self[..].iter())
     }
 }
@@ -368,7 +368,7 @@ impl CjToHexIter for &str {
     /// }
     /// assert_eq!(s2.as_str(), "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
     /// ```
-    fn iter_to_hex(&self) -> ToHexIter {
+    fn iter_to_hex(&self) -> ToHexIter<'_> {
         ToHexIter::new(self.as_bytes()[..].iter())
     }
     /// Iterator for str that produces lowercase hex str
@@ -380,7 +380,7 @@ impl CjToHexIter for &str {
     /// }
     /// assert_eq!(s2.as_str(), "4d616e792068616e6473206d616b65206c6967687420776f726b2e");    
     /// ```
-    fn iter_to_hex_low(&self) -> ToHexLowIter {
+    fn iter_to_hex_low(&self) -> ToHexLowIter<'_> {
         ToHexLowIter::new(self.as_bytes()[..].iter())
     }
 }
@@ -396,7 +396,7 @@ impl CjToHexIter for Vec<u8> {
     /// }
     /// assert_eq!(s2.as_str(), "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
     /// ```
-    fn iter_to_hex(&self) -> ToHexIter {
+    fn iter_to_hex(&self) -> ToHexIter<'_> {
         ToHexIter::new(self[..].iter())
     }
     /// Iterator for vec of bytes that produces lowercase hex str
@@ -409,7 +409,7 @@ impl CjToHexIter for Vec<u8> {
     /// }
     /// assert_eq!(s2.as_str(), "4d616e792068616e6473206d616b65206c6967687420776f726b2e");    
     /// ```
-    fn iter_to_hex_low(&self) -> ToHexLowIter {
+    fn iter_to_hex_low(&self) -> ToHexLowIter<'_> {
         ToHexLowIter::new(self[..].iter())
     }
 }

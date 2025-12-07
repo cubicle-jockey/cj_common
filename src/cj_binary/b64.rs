@@ -365,7 +365,7 @@ impl Iterator for ToBase64Iter<'_> {
 }
 
 pub trait CjToBase64Iter {
-    fn iter_to_b64(&self) -> ToBase64Iter;
+    fn iter_to_b64(&self) -> ToBase64Iter<'_>;
 }
 
 impl CjToBase64Iter for &[u8] {
@@ -379,7 +379,7 @@ impl CjToBase64Iter for &[u8] {
     /// }
     /// assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
     /// ```
-    fn iter_to_b64(&self) -> ToBase64Iter {
+    fn iter_to_b64(&self) -> ToBase64Iter<'_> {
         ToBase64Iter::new(self[..].iter())
     }
 }
@@ -394,7 +394,7 @@ impl CjToBase64Iter for &str {
     /// }
     /// assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
     /// ```
-    fn iter_to_b64(&self) -> ToBase64Iter {
+    fn iter_to_b64(&self) -> ToBase64Iter<'_> {
         ToBase64Iter::new(self.as_bytes()[..].iter())
     }
 }
@@ -410,7 +410,7 @@ impl CjToBase64Iter for Vec<u8> {
     /// }
     /// assert_eq!(s2.as_str(), "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
     /// ```
-    fn iter_to_b64(&self) -> ToBase64Iter {
+    fn iter_to_b64(&self) -> ToBase64Iter<'_> {
         ToBase64Iter::new(self[..].iter())
     }
 }
@@ -541,7 +541,7 @@ impl Iterator for FromBase64Iter<'_> {
 }
 
 pub trait CjFromBase64Iter {
-    fn iter_b64_to_byte(&self) -> FromBase64Iter;
+    fn iter_b64_to_byte(&self) -> FromBase64Iter<'_>;
 }
 
 impl CjFromBase64Iter for &str {
@@ -557,7 +557,7 @@ impl CjFromBase64Iter for &str {
     /// let s = "Many hands make light work.";
     /// assert_eq!(r.to_string().as_str(), s);
     /// ```
-    fn iter_b64_to_byte(&self) -> FromBase64Iter {
+    fn iter_b64_to_byte(&self) -> FromBase64Iter<'_> {
         FromBase64Iter::new(self.chars())
     }
 }
