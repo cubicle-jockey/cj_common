@@ -4,7 +4,7 @@ use time::{OffsetDateTime, PrimitiveDateTime};
 /// Extension helpers for `time::OffsetDateTime` behind the `timext` feature.
 ///
 /// This trait provides small, focused utilities for working with
-/// `OffsetDateTime` values. The primary helper, [`to_primitive`], discards the
+/// `OffsetDateTime` values. The primary helper, [`OffsetDateTimeExt::to_primitive`], discards the
 /// offset information and returns just the wall‑clock date and time as a
 /// `PrimitiveDateTime` (also called a "naive" datetime in many libraries).
 ///
@@ -18,7 +18,7 @@ use time::{OffsetDateTime, PrimitiveDateTime};
 ///   when storing a UTC‑naive timestamp in a database field that does not carry
 ///   timezone, or when comparing only wall‑clock components.
 /// - If you need a particular timezone representation, convert first (e.g., to
-///   UTC or local offset) and then call [`to_primitive`].
+///   UTC or local offset) and then call [`OffsetDateTimeExt::to_primitive`].
 pub trait OffsetDateTimeExt {
     /// Return the wall‑clock date and time with no offset attached.
     ///
