@@ -83,7 +83,7 @@ pub struct BitIter<'a, T> {
 }
 
 impl<T: Bitflag + Sized> BitIter<'_, T> {
-    pub fn new(byte_count: usize, value: &T) -> BitIter<T>
+    pub fn new(byte_count: usize, value: &T) -> BitIter<'_, T>
     where
         T: Bitflag + Sized,
     {

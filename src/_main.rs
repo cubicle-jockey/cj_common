@@ -1,6 +1,5 @@
-use std::time::Instant;
-
 use cj_common::prelude::*;
+use std::time::Instant;
 
 // _main is only meant to help with testing/stepping through the code.
 fn main() {
